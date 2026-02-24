@@ -1,0 +1,26 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+$C.@PageOverlay {
+ $C.@DecoratedContainer {
+  Anchor: (Width: 600, Height: 400);
+
+  #Title {
+    Group {
+      $C.@Title {
+        @Text = "Deity Land Protection";
+      }
+    }
+  }
+
+  #Content {
+    Group #ElementList {
+      FlexWeight: 1;
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+    }
+  }
+}
+
+$C.@BackButton {}
+}
+

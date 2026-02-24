@@ -1,0 +1,35 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+Button #Button {
+  LayoutMode: Left;
+  Padding: (Full: 10);
+  Anchor: (Height: 58);
+  Style: (
+    Default: (
+      Background: #000000(0.15),
+    ),
+    Hovered: (
+      Background: #000000(0.3),
+    )
+  );
+
+  ItemIcon #Icon {
+    Anchor: (Width: 36, Height: 36);
+  }
+
+  Group {
+    LayoutMode: Top;
+    FlexWeight: 1;
+
+    Label #Name {
+      Padding: (Horizontal: 10, Top: 2);
+      Style: (RenderBold: true);
+    }
+
+    Label #Durability {
+      Padding: (Horizontal: 10, Bottom: 8);
+      Style: (TextColor: #ffffff(0.75));
+    }
+  }
+}
+
