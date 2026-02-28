@@ -130,6 +130,19 @@ public final class DeityLandProtectionUpkeepStore {
                 feedDurationMs = DeityLandProtectionUpkeepStore.readJsonLong(obj, "expansionUntil");
             }
             st.setTotalFeedDurationMs(feedDurationMs);
+            st.setProcessEndsAtMs(DeityLandProtectionUpkeepStore.readJsonLong(obj, "processingUntil"));
+            Integer processCarry = DeityLandProtectionUpkeepStore.readJsonInt(obj, "processCarry");
+            if (processCarry != null) {
+                st.setProcessedEssenceCarryCount(processCarry);
+            }
+            Integer observedOutputQty = DeityLandProtectionUpkeepStore.readJsonInt(obj, "observedOutputQty");
+            if (observedOutputQty != null) {
+                st.setObservedOutputQuantity(observedOutputQty);
+            }
+            Integer tier = DeityLandProtectionUpkeepStore.readJsonInt(obj, "tier");
+            if (tier != null) {
+                st.setUpgradeTier(tier);
+            }
             st.setGraceUntilMs(DeityLandProtectionUpkeepStore.readJsonLong(obj, "graceUntil"));
             st.setGraceCountdownLastSecond(DeityLandProtectionUpkeepStore.readJsonLong(obj, "graceCountdown"));
             st.setPendingRemoveBlock(Boolean.TRUE.equals(DeityLandProtectionUpkeepStore.readJsonBoolean(obj, "removeBlock")));
@@ -166,6 +179,18 @@ public final class DeityLandProtectionUpkeepStore {
                 }
                 if (st.getTotalFeedDurationMs() != 0L) {
                     sb.append(',').append("\"feedDuration\":").append(st.getTotalFeedDurationMs());
+                }
+                if (st.getProcessEndsAtMs() != 0L) {
+                    sb.append(',').append("\"processingUntil\":").append(st.getProcessEndsAtMs());
+                }
+                if (st.getProcessedEssenceCarryCount() != 0) {
+                    sb.append(',').append("\"processCarry\":").append(st.getProcessedEssenceCarryCount());
+                }
+                if (st.getObservedOutputQuantity() >= 0) {
+                    sb.append(',').append("\"observedOutputQty\":").append(st.getObservedOutputQuantity());
+                }
+                if (st.getUpgradeTier() > 1) {
+                    sb.append(',').append("\"tier\":").append(st.getUpgradeTier());
                 }
                 if (st.getGraceUntilMs() != 0L) {
                     sb.append(',').append("\"graceUntil\":").append(st.getGraceUntilMs());

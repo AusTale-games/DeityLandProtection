@@ -22,10 +22,12 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class DeityLandProtectionWorldMapUpdateTickingSystem
 extends DelayedSystem<ChunkStore> {
     private final DeityLandProtectionPlugin plugin;
+    private final ConcurrentHashMap<String, Boolean> lastVisualStateByWorld = new ConcurrentHashMap<String, Boolean>();
 
     public DeityLandProtectionWorldMapUpdateTickingSystem(DeityLandProtectionPlugin plugin) {
         super(3.0f);
@@ -37,6 +39,17 @@ extends DelayedSystem<ChunkStore> {
             return;
         }
         World world = ((ChunkStore)store.getExternalData()).getWorld();
+        if (world == null) {
+            return;
+        }
+        String worldName = world.getName();
+        if (worldName != null && !worldName.isEmpty()) {
+            boolean currentVisualEnabled = this.plugin != null && this.plugin.isMapClaimVisualEnabled();
+            Boolean previous = this.lastVisualStateByWorld.put(worldName, currentVisualEnabled);
+            if (previous == null || previous.booleanValue() != currentVisualEnabled) {
+                this.plugin.queueMapUpdateForAllClaims(worldName);
+            }
+        }
         LongSet chunks = this.plugin.pollMapUpdateChunks(world.getName());
         if (chunks == null || chunks.isEmpty()) {
             return;

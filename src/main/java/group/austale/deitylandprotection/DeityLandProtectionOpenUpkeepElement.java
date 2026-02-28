@@ -26,9 +26,11 @@ public final class DeityLandProtectionOpenUpkeepElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/DeityLandProtectionUpkeepButtonElement.ui";
     private final DeityLandProtectionPlugin plugin;
+    private final Claim claim;
 
-    public DeityLandProtectionOpenUpkeepElement(DeityLandProtectionPlugin plugin, int centerX, int centerZ) {
+    public DeityLandProtectionOpenUpkeepElement(DeityLandProtectionPlugin plugin, Claim claim, int centerX, int centerZ) {
         this.plugin = plugin;
+        this.claim = claim;
         this.interactions = new ChoiceInteraction[]{new DeityLandProtectionOpenUpkeepInteraction(plugin, centerX, centerZ)};
     }
 
@@ -38,7 +40,14 @@ extends ChoiceElement {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        if (this.plugin != null && (iconId = this.plugin.getDeityLandProtectionItemId()) != null && !iconId.isEmpty()) {
+        iconId = null;
+        if (this.claim != null) {
+            iconId = this.claim.getDeityItemId();
+        }
+        if ((iconId == null || iconId.isEmpty()) && this.plugin != null) {
+            iconId = this.plugin.getDeityLandProtectionItemId();
+        }
+        if (iconId != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
         DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);

@@ -7,7 +7,6 @@
  */
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.Claim;
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,17 +21,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public final class ClaimStore {
+    private static final String TERRITORY_ROWS_KEY = "rows";
     private final Path file;
     private final HytaleLogger logger;
     private final List<Claim> claims = new ArrayList<Claim>();
     private final Map<Long, List<Claim>> claimsByChunk = new HashMap<Long, List<Claim>>();
     private final Map<Long, Claim> claimsByCenter = new HashMap<Long, Claim>();
+    private final Map<Long, Long> claimByCell = new HashMap<Long, Long>();
+    private final Map<Long, HashSet<Long>> cellsByClaim = new HashMap<Long, HashSet<Long>>();
     private int maxChunkRadius;
     private boolean dirty;
+    private boolean territoryReconcilePending;
 
     public ClaimStore(Path file, HytaleLogger logger) {
         this.file = file;
@@ -56,24 +60,11 @@ public final class ClaimStore {
     }
 
     public synchronized Claim findClaimAt(int x, int z) {
-        int chunkX = ClaimStore.floorDiv(x, 16);
-        int chunkZ = ClaimStore.floorDiv(z, 16);
-        Claim found = null;
-        int range = Math.max(0, this.maxChunkRadius);
-        for (int dx = -range; dx <= range; ++dx) {
-            for (int dz = -range; dz <= range; ++dz) {
-                List<Claim> bucket = this.claimsByChunk.get(ClaimStore.chunkKey(chunkX + dx, chunkZ + dz));
-                if (bucket == null) continue;
-                for (Claim c : bucket) {
-                    if (!c.contains(x, z)) continue;
-                    found = c;
-                    break;
-                }
-                if (found != null) break;
-            }
-            if (found != null) break;
+        Long claimKey = this.claimByCell.get(ClaimStore.cellKey(x, z));
+        if (claimKey == null) {
+            return null;
         }
-        return found;
+        return this.claimsByCenter.get(claimKey);
     }
 
     public synchronized List<Claim> getClaimsNearArea(int minX, int minZ, int maxX, int maxZ) {
@@ -94,15 +85,55 @@ public final class ClaimStore {
                 }
             }
         }
-        return unique.isEmpty() ? Collections.emptyList() : new ArrayList(unique);
+        return unique.isEmpty() ? Collections.emptyList() : new ArrayList<Claim>(unique);
     }
 
     public synchronized Claim findClaimByCenter(int centerX, int centerZ) {
         return this.claimsByCenter.get(ClaimStore.centerKey(centerX, centerZ));
     }
 
+    public synchronized int[] getClaimCellBounds(int centerX, int centerZ) {
+        long claimKey = ClaimStore.centerKey(centerX, centerZ);
+        Claim claim = this.claimsByCenter.get(claimKey);
+        if (claim == null) {
+            return null;
+        }
+        HashSet<Long> owned = this.cellsByClaim.get(claimKey);
+        if (owned == null || owned.isEmpty()) {
+            int r = claim.getRadius();
+            return new int[]{centerX - r, centerX + r, centerZ - r, centerZ + r};
+        }
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int minZ = Integer.MAX_VALUE;
+        int maxZ = Integer.MIN_VALUE;
+        for (Long cell : owned) {
+            if (cell == null) {
+                continue;
+            }
+            int x = ClaimStore.xOfCellKey(cell.longValue());
+            int z = ClaimStore.zOfCellKey(cell.longValue());
+            if (x < minX) {
+                minX = x;
+            }
+            if (x > maxX) {
+                maxX = x;
+            }
+            if (z < minZ) {
+                minZ = z;
+            }
+            if (z > maxZ) {
+                maxZ = z;
+            }
+        }
+        if (minX == Integer.MAX_VALUE) {
+            int r = claim.getRadius();
+            return new int[]{centerX - r, centerX + r, centerZ - r, centerZ + r};
+        }
+        return new int[]{minX, maxX, minZ, maxZ};
+    }
+
     public synchronized boolean updateClaimCenterYIfUnknown(int centerX, int centerZ, int centerY) {
-        long bucketKey;
         List<Claim> bucket;
         Claim existing = this.claimsByCenter.get(ClaimStore.centerKey(centerX, centerZ));
         if (existing == null) {
@@ -111,14 +142,14 @@ public final class ClaimStore {
         if (existing.getCenterY() != Integer.MIN_VALUE) {
             return false;
         }
-        Claim updated = new Claim(existing.getOwner(), existing.getOwnerName(), existing.getCenterX(), centerY, existing.getCenterZ(), existing.getRadius(), existing.getTrusted(), existing.isPvpEnabled());
+        Claim updated = new Claim(existing.getOwner(), existing.getOwnerName(), existing.getCenterX(), centerY, existing.getCenterZ(), existing.getRadius(), existing.getTrusted(), existing.isPvpEnabled(), existing.getDeityItemId());
         this.claimsByCenter.put(ClaimStore.centerKey(centerX, centerZ), updated);
         for (int i = 0; i < this.claims.size(); ++i) {
             if (this.claims.get(i) != existing) continue;
             this.claims.set(i, updated);
             break;
         }
-        if ((bucket = this.claimsByChunk.get(bucketKey = ClaimStore.chunkKey(ClaimStore.floorDiv(centerX, 16), ClaimStore.floorDiv(centerZ, 16)))) != null) {
+        if ((bucket = this.claimsByChunk.get(ClaimStore.chunkKey(ClaimStore.floorDiv(centerX, 16), ClaimStore.floorDiv(centerZ, 16)))) != null) {
             for (int i = 0; i < bucket.size(); ++i) {
                 if (bucket.get(i) != existing) continue;
                 bucket.set(i, updated);
@@ -130,7 +161,6 @@ public final class ClaimStore {
     }
 
     public synchronized boolean updateClaimPvpEnabled(int centerX, int centerZ, boolean pvpEnabled) {
-        long bucketKey;
         List<Claim> bucket;
         Claim existing = this.claimsByCenter.get(ClaimStore.centerKey(centerX, centerZ));
         if (existing == null) {
@@ -139,14 +169,14 @@ public final class ClaimStore {
         if (existing.isPvpEnabled() == pvpEnabled) {
             return false;
         }
-        Claim updated = new Claim(existing.getOwner(), existing.getOwnerName(), existing.getCenterX(), existing.getCenterY(), existing.getCenterZ(), existing.getRadius(), existing.getTrusted(), pvpEnabled);
+        Claim updated = new Claim(existing.getOwner(), existing.getOwnerName(), existing.getCenterX(), existing.getCenterY(), existing.getCenterZ(), existing.getRadius(), existing.getTrusted(), pvpEnabled, existing.getDeityItemId());
         this.claimsByCenter.put(ClaimStore.centerKey(centerX, centerZ), updated);
         for (int i = 0; i < this.claims.size(); ++i) {
             if (this.claims.get(i) != existing) continue;
             this.claims.set(i, updated);
             break;
         }
-        if ((bucket = this.claimsByChunk.get(bucketKey = ClaimStore.chunkKey(ClaimStore.floorDiv(centerX, 16), ClaimStore.floorDiv(centerZ, 16)))) != null) {
+        if ((bucket = this.claimsByChunk.get(ClaimStore.chunkKey(ClaimStore.floorDiv(centerX, 16), ClaimStore.floorDiv(centerZ, 16)))) != null) {
             for (int i = 0; i < bucket.size(); ++i) {
                 if (bucket.get(i) != existing) continue;
                 bucket.set(i, updated);
@@ -161,42 +191,118 @@ public final class ClaimStore {
         this.dirty = true;
     }
 
+    public synchronized boolean consumeTerritoryReconcilePending() {
+        boolean pending = this.territoryReconcilePending;
+        this.territoryReconcilePending = false;
+        return pending;
+    }
+
+    public synchronized boolean hasUnclaimedTerritoryInRadius(int centerX, int centerZ, int radius) {
+        if (radius <= 0) {
+            return false;
+        }
+        long claimKey = ClaimStore.centerKey(centerX, centerZ);
+        Claim claim = this.claimsByCenter.get(claimKey);
+        if (claim == null) {
+            return false;
+        }
+        int minX = centerX - radius;
+        int maxX = centerX + radius;
+        int minZ = centerZ - radius;
+        int maxZ = centerZ + radius;
+        for (int z = minZ; z <= maxZ; ++z) {
+            for (int x = minX; x <= maxX; ++x) {
+                if (this.claimByCell.containsKey(ClaimStore.cellKey(x, z))) continue;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean reconcileClaimTerritory(int centerX, int centerZ) {
+        long claimKey = ClaimStore.centerKey(centerX, centerZ);
+        Claim claim = this.claimsByCenter.get(claimKey);
+        if (claim == null) {
+            return false;
+        }
+        int radius = claim.getRadius();
+        if (radius <= 0) {
+            return false;
+        }
+        int minX = centerX - radius;
+        int maxX = centerX + radius;
+        int minZ = centerZ - radius;
+        int maxZ = centerZ + radius;
+        boolean changed = false;
+        HashSet<Long> owned = this.cellsByClaim.get(claimKey);
+        if (owned != null && !owned.isEmpty()) {
+            ArrayList<Long> toRelease = new ArrayList<Long>();
+            for (Long cell : owned) {
+                if (cell == null) continue;
+                int x = ClaimStore.xOfCellKey(cell.longValue());
+                int z = ClaimStore.zOfCellKey(cell.longValue());
+                if (x >= minX && x <= maxX && z >= minZ && z <= maxZ) continue;
+                toRelease.add(cell);
+            }
+            for (Long cell : toRelease) {
+                if (cell == null || !this.unassignCellFromClaim(claimKey, cell.longValue())) continue;
+                changed = true;
+            }
+        }
+        for (int z = minZ; z <= maxZ; ++z) {
+            for (int x = minX; x <= maxX; ++x) {
+                long cellKey = ClaimStore.cellKey(x, z);
+                Long ownerKey = this.claimByCell.get(cellKey);
+                if (ownerKey != null) continue;
+                this.assignCellToClaim(claimKey, cellKey);
+                changed = true;
+            }
+        }
+        if (changed) {
+            this.dirty = true;
+        }
+        return changed;
+    }
+
     public synchronized boolean intersectsAny(int centerX, int centerZ, int radius) {
-        int chunkX = ClaimStore.floorDiv(centerX, 16);
-        int chunkZ = ClaimStore.floorDiv(centerZ, 16);
-        int range = Math.max(0, this.maxChunkRadius + ClaimStore.chunkRadiusFor(radius));
-        for (int dx = -range; dx <= range; ++dx) {
-            for (int dz = -range; dz <= range; ++dz) {
-                List<Claim> bucket = this.claimsByChunk.get(ClaimStore.chunkKey(chunkX + dx, chunkZ + dz));
-                if (bucket == null) continue;
-                for (Claim c : bucket) {
-                    if (!ClaimStore.intersects(c, centerX, centerZ, radius)) continue;
-                    return true;
-                }
+        if (radius <= 0) {
+            return false;
+        }
+        int minX = centerX - radius;
+        int maxX = centerX + radius;
+        int minZ = centerZ - radius;
+        int maxZ = centerZ + radius;
+        for (int z = minZ; z <= maxZ; ++z) {
+            for (int x = minX; x <= maxX; ++x) {
+                if (!this.claimByCell.containsKey(ClaimStore.cellKey(x, z))) continue;
+                return true;
             }
         }
         return false;
     }
 
     public synchronized boolean intersectsAnyExceptOwner(UUID owner, int centerX, int centerZ, int radius) {
-        int chunkX = ClaimStore.floorDiv(centerX, 16);
-        int chunkZ = ClaimStore.floorDiv(centerZ, 16);
-        int range = Math.max(0, this.maxChunkRadius + ClaimStore.chunkRadiusFor(radius));
-        for (int dx = -range; dx <= range; ++dx) {
-            for (int dz = -range; dz <= range; ++dz) {
-                List<Claim> bucket = this.claimsByChunk.get(ClaimStore.chunkKey(chunkX + dx, chunkZ + dz));
-                if (bucket == null) continue;
-                for (Claim c : bucket) {
-                    if (c == null || owner != null && owner.equals(c.getOwner()) || c.getCenterX() == centerX && c.getCenterZ() == centerZ || !ClaimStore.intersects(c, centerX, centerZ, radius)) continue;
-                    return true;
-                }
+        if (radius <= 0) {
+            return false;
+        }
+        long selfKey = ClaimStore.centerKey(centerX, centerZ);
+        int minX = centerX - radius;
+        int maxX = centerX + radius;
+        int minZ = centerZ - radius;
+        int maxZ = centerZ + radius;
+        for (int z = minZ; z <= maxZ; ++z) {
+            for (int x = minX; x <= maxX; ++x) {
+                Long claimKey = this.claimByCell.get(ClaimStore.cellKey(x, z));
+                if (claimKey == null || claimKey.longValue() == selfKey) continue;
+                Claim other = this.claimsByCenter.get(claimKey);
+                if (other == null || owner != null && owner.equals(other.getOwner())) continue;
+                return true;
             }
         }
         return false;
     }
 
     public synchronized boolean updateClaimRadius(int centerX, int centerZ, int radius) {
-        long bucketKey;
         List<Claim> bucket;
         if (radius <= 0) {
             return false;
@@ -210,14 +316,14 @@ public final class ClaimStore {
         }
         int oldChunkRadius = ClaimStore.chunkRadiusFor(existing.getRadius());
         int newChunkRadius = ClaimStore.chunkRadiusFor(radius);
-        Claim updated = new Claim(existing.getOwner(), existing.getOwnerName(), existing.getCenterX(), existing.getCenterY(), existing.getCenterZ(), radius, existing.getTrusted(), existing.isPvpEnabled());
+        Claim updated = new Claim(existing.getOwner(), existing.getOwnerName(), existing.getCenterX(), existing.getCenterY(), existing.getCenterZ(), radius, existing.getTrusted(), existing.isPvpEnabled(), existing.getDeityItemId());
         this.claimsByCenter.put(ClaimStore.centerKey(centerX, centerZ), updated);
         for (int i = 0; i < this.claims.size(); ++i) {
             if (this.claims.get(i) != existing) continue;
             this.claims.set(i, updated);
             break;
         }
-        if ((bucket = this.claimsByChunk.get(bucketKey = ClaimStore.chunkKey(ClaimStore.floorDiv(existing.getCenterX(), 16), ClaimStore.floorDiv(existing.getCenterZ(), 16)))) != null) {
+        if ((bucket = this.claimsByChunk.get(ClaimStore.chunkKey(ClaimStore.floorDiv(existing.getCenterX(), 16), ClaimStore.floorDiv(existing.getCenterZ(), 16)))) != null) {
             for (int i = 0; i < bucket.size(); ++i) {
                 if (bucket.get(i) != existing) continue;
                 bucket.set(i, updated);
@@ -228,6 +334,10 @@ public final class ClaimStore {
             this.maxChunkRadius = newChunkRadius;
         } else if (oldChunkRadius >= this.maxChunkRadius) {
             this.recomputeMaxChunkRadius();
+        }
+        this.reconcileClaimTerritory(centerX, centerZ);
+        if (radius < existing.getRadius()) {
+            this.territoryReconcilePending = true;
         }
         this.dirty = true;
         return true;
@@ -240,20 +350,14 @@ public final class ClaimStore {
         this.claims.add(claim);
         this.claimsByCenter.put(ClaimStore.centerKey(claim.getCenterX(), claim.getCenterZ()), claim);
         long bucketKey = ClaimStore.chunkKey(ClaimStore.floorDiv(claim.getCenterX(), 16), ClaimStore.floorDiv(claim.getCenterZ(), 16));
-        this.claimsByChunk.computeIfAbsent(bucketKey, k -> new ArrayList()).add(claim);
+        this.claimsByChunk.computeIfAbsent(bucketKey, k -> new ArrayList<Claim>()).add(claim);
         int claimChunkRadius = ClaimStore.chunkRadiusFor(claim.getRadius());
         if (claimChunkRadius > this.maxChunkRadius) {
             this.maxChunkRadius = claimChunkRadius;
         }
+        this.reconcileClaimTerritory(claim.getCenterX(), claim.getCenterZ());
         this.dirty = true;
         return true;
-    }
-
-    private static boolean intersects(Claim existing, int centerX, int centerZ, int radius) {
-        long dx = Math.abs((long)existing.getCenterX() - (long)centerX);
-        long dz = Math.abs((long)existing.getCenterZ() - (long)centerZ);
-        long sum = (long)existing.getRadius() + (long)radius;
-        return dx <= sum && dz <= sum;
     }
 
     public synchronized boolean removeClaimAt(int x, int z) {
@@ -280,6 +384,8 @@ public final class ClaimStore {
         if (removedChunkRadius >= this.maxChunkRadius) {
             this.recomputeMaxChunkRadius();
         }
+        this.clearCellsForClaim(cKey);
+        this.territoryReconcilePending = true;
         this.dirty = true;
         return true;
     }
@@ -288,8 +394,11 @@ public final class ClaimStore {
         this.claims.clear();
         this.claimsByChunk.clear();
         this.claimsByCenter.clear();
+        this.claimByCell.clear();
+        this.cellsByClaim.clear();
         this.maxChunkRadius = 0;
         this.dirty = false;
+        this.territoryReconcilePending = false;
         if (!Files.exists(this.file, new LinkOption[0])) {
             return;
         }
@@ -325,13 +434,20 @@ public final class ClaimStore {
                     String obj = body.substring(start + 1, end);
                     Claim claim = this.parseClaim(obj);
                     if (claim != null) {
+                        long claimKey = ClaimStore.centerKey(claim.getCenterX(), claim.getCenterZ());
                         this.claims.add(claim);
-                        this.claimsByCenter.put(ClaimStore.centerKey(claim.getCenterX(), claim.getCenterZ()), claim);
+                        this.claimsByCenter.put(claimKey, claim);
                         long bucketKey = ClaimStore.chunkKey(ClaimStore.floorDiv(claim.getCenterX(), 16), ClaimStore.floorDiv(claim.getCenterZ(), 16));
-                        this.claimsByChunk.computeIfAbsent(bucketKey, k -> new ArrayList()).add(claim);
+                        this.claimsByChunk.computeIfAbsent(bucketKey, k -> new ArrayList<Claim>()).add(claim);
                         int claimChunkRadius = ClaimStore.chunkRadiusFor(claim.getRadius());
                         if (claimChunkRadius > this.maxChunkRadius) {
                             this.maxChunkRadius = claimChunkRadius;
+                        }
+                        String encodedRows = ClaimStore.readJsonString(obj, TERRITORY_ROWS_KEY);
+                        if (encodedRows != null && !encodedRows.isEmpty()) {
+                            this.decodeTerritoryRows(claimKey, claim, encodedRows);
+                        } else {
+                            this.claimSquareUnclaimed(claimKey, claim.getCenterX(), claim.getCenterZ(), claim.getRadius());
                         }
                     }
                     idx = end + 1;
@@ -354,6 +470,7 @@ public final class ClaimStore {
             Integer z = ClaimStore.readJsonInt(obj, "z");
             Integer r = ClaimStore.readJsonInt(obj, "r");
             Boolean pvp = ClaimStore.readJsonBoolean(obj, "pvp");
+            String itemId = ClaimStore.readJsonString(obj, "itemId");
             if (ownerStr == null || x == null || z == null || r == null) {
                 return null;
             }
@@ -361,7 +478,7 @@ public final class ClaimStore {
             Map<UUID, Integer> trusted = ClaimStore.readTrusted(obj);
             int cy = y == null ? Integer.MIN_VALUE : y;
             boolean pvpEnabled = pvp != null && Boolean.TRUE.equals(pvp);
-            return new Claim(owner, ownerName, x, cy, z, r, trusted, pvpEnabled);
+            return new Claim(owner, ownerName, x, cy, z, r, trusted, pvpEnabled, itemId);
         }
         catch (Exception ignored) {
             return null;
@@ -554,6 +671,11 @@ public final class ClaimStore {
                 sb.append("\"r\":").append(c.getRadius());
                 sb.append(',');
                 sb.append("\"pvp\":").append(c.isPvpEnabled());
+                String itemId = c.getDeityItemId();
+                if (itemId != null && !itemId.isEmpty()) {
+                    sb.append(',');
+                    sb.append("\"itemId\":\"").append(itemId).append("\"");
+                }
                 Map<UUID, Integer> trusted = c.getTrusted();
                 if (!trusted.isEmpty()) {
                     sb.append(',');
@@ -570,6 +692,11 @@ public final class ClaimStore {
                     }
                     sb.append('}');
                 }
+                String territoryRows = this.encodeTerritoryRows(ClaimStore.centerKey(c.getCenterX(), c.getCenterZ()));
+                if (!territoryRows.isEmpty()) {
+                    sb.append(',');
+                    sb.append('"').append(TERRITORY_ROWS_KEY).append('"').append(':').append('"').append(territoryRows).append('"');
+                }
                 sb.append('}');
             }
             sb.append(']');
@@ -583,6 +710,18 @@ public final class ClaimStore {
 
     private static long centerKey(int x, int z) {
         return (long)x << 32 ^ (long)z & 0xFFFFFFFFL;
+    }
+
+    private static long cellKey(int x, int z) {
+        return (long)x << 32 ^ (long)z & 0xFFFFFFFFL;
+    }
+
+    private static int xOfCellKey(long key) {
+        return (int)(key >> 32);
+    }
+
+    private static int zOfCellKey(long key) {
+        return (int)key;
     }
 
     private static long chunkKey(int chunkX, int chunkZ) {
@@ -603,6 +742,195 @@ public final class ClaimStore {
         }
         int chunks = (radiusBlocks + 15) / 16;
         return Math.max(0, chunks);
+    }
+
+    private void assignCellToClaim(long claimKey, long cellKey) {
+        this.claimByCell.put(cellKey, claimKey);
+        this.cellsByClaim.computeIfAbsent(claimKey, k -> new HashSet<Long>()).add(cellKey);
+    }
+
+    private boolean unassignCellFromClaim(long claimKey, long cellKey) {
+        Long owner = this.claimByCell.get(cellKey);
+        if (owner == null || owner.longValue() != claimKey) {
+            return false;
+        }
+        this.claimByCell.remove(cellKey);
+        HashSet<Long> owned = this.cellsByClaim.get(claimKey);
+        if (owned != null) {
+            owned.remove(cellKey);
+            if (owned.isEmpty()) {
+                this.cellsByClaim.remove(claimKey);
+            }
+        }
+        return true;
+    }
+
+    private void clearCellsForClaim(long claimKey) {
+        HashSet<Long> owned = this.cellsByClaim.remove(claimKey);
+        if (owned == null || owned.isEmpty()) {
+            return;
+        }
+        for (Long cell : owned) {
+            if (cell == null) continue;
+            Long owner = this.claimByCell.get(cell.longValue());
+            if (owner == null || owner.longValue() != claimKey) continue;
+            this.claimByCell.remove(cell.longValue());
+        }
+    }
+
+    private void claimSquareUnclaimed(long claimKey, int centerX, int centerZ, int radius) {
+        if (radius <= 0) {
+            return;
+        }
+        int minX = centerX - radius;
+        int maxX = centerX + radius;
+        int minZ = centerZ - radius;
+        int maxZ = centerZ + radius;
+        for (int z = minZ; z <= maxZ; ++z) {
+            for (int x = minX; x <= maxX; ++x) {
+                long cell = ClaimStore.cellKey(x, z);
+                if (this.claimByCell.containsKey(cell)) continue;
+                this.assignCellToClaim(claimKey, cell);
+            }
+        }
+    }
+
+    private void decodeTerritoryRows(long claimKey, Claim claim, String encodedRows) {
+        if (claim == null || encodedRows == null || encodedRows.isEmpty()) {
+            return;
+        }
+        int radius = claim.getRadius();
+        int minX = claim.getCenterX() - radius;
+        int maxX = claim.getCenterX() + radius;
+        int minZ = claim.getCenterZ() - radius;
+        int maxZ = claim.getCenterZ() + radius;
+        boolean parsedAnyRange = false;
+        String[] rows = encodedRows.split(";");
+        for (String row : rows) {
+            if (row == null || row.isEmpty()) {
+                continue;
+            }
+            int colon = row.indexOf(58);
+            if (colon <= 0 || colon >= row.length() - 1) {
+                continue;
+            }
+            int z;
+            try {
+                z = Integer.parseInt(row.substring(0, colon));
+            }
+            catch (NumberFormatException ignored) {
+                continue;
+            }
+            String ranges = row.substring(colon + 1);
+            if (ranges.isEmpty()) {
+                continue;
+            }
+            String[] entries = ranges.split(",");
+            for (String entry : entries) {
+                if (entry == null || entry.isEmpty()) {
+                    continue;
+                }
+                int separator = entry.indexOf(124);
+                if (separator <= 0 || separator >= entry.length() - 1) {
+                    separator = -1;
+                    for (int i = 1; i < entry.length() - 1; ++i) {
+                        if (entry.charAt(i) != '-' || !Character.isDigit(entry.charAt(i - 1))) continue;
+                        separator = i;
+                        break;
+                    }
+                }
+                if (separator <= 0 || separator >= entry.length() - 1) {
+                    continue;
+                }
+                int startX;
+                int endX;
+                try {
+                    startX = Integer.parseInt(entry.substring(0, separator));
+                    endX = Integer.parseInt(entry.substring(separator + 1));
+                }
+                catch (NumberFormatException ignored) {
+                    continue;
+                }
+                parsedAnyRange = true;
+                if (startX > endX) {
+                    int t = startX;
+                    startX = endX;
+                    endX = t;
+                }
+                if (z < minZ || z > maxZ) {
+                    continue;
+                }
+                if (endX < minX || startX > maxX) {
+                    continue;
+                }
+                int clampedStart = Math.max(minX, startX);
+                int clampedEnd = Math.min(maxX, endX);
+                for (int x = clampedStart; x <= clampedEnd; ++x) {
+                    long cell = ClaimStore.cellKey(x, z);
+                    Long owner = this.claimByCell.get(cell);
+                    if (owner != null && owner.longValue() != claimKey) continue;
+                    if (owner != null) continue;
+                    this.assignCellToClaim(claimKey, cell);
+                }
+            }
+        }
+        if (!parsedAnyRange) {
+            this.claimSquareUnclaimed(claimKey, claim.getCenterX(), claim.getCenterZ(), claim.getRadius());
+        }
+    }
+
+    private String encodeTerritoryRows(long claimKey) {
+        HashSet<Long> owned = this.cellsByClaim.get(claimKey);
+        if (owned == null || owned.isEmpty()) {
+            return "";
+        }
+        TreeMap<Integer, ArrayList<Integer>> xByZ = new TreeMap<Integer, ArrayList<Integer>>();
+        for (Long cell : owned) {
+            if (cell == null) {
+                continue;
+            }
+            int x = ClaimStore.xOfCellKey(cell.longValue());
+            int z = ClaimStore.zOfCellKey(cell.longValue());
+            xByZ.computeIfAbsent(z, k -> new ArrayList<Integer>()).add(x);
+        }
+        StringBuilder sb = new StringBuilder();
+        int rowCount = 0;
+        for (Map.Entry<Integer, ArrayList<Integer>> entry : xByZ.entrySet()) {
+            ArrayList<Integer> xs = entry.getValue();
+            if (xs == null || xs.isEmpty()) {
+                continue;
+            }
+            Collections.sort(xs);
+            if (rowCount > 0) {
+                sb.append(';');
+            }
+            sb.append(entry.getKey()).append(':');
+            boolean firstRange = true;
+            int startX = xs.get(0);
+            int prevX = startX;
+            for (int i = 1; i < xs.size(); ++i) {
+                int x = xs.get(i);
+                if (x <= prevX + 1) {
+                    if (x > prevX) {
+                        prevX = x;
+                    }
+                    continue;
+                }
+                if (!firstRange) {
+                    sb.append(',');
+                }
+                sb.append(startX).append('|').append(prevX);
+                firstRange = false;
+                startX = x;
+                prevX = x;
+            }
+            if (!firstRange) {
+                sb.append(',');
+            }
+            sb.append(startX).append('|').append(prevX);
+            ++rowCount;
+        }
+        return sb.toString();
     }
 
     private void recomputeMaxChunkRadius() {

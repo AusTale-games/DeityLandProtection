@@ -33,9 +33,10 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
+import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
+import com.hypixel.hytale.builtin.crafting.window.ProcessingBenchWindow;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.packets.interface_.Page;
@@ -44,26 +45,19 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
-import com.hypixel.hytale.server.core.entity.entities.player.windows.ContainerBlockWindow;
 import com.hypixel.hytale.server.core.entity.entities.player.windows.Window;
-import com.hypixel.hytale.server.core.inventory.Inventory;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.filter.FilterActionType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.meta.BlockState;
-import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.Map;
 import java.util.UUID;
 
 public final class DeityLandProtectionOpenUpkeepInteraction
 extends ChoiceInteraction {
-    private static final String ESSENCE_ITEM_ID = "Ingredient_Life_Essence";
     private final DeityLandProtectionPlugin plugin;
     private final int centerX;
     private final int centerZ;
@@ -82,6 +76,7 @@ extends ChoiceInteraction {
         if (claim == null || claim.getCenterY() == Integer.MIN_VALUE) {
             return;
         }
+        String allowedEssenceItemId = this.plugin.getUpkeepEssenceItemIdForClaim(claim);
         int x = claim.getCenterX();
         int y = claim.getCenterY();
         int z = claim.getCenterZ();
@@ -102,9 +97,8 @@ extends ChoiceInteraction {
             return;
         }
         try {
-            BlockType btForWindow;
             ItemContainer c2;
-            ItemContainerState containerState;
+            ProcessingBenchState benchState;
             Vector3i pos = new Vector3i(x, y, z);
             BlockType actualBlockType = null;
             try {
@@ -114,7 +108,7 @@ extends ChoiceInteraction {
                 // empty catch block
             }
             BlockState state = world.getState(x, y, z, true);
-            if (!(state instanceof ItemContainerState)) {
+            if (!(state instanceof ProcessingBenchState)) {
                 try {
                     WorldChunk chunkWorld = world.getChunk(ChunkUtil.indexChunkFromBlock((int)x, (int)z));
                     if (chunkWorld != null) {
@@ -129,46 +123,44 @@ extends ChoiceInteraction {
                 catch (Throwable chunkWorld) {
                     // empty catch block
                 }
-                if (!(state instanceof ItemContainerState)) {
+                if (!(state instanceof ProcessingBenchState)) {
                     pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                     return;
                 }
             }
-            if (!(containerState = (ItemContainerState)state).isAllowViewing() || !containerState.canOpen(ref, store)) {
+            benchState = (ProcessingBenchState)state;
+            if (actualBlockType == null) {
+                actualBlockType = world.getBlockType(pos);
+            }
+            if (actualBlockType == null) {
                 pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             try {
-                c2 = containerState.getItemContainer();
-                if (c2 == null || c2.getCapacity() < 6) {
-                    SimpleItemContainer migrated = new SimpleItemContainer((short)6);
-                    migrated.registerChangeEvent(EventPriority.LAST, arg_0 -> ((ItemContainerState)containerState).onItemChange(arg_0));
-                    if (c2 != null) {
-                        short oldCap = c2.getCapacity();
-                        short slot = 0;
-                        while (slot < oldCap) {
-                            migrated.setItemStackForSlot(slot, c2.getItemStack(slot));
-                            slot = (short)(slot + 1);
-                        }
+                if (actualBlockType.getBench() == null || !actualBlockType.getBench().equals(benchState.getBench())) {
+                    if (!benchState.initialize(actualBlockType)) {
+                        pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                        return;
                     }
-                    containerState.setItemContainer(migrated);
                 }
             }
             catch (Throwable throwable) {
                 // empty catch block
             }
             try {
-                c2 = containerState.getItemContainer();
+                c2 = benchState.getItemContainer();
                 if (c2 != null && c2.getCapacity() > 0) {
                     short cap = c2.getCapacity();
-                    for (short slot = 0; slot < cap; slot = (short)(slot + 1)) {
+                    short inputCapacity = (short)Math.max(0, cap - 1);
+                    short feedSlotCount = (short)Math.min((int)inputCapacity, 2);
+                    for (short slot = 0; slot < feedSlotCount; slot = (short)(slot + 1)) {
                         short targetSlot = slot;
                         c2.setSlotFilter(FilterActionType.ADD, targetSlot, (actionType, container, slotArg, itemStack) -> {
                             if (itemStack == null || itemStack.isEmpty() || !itemStack.isValid()) {
                                 return true;
                             }
                             String id = itemStack.getItemId();
-                            return ESSENCE_ITEM_ID.equals(id);
+                            return allowedEssenceItemId.equals(id) || this.plugin.isUpgradeMaterialItemId(id);
                         });
                     }
                 }
@@ -176,33 +168,15 @@ extends ChoiceInteraction {
             catch (Throwable c3) {
                 // empty catch block
             }
-            WorldChunk chunkWorld = world.getChunk(ChunkUtil.indexChunkFromBlock((int)x, (int)z));
-            int rotationIndex = 0;
-            try {
-                if (chunkWorld != null) {
-                    rotationIndex = chunkWorld.getRotationIndex(x, y, z);
-                }
-            }
-            catch (Throwable combined) {
-                // empty catch block
-            }
-            BlockType blockType = btForWindow = actualBlockType != null ? actualBlockType : world.getBlockType(pos);
-            if (btForWindow == null) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
-                return;
-            }
-            ContainerBlockWindow window = new ContainerBlockWindow(x, y, z, rotationIndex, btForWindow, containerState.getItemContainer());
+            ProcessingBenchWindow window = new ProcessingBenchWindow(benchState);
             UUID uuid = playerRef.getUuid();
-            Map windows = containerState.getWindows();
+            Map windows = benchState.getWindows();
             if (windows.putIfAbsent(uuid, window) == null) {
+                benchState.updateFuelValues();
                 boolean ok = pages.setPageWithWindows(ref, store, Page.Bench, true, new Window[]{window});
                 if (ok) {
                     window.registerCloseEvent(ev -> {
                         windows.remove(uuid, window);
-                        BlockType currentBlockType = world.getBlockType(pos);
-                        if (currentBlockType != null && windows.isEmpty()) {
-                            world.setBlockInteractionState(pos, currentBlockType, "CloseWindow");
-                        }
                         try {
                             pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                         }
@@ -210,10 +184,6 @@ extends ChoiceInteraction {
                             // empty catch block
                         }
                     });
-                    if (windows.size() == 1) {
-                        world.setBlockInteractionState(pos, btForWindow, "OpenWindow");
-                    }
-                    containerState.onOpen(ref, world, store);
                 } else {
                     windows.remove(uuid, window);
                     pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));

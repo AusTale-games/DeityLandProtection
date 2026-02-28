@@ -1,1 +1,23 @@
-{"DeityLandProtectionItemId":"DeityLandProtection_Block","claimRadius":16,"maxClaimsPerPlayer":2,"allowCrafting":true,"upkeepEnabled":true,"upkeepGraceMinutes":10,"upkeepEssenceCostPerHour":1}
+{
+    "DeityLandProtectionItemId": "SlumberingDeity_Block",
+    "OutlanderDeityItemId": "OutlanderDeity_Block",
+    "claimRadius": 16,
+    "maxClaimsPerPlayer": 1,
+    "allowCrafting": true,
+    "mapClaimVisualEnabled": true,
+    "upkeepEnabled": true,
+    "upkeepGraceMinutes": 30,
+    "upkeepEssenceCostPerHour": 1,
+    "slumberingRecipeCobbleCost": 100,
+    "slumberingRecipeEssenceCost": 100,
+    "outlanderRecipeCobbleCost": 100,
+    "outlanderRecipeEssenceCost": 100,
+    "upgradeTier2ItemId": "Ingredient_Bar_Adamantite",
+    "upgradeTier2ItemQuantity": 25,
+    "upgradeTier3ItemId": "Wood_Crystal_Trunk",
+    "upgradeTier3ItemQuantity": 100,
+    "upgradeTier4PrimaryItemId": "Rock_Gem_Ruby",
+    "upgradeTier4PrimaryItemQuantity": 1,
+    "upgradeTier4SecondaryItemId": "Rock_Gem_Sapphire",
+    "upgradeTier4SecondaryItemQuantity": 1
+}

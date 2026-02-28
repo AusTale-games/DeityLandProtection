@@ -492,6 +492,15 @@ public final class DeityLandProtectionText {
     }
 
     @Nonnull
+    public static String uiAdminMapClaimVisual(@Nonnull DeityLandProtectionLangPreferenceManager.Language lang) {
+        return switch (lang) {
+            default -> throw new MatchException(null, null);
+            case DeityLandProtectionLangPreferenceManager.Language.ES -> "Visual de claims en mapa";
+            case DeityLandProtectionLangPreferenceManager.Language.EN -> "Map claim visual";
+        };
+    }
+
+    @Nonnull
     public static String uiAdminUpkeep(@Nonnull DeityLandProtectionLangPreferenceManager.Language lang) {
         return switch (lang) {
             default -> throw new MatchException(null, null);
@@ -531,8 +540,8 @@ public final class DeityLandProtectionText {
     public static String uiAdminUpkeepEssenceCost(@Nonnull DeityLandProtectionLangPreferenceManager.Language lang) {
         return switch (lang) {
             default -> throw new MatchException(null, null);
-            case DeityLandProtectionLangPreferenceManager.Language.ES -> "Esencia por hora";
-            case DeityLandProtectionLangPreferenceManager.Language.EN -> "Essence per hour";
+            case DeityLandProtectionLangPreferenceManager.Language.ES -> "Defecto Esencia por hora";
+            case DeityLandProtectionLangPreferenceManager.Language.EN -> "Default Essence per hour";
         };
     }
 

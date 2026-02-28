@@ -1,0 +1,407 @@
+Compiled from "BenchWindow.java"
+public abstract class com.hypixel.hytale.builtin.crafting.window.BenchWindow extends com.hypixel.hytale.server.core.entity.entities.player.windows.BlockWindow implements com.hypixel.hytale.server.core.entity.entities.player.windows.MaterialContainerWindow {
+  private static final float CRAFTING_UPDATE_MIN_PERCENT;
+
+  private static final long CRAFTING_UPDATE_INTERVAL_MS;
+
+  protected static final java.lang.String BENCH_UPGRADING;
+
+  private float lastUpdatePercent;
+
+  private long lastUpdateTimeMs;
+
+  protected final com.hypixel.hytale.server.core.asset.type.blocktype.config.bench.Bench bench;
+
+  protected final com.hypixel.hytale.builtin.crafting.state.BenchState benchState;
+
+  protected final com.google.gson.JsonObject windowData;
+
+  private final com.hypixel.hytale.server.core.entity.entities.player.windows.MaterialExtraResourcesSection extraResourcesSection;
+
+  public com.hypixel.hytale.builtin.crafting.window.BenchWindow(com.hypixel.hytale.protocol.packets.window.WindowType, com.hypixel.hytale.builtin.crafting.state.BenchState);
+    Code:
+         0: aload_0
+         1: aload_1
+         2: aload_2
+         3: invokevirtual #1                  // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getBlockX:()I
+         6: aload_2
+         7: invokevirtual #7                  // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getBlockY:()I
+        10: aload_2
+        11: invokevirtual #10                 // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getBlockZ:()I
+        14: aload_2
+        15: invokevirtual #13                 // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getRotationIndex:()I
+        18: aload_2
+        19: invokevirtual #16                 // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getBlockType:()Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        22: invokespecial #20                 // Method com/hypixel/hytale/server/core/entity/entities/player/windows/BlockWindow."<init>":(Lcom/hypixel/hytale/protocol/packets/window/WindowType;IIIILcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;)V
+        25: aload_0
+        26: new           #26                 // class com/google/gson/JsonObject
+        29: dup
+        30: invokespecial #28                 // Method com/google/gson/JsonObject."<init>":()V
+        33: putfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+        36: aload_0
+        37: new           #37                 // class com/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection
+        40: dup
+        41: invokespecial #39                 // Method com/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection."<init>":()V
+        44: putfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+        47: aload_0
+        48: aload_0
+        49: getfield      #44                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        52: invokevirtual #48                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getBench:()Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        55: putfield      #54                 // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        58: aload_0
+        59: aload_2
+        60: putfield      #58                 // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+        63: aload_0
+        64: getfield      #44                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        67: invokevirtual #62                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getItem:()Lcom/hypixel/hytale/server/core/asset/type/item/config/Item;
+        70: astore_3
+        71: aload_3
+        72: ifnonnull     95
+        75: new           #66                 // class java/lang/IllegalStateException
+        78: dup
+        79: aload_0
+        80: getfield      #44                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        83: invokevirtual #68                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getId:()Ljava/lang/String;
+        86: invokedynamic #72,  0             // InvokeDynamic #0:makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
+        91: invokespecial #76                 // Method java/lang/IllegalStateException."<init>":(Ljava/lang/String;)V
+        94: athrow
+        95: aload_0
+        96: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+        99: ldc           #79                 // String type
+       101: aload_0
+       102: getfield      #54                 // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+       105: invokevirtual #81                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getType:()Lcom/hypixel/hytale/protocol/BenchType;
+       108: invokevirtual #87                 // Method com/hypixel/hytale/protocol/BenchType.ordinal:()I
+       111: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       114: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       117: aload_0
+       118: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       121: ldc           #102                // String id
+       123: aload_0
+       124: getfield      #54                 // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+       127: invokevirtual #104                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getId:()Ljava/lang/String;
+       130: invokevirtual #105                // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/String;)V
+       133: aload_0
+       134: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       137: ldc           #108                // String name
+       139: aload_3
+       140: invokevirtual #110                // Method com/hypixel/hytale/server/core/asset/type/item/config/Item.getTranslationKey:()Ljava/lang/String;
+       143: invokevirtual #105                // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/String;)V
+       146: aload_0
+       147: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       150: ldc           #115                // String blockItemId
+       152: aload_3
+       153: invokevirtual #117                // Method com/hypixel/hytale/server/core/asset/type/item/config/Item.getId:()Ljava/lang/String;
+       156: invokevirtual #105                // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/String;)V
+       159: aload_0
+       160: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       163: ldc           #118                // String tierLevel
+       165: aload_0
+       166: invokevirtual #120                // Method getBenchTierLevel:()I
+       169: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       172: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       175: return
+
+  public com.google.gson.JsonObject getData();
+    Code:
+         0: aload_0
+         1: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: areturn
+
+  protected boolean onOpen0(com.hypixel.hytale.component.Ref<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.component.Store<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>);
+    Code:
+         0: aload_2
+         1: aload_1
+         2: invokestatic  #123                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+         5: invokevirtual #129                // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+         8: checkcast     #124                // class com/hypixel/hytale/builtin/crafting/component/CraftingManager
+        11: astore_3
+        12: aload_3
+        13: ifnonnull     18
+        16: iconst_0
+        17: ireturn
+        18: aload_3
+        19: aload_0
+        20: getfield      #135                // Field x:I
+        23: aload_0
+        24: getfield      #139                // Field y:I
+        27: aload_0
+        28: getfield      #142                // Field z:I
+        31: aload_0
+        32: getfield      #44                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        35: invokevirtual #145                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.setBench:(IIILcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;)V
+        38: aload_2
+        39: invokevirtual #149                // Method com/hypixel/hytale/component/Store.getExternalData:()Ljava/lang/Object;
+        42: checkcast     #153                // class com/hypixel/hytale/server/core/universe/world/storage/EntityStore
+        45: invokevirtual #155                // Method com/hypixel/hytale/server/core/universe/world/storage/EntityStore.getWorld:()Lcom/hypixel/hytale/server/core/universe/world/World;
+        48: astore        4
+        50: invokestatic  #159                // Method com/hypixel/hytale/builtin/adventure/memories/MemoriesPlugin.get:()Lcom/hypixel/hytale/builtin/adventure/memories/MemoriesPlugin;
+        53: aload         4
+        55: invokevirtual #165                // Method com/hypixel/hytale/server/core/universe/world/World.getGameplayConfig:()Lcom/hypixel/hytale/server/core/asset/type/gameplay/GameplayConfig;
+        58: invokevirtual #171                // Method com/hypixel/hytale/builtin/adventure/memories/MemoriesPlugin.getMemoriesLevel:(Lcom/hypixel/hytale/server/core/asset/type/gameplay/GameplayConfig;)I
+        61: istore        5
+        63: aload_0
+        64: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+        67: ldc           #175                // String worldMemoriesLevel
+        69: iload         5
+        71: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        74: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        77: aload_0
+        78: getfield      #58                 // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+        81: aload_0
+        82: getfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+        85: invokestatic  #177                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.feedExtraResourcesSection:(Lcom/hypixel/hytale/builtin/crafting/state/BenchState;Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;)I
+        88: istore        6
+        90: aload         4
+        92: invokevirtual #165                // Method com/hypixel/hytale/server/core/universe/world/World.getGameplayConfig:()Lcom/hypixel/hytale/server/core/asset/type/gameplay/GameplayConfig;
+        95: invokevirtual #181                // Method com/hypixel/hytale/server/core/asset/type/gameplay/GameplayConfig.getCraftingConfig:()Lcom/hypixel/hytale/server/core/asset/type/gameplay/CraftingConfig;
+        98: astore        7
+       100: aload         7
+       102: invokevirtual #187                // Method com/hypixel/hytale/server/core/asset/type/gameplay/CraftingConfig.getBenchMaterialChestLimit:()I
+       105: istore        8
+       107: aload         7
+       109: invokevirtual #192                // Method com/hypixel/hytale/server/core/asset/type/gameplay/CraftingConfig.getBenchMaterialHorizontalChestSearchRadius:()I
+       112: istore        9
+       114: aload         7
+       116: invokevirtual #195                // Method com/hypixel/hytale/server/core/asset/type/gameplay/CraftingConfig.getBenchMaterialVerticalChestSearchRadius:()I
+       119: istore        10
+       121: aload_0
+       122: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       125: ldc           #198                // String nearbyChestCount
+       127: iload         6
+       129: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       132: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       135: aload_0
+       136: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       139: ldc           #200                // String maxChestCount
+       141: iload         8
+       143: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       146: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       149: aload_0
+       150: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       153: ldc           #202                // String chestHorizontalRadius
+       155: iload         9
+       157: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       160: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       163: aload_0
+       164: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+       167: ldc           #204                // String chestVerticalRadius
+       169: iload         10
+       171: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       174: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       177: iconst_1
+       178: ireturn
+
+  protected int getBenchTierLevel();
+    Code:
+         0: aload_0
+         1: getfield      #58                 // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+         4: ifnull        17
+         7: aload_0
+         8: getfield      #58                 // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+        11: invokevirtual #206                // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getTierLevel:()I
+        14: goto          18
+        17: iconst_1
+        18: ireturn
+
+  public void onClose0(com.hypixel.hytale.component.Ref<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.component.ComponentAccessor<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>);
+    Code:
+         0: aload_2
+         1: invokeinterface #209,  1          // InterfaceMethod com/hypixel/hytale/component/ComponentAccessor.getExternalData:()Ljava/lang/Object;
+         6: checkcast     #153                // class com/hypixel/hytale/server/core/universe/world/storage/EntityStore
+         9: invokevirtual #155                // Method com/hypixel/hytale/server/core/universe/world/storage/EntityStore.getWorld:()Lcom/hypixel/hytale/server/core/universe/world/World;
+        12: astore_3
+        13: aload_0
+        14: aload_0
+        15: getfield      #58                 // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+        18: invokevirtual #212                // Method com/hypixel/hytale/builtin/crafting/state/BenchState.getTierStateName:()Ljava/lang/String;
+        21: aload_3
+        22: invokevirtual #215                // Method setBlockInteractionState:(Ljava/lang/String;Lcom/hypixel/hytale/server/core/universe/world/World;)V
+        25: aload_2
+        26: aload_1
+        27: invokestatic  #123                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+        30: invokeinterface #219,  3          // InterfaceMethod com/hypixel/hytale/component/ComponentAccessor.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+        35: checkcast     #124                // class com/hypixel/hytale/builtin/crafting/component/CraftingManager
+        38: astore        4
+        40: aload         4
+        42: ifnonnull     46
+        45: return
+        46: aload         4
+        48: aload_1
+        49: aload_2
+        50: invokevirtual #220                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.clearBench:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentAccessor;)Z
+        53: ifeq          81
+        56: aload_0
+        57: getfield      #54                 // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        60: invokevirtual #224                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getFailedSoundEventIndex:()I
+        63: ifeq          81
+        66: aload_1
+        67: aload_0
+        68: getfield      #54                 // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        71: invokevirtual #224                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getFailedSoundEventIndex:()I
+        74: getstatic     #227                // Field com/hypixel/hytale/protocol/SoundCategory.UI:Lcom/hypixel/hytale/protocol/SoundCategory;
+        77: aload_2
+        78: invokestatic  #233                // Method com/hypixel/hytale/server/core/universe/world/SoundUtil.playSoundEvent2d:(Lcom/hypixel/hytale/component/Ref;ILcom/hypixel/hytale/protocol/SoundCategory;Lcom/hypixel/hytale/component/ComponentAccessor;)V
+        81: return
+
+  public void setBlockInteractionState(java.lang.String, com.hypixel.hytale.server.core.universe.world.World);
+    Code:
+         0: aload_2
+         1: aload_0
+         2: getfield      #135                // Field x:I
+         5: aload_0
+         6: getfield      #142                // Field z:I
+         9: invokestatic  #239                // Method com/hypixel/hytale/math/util/ChunkUtil.indexChunkFromBlock:(II)J
+        12: invokevirtual #245                // Method com/hypixel/hytale/server/core/universe/world/World.getChunk:(J)Lcom/hypixel/hytale/server/core/universe/world/chunk/WorldChunk;
+        15: astore_3
+        16: aload_3
+        17: ifnonnull     21
+        20: return
+        21: aload_3
+        22: aload_0
+        23: getfield      #135                // Field x:I
+        26: aload_0
+        27: getfield      #139                // Field y:I
+        30: aload_0
+        31: getfield      #142                // Field z:I
+        34: invokevirtual #249                // Method com/hypixel/hytale/server/core/universe/world/chunk/WorldChunk.getBlockType:(III)Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        37: astore        4
+        39: aload         4
+        41: ifnonnull     45
+        44: return
+        45: aload_3
+        46: aload_0
+        47: getfield      #135                // Field x:I
+        50: aload_0
+        51: getfield      #139                // Field y:I
+        54: aload_0
+        55: getfield      #142                // Field z:I
+        58: aload         4
+        60: aload_1
+        61: iconst_1
+        62: invokevirtual #254                // Method com/hypixel/hytale/server/core/universe/world/chunk/WorldChunk.setBlockInteractionState:(IIILcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;Ljava/lang/String;Z)V
+        65: return
+
+  public void updateCraftingJob(float);
+    Code:
+         0: aload_0
+         1: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: ldc_w         #257                // String progress
+         7: fload_1
+         8: invokestatic  #259                // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+        11: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        14: aload_0
+        15: fload_1
+        16: invokevirtual #264                // Method checkProgressInvalidate:(F)V
+        19: return
+
+  public void updateBenchUpgradeJob(float);
+    Code:
+         0: aload_0
+         1: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: ldc_w         #268                // String tierUpgradeProgress
+         7: fload_1
+         8: invokestatic  #259                // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+        11: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        14: aload_0
+        15: fload_1
+        16: invokevirtual #264                // Method checkProgressInvalidate:(F)V
+        19: return
+
+  private void checkProgressInvalidate(float);
+    Code:
+         0: aload_0
+         1: getfield      #270                // Field lastUpdatePercent:F
+         4: fload_1
+         5: fcmpl
+         6: ifeq          77
+         9: invokestatic  #274                // Method java/lang/System.currentTimeMillis:()J
+        12: lstore_2
+        13: fload_1
+        14: fconst_1
+        15: fcmpl
+        16: ifge          63
+        19: fload_1
+        20: aload_0
+        21: getfield      #270                // Field lastUpdatePercent:F
+        24: fcmpg
+        25: iflt          63
+        28: fload_1
+        29: aload_0
+        30: getfield      #270                // Field lastUpdatePercent:F
+        33: fsub
+        34: ldc_w         #280                // float 0.05f
+        37: fcmpl
+        38: ifgt          63
+        41: lload_2
+        42: aload_0
+        43: getfield      #281                // Field lastUpdateTimeMs:J
+        46: lsub
+        47: ldc2_w        #285                // long 500l
+        50: lcmp
+        51: ifgt          63
+        54: aload_0
+        55: getfield      #281                // Field lastUpdateTimeMs:J
+        58: lconst_0
+        59: lcmp
+        60: ifne          77
+        63: aload_0
+        64: fload_1
+        65: putfield      #270                // Field lastUpdatePercent:F
+        68: aload_0
+        69: lload_2
+        70: putfield      #281                // Field lastUpdateTimeMs:J
+        73: aload_0
+        74: invokevirtual #287                // Method invalidate:()V
+        77: return
+
+  public void updateBenchTierLevel(int);
+    Code:
+         0: aload_0
+         1: getfield      #31                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: ldc           #118                // String tierLevel
+         6: iload_1
+         7: invokestatic  #92                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        10: invokevirtual #98                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        13: aload_0
+        14: fconst_0
+        15: invokevirtual #290                // Method updateBenchUpgradeJob:(F)V
+        18: aload_0
+        19: invokevirtual #293                // Method setNeedRebuild:()V
+        22: aload_0
+        23: invokevirtual #287                // Method invalidate:()V
+        26: return
+
+  public com.hypixel.hytale.server.core.entity.entities.player.windows.MaterialExtraResourcesSection getExtraResourcesSection();
+    Code:
+         0: aload_0
+         1: getfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+         4: invokevirtual #296                // Method com/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection.isValid:()Z
+         7: ifne          22
+        10: aload_0
+        11: getfield      #58                 // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+        14: aload_0
+        15: getfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+        18: invokestatic  #177                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.feedExtraResourcesSection:(Lcom/hypixel/hytale/builtin/crafting/state/BenchState;Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;)I
+        21: pop
+        22: aload_0
+        23: getfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+        26: areturn
+
+  public void invalidateExtraResources();
+    Code:
+         0: aload_0
+         1: getfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+         4: iconst_0
+         5: invokevirtual #300                // Method com/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection.setValid:(Z)V
+         8: aload_0
+         9: invokevirtual #287                // Method invalidate:()V
+        12: return
+
+  public boolean isValid();
+    Code:
+         0: aload_0
+         1: getfield      #40                 // Field extraResourcesSection:Lcom/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection;
+         4: invokevirtual #296                // Method com/hypixel/hytale/server/core/entity/entities/player/windows/MaterialExtraResourcesSection.isValid:()Z
+         7: ireturn
+}

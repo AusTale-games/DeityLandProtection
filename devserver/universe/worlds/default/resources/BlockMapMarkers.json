@@ -1,3 +1,24 @@
 {
-  "Markers": {}
+  "Markers": {
+    "2017612689567647423": {
+      "Position": {
+        "X": 1727,
+        "Y": 112,
+        "Z": 421
+      },
+      "Name": "server.items.Forgotten_Temple_Portal_Enter.name",
+      "Icon": "Temple_Gateway.png",
+      "MarkerId": "8891a7db-a800-4e4b-a25e-1df688918bbf"
+    },
+    "2161728104739899498": {
+      "Position": {
+        "X": 2154,
+        "Y": 120,
+        "Z": 2113
+      },
+      "Name": "server.items.Forgotten_Temple_Portal_Enter.name",
+      "Icon": "Temple_Gateway.png",
+      "MarkerId": "43be6645-0faa-4545-99bc-3876f858f020"
+    }
+  }
 }

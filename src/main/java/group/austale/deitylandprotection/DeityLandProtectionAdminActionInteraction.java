@@ -58,16 +58,26 @@ extends ChoiceInteraction {
             this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.noPermission(lang));
             return;
         }
-        switch (this.action.ordinal()) {
-            case 0: {
+        String worldName = null;
+        try {
+            EntityStore entityStore = (EntityStore)store.getExternalData();
+            if (entityStore != null && entityStore.getWorld() != null) {
+                worldName = entityStore.getWorld().getName();
+            }
+        }
+        catch (Exception ignored) {
+            // empty catch block
+        }
+        switch (this.action) {
+            case TOGGLE_CRAFTING: {
                 this.plugin.setAllowCrafting(!this.plugin.isAllowCrafting());
                 break;
             }
-            case 1: {
+            case RELOAD: {
                 this.plugin.reloadData();
                 break;
             }
-            case 2: {
+            case CYCLE_RADIUS: {
                 int current = this.plugin.getClaimRadius();
                 int next = switch (current) {
                     case 16 -> 32;
@@ -78,7 +88,7 @@ extends ChoiceInteraction {
                 this.plugin.setClaimRadius(next);
                 break;
             }
-            case 3: {
+            case CYCLE_MAXCLAIMS: {
                 int current = this.plugin.getMaxClaimsPerPlayer();
                 int next = current + 1;
                 if (next > 5) {
@@ -87,19 +97,26 @@ extends ChoiceInteraction {
                 this.plugin.setMaxClaimsPerPlayer(next);
                 break;
             }
-            case 4: {
+            case TOGGLE_MAP_CLAIM_VISUAL: {
+                this.plugin.setMapClaimVisualEnabled(!this.plugin.isMapClaimVisualEnabled());
+                if (worldName != null && !worldName.isEmpty()) {
+                    this.plugin.queueMapUpdateForAllClaims(worldName);
+                }
+                break;
+            }
+            case TOGGLE_UPKEEP: {
                 this.plugin.setUpkeepEnabled(!this.plugin.isUpkeepEnabled());
                 break;
             }
-            case 5: {
+            case ADJUST_UPKEEP_GRACE: {
                 this.plugin.setUpkeepGraceMinutes(this.plugin.getUpkeepGraceMinutes() + this.delta);
                 break;
             }
-            case 6: {
+            case CYCLE_UPKEEP_ESSENCE_COST: {
                 this.plugin.cycleUpkeepEssenceCostPerHour();
                 break;
             }
-            case 7: {
+            case REMOVE_CLAIM_HERE: {
                 Transform transform;
                 try {
                     transform = playerRef.getTransform();
@@ -120,11 +137,8 @@ extends ChoiceInteraction {
                     this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.uiAdminRemoveClaimNone(lang));
                     break;
                 }
-                try {
-                    this.plugin.queueMapUpdateForClaim(((EntityStore)store.getExternalData()).getWorld().getName(), claim);
-                }
-                catch (Exception ignored) {
-                    // empty catch block
+                if (worldName != null && !worldName.isEmpty()) {
+                    this.plugin.queueMapUpdateForClaim(worldName, claim);
                 }
                 if (claims != null) {
                     claims.removeClaimAt(claim.getCenterX(), claim.getCenterZ());
@@ -155,6 +169,7 @@ extends ChoiceInteraction {
         RELOAD,
         CYCLE_RADIUS,
         CYCLE_MAXCLAIMS,
+        TOGGLE_MAP_CLAIM_VISUAL,
         TOGGLE_UPKEEP,
         ADJUST_UPKEEP_GRACE,
         CYCLE_UPKEEP_ESSENCE_COST,

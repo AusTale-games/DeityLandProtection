@@ -1,6 +1,9 @@
 {
   "users": {
     "dddcf8e7-f6d1-4382-8696-2e00659faf4c": {
+      "permissions": [
+        "hytale.world_map.teleport.marker"
+      ],
       "groups": [
         "OP",
         "Adventure",

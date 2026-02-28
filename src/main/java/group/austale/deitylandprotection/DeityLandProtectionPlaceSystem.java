@@ -29,7 +29,6 @@ import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -40,25 +39,6 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
     public DeityLandProtectionPlaceSystem(DeityLandProtectionPlugin plugin) {
         super(PlaceBlockEvent.class);
         this.plugin = plugin;
-    }
-
-    private boolean isDeityLandProtectionItem(String itemId) {
-        String confLower;
-        if (itemId == null) {
-            return false;
-        }
-        String configured = this.plugin.getDeityLandProtectionItemId();
-        if (configured == null || configured.isEmpty()) {
-            return false;
-        }
-        String itemLower = itemId.toLowerCase(Locale.ROOT);
-        if (itemLower.equals(confLower = configured.toLowerCase(Locale.ROOT))) {
-            return true;
-        }
-        if (itemLower.endsWith(":" + confLower)) {
-            return true;
-        }
-        return itemLower.contains(confLower);
     }
 
     public Query<EntityStore> getQuery() {
@@ -78,7 +58,7 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
         int z = event.getTargetBlock().z;
         ClaimStore claims = this.plugin.getClaimStore();
         ItemStack inHand = event.getItemInHand();
-        if (inHand != null && this.isDeityLandProtectionItem(inHand.getItemId())) {
+        if (inHand != null && this.plugin.isClaimItemId(inHand.getItemId())) {
             if (!bypass) {
                 int owned = claims.countClaimsForOwner(uuid);
                 if (owned >= this.plugin.getMaxClaimsPerPlayer()) {
@@ -105,7 +85,7 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
             catch (Exception existing) {
                 // empty catch block
             }
-            Claim newClaim = new Claim(uuid, ownerName, x, y, z, this.plugin.getClaimRadius());
+            Claim newClaim = new Claim(uuid, ownerName, x, y, z, this.plugin.getClaimRadius(), inHand.getItemId());
             boolean added = claims.addClaim(newClaim);
             if (added) {
                 DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();

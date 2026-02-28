@@ -14,6 +14,7 @@ public final class Claim {
     public static final int PERM_USE = 4;
     public static final int PERM_ALL = 7;
     public static final int UNKNOWN_Y = Integer.MIN_VALUE;
+    private static final String DEFAULT_DEITY_ITEM_ID = "SlumberingDeity_Block";
     private final UUID owner;
     private final String ownerName;
     private final int centerX;
@@ -21,6 +22,7 @@ public final class Claim {
     private final int centerZ;
     private final int radius;
     private final boolean pvpEnabled;
+    private final String deityItemId;
     private final Map<UUID, Integer> trusted = new HashMap<UUID, Integer>();
 
     public Claim(UUID owner, int centerX, int centerZ, int radius) {
@@ -31,6 +33,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
     }
 
     public Claim(UUID owner, int centerX, int centerY, int centerZ, int radius) {
@@ -41,6 +44,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
     }
 
     public Claim(UUID owner, String ownerName, int centerX, int centerZ, int radius) {
@@ -51,6 +55,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
     }
 
     public Claim(UUID owner, String ownerName, int centerX, int centerY, int centerZ, int radius) {
@@ -61,6 +66,18 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
+    }
+
+    public Claim(UUID owner, String ownerName, int centerX, int centerY, int centerZ, int radius, String deityItemId) {
+        this.owner = owner;
+        this.ownerName = ownerName;
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.centerZ = centerZ;
+        this.radius = radius;
+        this.pvpEnabled = false;
+        this.deityItemId = Claim.sanitizeDeityItemId(deityItemId);
     }
 
     public Claim(UUID owner, int centerX, int centerZ, int radius, Map<UUID, Integer> trusted) {
@@ -71,6 +88,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
         if (trusted != null && !trusted.isEmpty()) {
             this.trusted.putAll(trusted);
         }
@@ -84,6 +102,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
         if (trusted != null && !trusted.isEmpty()) {
             this.trusted.putAll(trusted);
         }
@@ -97,6 +116,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
         if (trusted != null && !trusted.isEmpty()) {
             this.trusted.putAll(trusted);
         }
@@ -110,6 +130,7 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = false;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
         if (trusted != null && !trusted.isEmpty()) {
             this.trusted.putAll(trusted);
         }
@@ -123,9 +144,38 @@ public final class Claim {
         this.centerZ = centerZ;
         this.radius = radius;
         this.pvpEnabled = pvpEnabled;
+        this.deityItemId = DEFAULT_DEITY_ITEM_ID;
         if (trusted != null && !trusted.isEmpty()) {
             this.trusted.putAll(trusted);
         }
+    }
+
+    public Claim(UUID owner, String ownerName, int centerX, int centerY, int centerZ, int radius, Map<UUID, Integer> trusted, boolean pvpEnabled, String deityItemId) {
+        this.owner = owner;
+        this.ownerName = ownerName;
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.centerZ = centerZ;
+        this.radius = radius;
+        this.pvpEnabled = pvpEnabled;
+        this.deityItemId = Claim.sanitizeDeityItemId(deityItemId);
+        if (trusted != null && !trusted.isEmpty()) {
+            this.trusted.putAll(trusted);
+        }
+    }
+
+    private static String sanitizeDeityItemId(String deityItemId) {
+        if (deityItemId == null) {
+            return DEFAULT_DEITY_ITEM_ID;
+        }
+        String trimmed = deityItemId.trim();
+        if (trimmed.isEmpty()) {
+            return DEFAULT_DEITY_ITEM_ID;
+        }
+        if (trimmed.equalsIgnoreCase("DeityLandProtection_Block")) {
+            return DEFAULT_DEITY_ITEM_ID;
+        }
+        return trimmed;
     }
 
     public UUID getOwner() {
@@ -150,6 +200,10 @@ public final class Claim {
 
     public int getRadius() {
         return this.radius;
+    }
+
+    public String getDeityItemId() {
+        return this.deityItemId;
     }
 
     public boolean isPvpEnabled() {

@@ -1,0 +1,700 @@
+Compiled from "ProcessingBenchWindow.java"
+public class com.hypixel.hytale.builtin.crafting.window.ProcessingBenchWindow extends com.hypixel.hytale.builtin.crafting.window.BenchWindow implements com.hypixel.hytale.server.core.entity.entities.player.windows.ItemContainerWindow {
+  private com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer itemContainer;
+
+  private com.hypixel.hytale.event.EventRegistration<?, ?> inventoryRegistration;
+
+  private float fuelTime;
+
+  private int maxFuel;
+
+  private float progress;
+
+  private boolean active;
+
+  private final java.util.Set<java.lang.Short> processingSlots;
+
+  private final java.util.Set<java.lang.Short> processingFuelSlots;
+
+  static final boolean $assertionsDisabled;
+
+  public com.hypixel.hytale.builtin.crafting.window.ProcessingBenchWindow(com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState);
+    Code:
+         0: aload_0
+         1: getstatic     #1                  // Field com/hypixel/hytale/protocol/packets/window/WindowType.Processing:Lcom/hypixel/hytale/protocol/packets/window/WindowType;
+         4: aload_1
+         5: invokespecial #7                  // Method com/hypixel/hytale/builtin/crafting/window/BenchWindow."<init>":(Lcom/hypixel/hytale/protocol/packets/window/WindowType;Lcom/hypixel/hytale/builtin/crafting/state/BenchState;)V
+         8: aload_0
+         9: new           #13                 // class java/util/HashSet
+        12: dup
+        13: invokespecial #15                 // Method java/util/HashSet."<init>":()V
+        16: putfield      #18                 // Field processingSlots:Ljava/util/Set;
+        19: aload_0
+        20: new           #13                 // class java/util/HashSet
+        23: dup
+        24: invokespecial #15                 // Method java/util/HashSet."<init>":()V
+        27: putfield      #24                 // Field processingFuelSlots:Ljava/util/Set;
+        30: aload_0
+        31: getfield      #27                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        34: invokevirtual #31                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getBench:()Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        37: checkcast     #37                 // class com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench
+        40: astore_2
+        41: aload_1
+        42: invokevirtual #39                 // Method com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState.getRecipe:()Lcom/hypixel/hytale/server/core/asset/type/item/config/CraftingRecipe;
+        45: astore_3
+        46: aload_1
+        47: invokevirtual #45                 // Method com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState.getInputProgress:()F
+        50: fstore        4
+        52: aload_3
+        53: ifnull        75
+        56: aload_3
+        57: invokevirtual #49                 // Method com/hypixel/hytale/server/core/asset/type/item/config/CraftingRecipe.getTimeSeconds:()F
+        60: fconst_0
+        61: fcmpl
+        62: ifle          75
+        65: fload         4
+        67: aload_3
+        68: invokevirtual #49                 // Method com/hypixel/hytale/server/core/asset/type/item/config/CraftingRecipe.getTimeSeconds:()F
+        71: fdiv
+        72: goto          76
+        75: fconst_0
+        76: fstore        5
+        78: aload_0
+        79: aload_1
+        80: invokevirtual #54                 // Method com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState.getItemContainer:()Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        83: putfield      #58                 // Field itemContainer:Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        86: aload_0
+        87: aload_1
+        88: invokevirtual #62                 // Method com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState.isActive:()Z
+        91: putfield      #66                 // Field active:Z
+        94: aload_0
+        95: fload         5
+        97: putfield      #70                 // Field progress:F
+       100: aload_0
+       101: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       104: ldc           #78                 // String active
+       106: aload_0
+       107: getfield      #66                 // Field active:Z
+       110: invokestatic  #79                 // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+       113: invokevirtual #85                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Boolean;)V
+       116: aload_0
+       117: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       120: ldc           #91                 // String progress
+       122: fload         5
+       124: invokestatic  #92                 // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+       127: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       130: aload_2
+       131: invokevirtual #100                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getFuel:()[Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot;
+       134: ifnull        239
+       137: aload_2
+       138: invokevirtual #100                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getFuel:()[Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot;
+       141: arraylength
+       142: ifle          239
+       145: new           #104                // class com/google/gson/JsonArray
+       148: dup
+       149: invokespecial #106                // Method com/google/gson/JsonArray."<init>":()V
+       152: astore        6
+       154: aload_2
+       155: invokevirtual #100                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getFuel:()[Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot;
+       158: astore        7
+       160: aload         7
+       162: arraylength
+       163: istore        8
+       165: iconst_0
+       166: istore        9
+       168: iload         9
+       170: iload         8
+       172: if_icmpge     228
+       175: aload         7
+       177: iload         9
+       179: aaload
+       180: astore        10
+       182: new           #86                 // class com/google/gson/JsonObject
+       185: dup
+       186: invokespecial #107                // Method com/google/gson/JsonObject."<init>":()V
+       189: astore        11
+       191: aload         11
+       193: ldc           #108                // String icon
+       195: aload         10
+       197: invokevirtual #110                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot.getIcon:()Ljava/lang/String;
+       200: invokevirtual #116                // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/String;)V
+       203: aload         11
+       205: ldc           #119                // String resourceTypeId
+       207: aload         10
+       209: invokevirtual #121                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot.getResourceTypeId:()Ljava/lang/String;
+       212: invokevirtual #116                // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/String;)V
+       215: aload         6
+       217: aload         11
+       219: invokevirtual #124                // Method com/google/gson/JsonArray.add:(Lcom/google/gson/JsonElement;)V
+       222: iinc          9, 1
+       225: goto          168
+       228: aload_0
+       229: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       232: ldc           #128                // String fuel
+       234: aload         6
+       236: invokevirtual #130                // Method com/google/gson/JsonObject.add:(Ljava/lang/String;Lcom/google/gson/JsonElement;)V
+       239: aload_2
+       240: invokevirtual #133                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getMaxFuel:()I
+       243: ifle          254
+       246: aload_0
+       247: aload_2
+       248: invokevirtual #133                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getMaxFuel:()I
+       251: putfield      #137                // Field maxFuel:I
+       254: aload_0
+       255: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       258: ldc           #141                // String maxFuel
+       260: aload_0
+       261: getfield      #137                // Field maxFuel:I
+       264: invokestatic  #142                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       267: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       270: aload_0
+       271: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       274: ldc           #147                // String fuelTime
+       276: aload_0
+       277: getfield      #149                // Field fuelTime:F
+       280: invokestatic  #92                 // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+       283: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       286: aload_0
+       287: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       290: ldc           #91                 // String progress
+       292: fload         5
+       294: invokestatic  #92                 // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+       297: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       300: aload_0
+       301: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       304: ldc           #151                // String processingFuelSlots
+       306: iconst_0
+       307: invokestatic  #142                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       310: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       313: aload_0
+       314: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       317: ldc           #152                // String processingSlots
+       319: iconst_0
+       320: invokestatic  #142                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       323: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+       326: aload_0
+       327: invokevirtual #153                // Method getBenchTierLevel:()I
+       330: istore        6
+       332: aload_0
+       333: iload         6
+       335: invokevirtual #156                // Method updateInputSlots:(I)V
+       338: aload_0
+       339: iload         6
+       341: invokevirtual #160                // Method updateOutputSlots:(I)V
+       344: return
+
+  public com.google.gson.JsonObject getData();
+    Code:
+         0: aload_0
+         1: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: areturn
+
+  public com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer getItemContainer();
+    Code:
+         0: aload_0
+         1: getfield      #58                 // Field itemContainer:Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+         4: areturn
+
+  public void setActive(boolean);
+    Code:
+         0: aload_0
+         1: getfield      #66                 // Field active:Z
+         4: iload_1
+         5: if_icmpeq     30
+         8: aload_0
+         9: iload_1
+        10: putfield      #66                 // Field active:Z
+        13: aload_0
+        14: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+        17: ldc           #78                 // String active
+        19: iload_1
+        20: invokestatic  #79                 // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+        23: invokevirtual #85                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Boolean;)V
+        26: aload_0
+        27: invokevirtual #163                // Method invalidate:()V
+        30: return
+
+  public void setFuelTime(float);
+    Code:
+         0: fload_1
+         1: invokestatic  #166                // Method java/lang/Float.isInfinite:(F)Z
+         4: ifeq          17
+         7: new           #170                // class java/lang/IllegalArgumentException
+        10: dup
+        11: ldc           #172                // String Infinite fuelTime
+        13: invokespecial #174                // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+        16: athrow
+        17: fload_1
+        18: invokestatic  #177                // Method java/lang/Float.isNaN:(F)Z
+        21: ifeq          34
+        24: new           #170                // class java/lang/IllegalArgumentException
+        27: dup
+        28: ldc           #180                // String Nan fuelTime
+        30: invokespecial #174                // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+        33: athrow
+        34: aload_0
+        35: getfield      #149                // Field fuelTime:F
+        38: fload_1
+        39: fcmpl
+        40: ifeq          65
+        43: aload_0
+        44: fload_1
+        45: putfield      #149                // Field fuelTime:F
+        48: aload_0
+        49: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+        52: ldc           #147                // String fuelTime
+        54: fload_1
+        55: invokestatic  #92                 // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+        58: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        61: aload_0
+        62: invokevirtual #163                // Method invalidate:()V
+        65: return
+
+  public void setMaxFuel(int);
+    Code:
+         0: aload_0
+         1: iload_1
+         2: putfield      #137                // Field maxFuel:I
+         5: aload_0
+         6: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+         9: ldc           #141                // String maxFuel
+        11: iload_1
+        12: invokestatic  #142                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        15: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        18: aload_0
+        19: invokevirtual #163                // Method invalidate:()V
+        22: return
+
+  public void setProgress(float);
+    Code:
+         0: fload_1
+         1: invokestatic  #166                // Method java/lang/Float.isInfinite:(F)Z
+         4: ifeq          17
+         7: new           #170                // class java/lang/IllegalArgumentException
+        10: dup
+        11: ldc           #182                // String Infinite progress
+        13: invokespecial #174                // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+        16: athrow
+        17: fload_1
+        18: invokestatic  #177                // Method java/lang/Float.isNaN:(F)Z
+        21: ifeq          34
+        24: new           #170                // class java/lang/IllegalArgumentException
+        27: dup
+        28: ldc           #180                // String Nan fuelTime
+        30: invokespecial #174                // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+        33: athrow
+        34: aload_0
+        35: getfield      #70                 // Field progress:F
+        38: fload_1
+        39: fcmpl
+        40: ifeq          65
+        43: aload_0
+        44: fload_1
+        45: putfield      #70                 // Field progress:F
+        48: aload_0
+        49: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+        52: ldc           #91                 // String progress
+        54: fload_1
+        55: invokestatic  #92                 // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+        58: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        61: aload_0
+        62: invokevirtual #163                // Method invalidate:()V
+        65: return
+
+  public void setProcessingSlots(java.util.Set<java.lang.Short>);
+    Code:
+         0: aload_0
+         1: getfield      #18                 // Field processingSlots:Ljava/util/Set;
+         4: aload_1
+         5: invokeinterface #184,  2          // InterfaceMethod java/util/Set.equals:(Ljava/lang/Object;)Z
+        10: ifeq          14
+        13: return
+        14: aload_0
+        15: getfield      #18                 // Field processingSlots:Ljava/util/Set;
+        18: invokeinterface #190,  1          // InterfaceMethod java/util/Set.clear:()V
+        23: aload_0
+        24: getfield      #18                 // Field processingSlots:Ljava/util/Set;
+        27: aload_1
+        28: invokeinterface #193,  2          // InterfaceMethod java/util/Set.addAll:(Ljava/util/Collection;)Z
+        33: pop
+        34: iconst_0
+        35: istore_2
+        36: aload_1
+        37: invokeinterface #197,  1          // InterfaceMethod java/util/Set.iterator:()Ljava/util/Iterator;
+        42: astore_3
+        43: aload_3
+        44: invokeinterface #201,  1          // InterfaceMethod java/util/Iterator.hasNext:()Z
+        49: ifeq          76
+        52: aload_3
+        53: invokeinterface #206,  1          // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+        58: checkcast     #210                // class java/lang/Short
+        61: astore        4
+        63: iload_2
+        64: iconst_1
+        65: aload         4
+        67: invokevirtual #212                // Method java/lang/Short.intValue:()I
+        70: ishl
+        71: ior
+        72: istore_2
+        73: goto          43
+        76: aload_0
+        77: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+        80: ldc           #152                // String processingSlots
+        82: iload_2
+        83: i2b
+        84: invokestatic  #215                // Method java/lang/Byte.valueOf:(B)Ljava/lang/Byte;
+        87: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        90: aload_0
+        91: invokevirtual #163                // Method invalidate:()V
+        94: return
+
+  public void setProcessingFuelSlots(java.util.Set<java.lang.Short>);
+    Code:
+         0: aload_0
+         1: getfield      #24                 // Field processingFuelSlots:Ljava/util/Set;
+         4: aload_1
+         5: invokeinterface #184,  2          // InterfaceMethod java/util/Set.equals:(Ljava/lang/Object;)Z
+        10: ifeq          14
+        13: return
+        14: aload_0
+        15: getfield      #24                 // Field processingFuelSlots:Ljava/util/Set;
+        18: invokeinterface #190,  1          // InterfaceMethod java/util/Set.clear:()V
+        23: aload_0
+        24: getfield      #24                 // Field processingFuelSlots:Ljava/util/Set;
+        27: aload_1
+        28: invokeinterface #193,  2          // InterfaceMethod java/util/Set.addAll:(Ljava/util/Collection;)Z
+        33: pop
+        34: iconst_0
+        35: istore_2
+        36: aload_1
+        37: invokeinterface #197,  1          // InterfaceMethod java/util/Set.iterator:()Ljava/util/Iterator;
+        42: astore_3
+        43: aload_3
+        44: invokeinterface #201,  1          // InterfaceMethod java/util/Iterator.hasNext:()Z
+        49: ifeq          76
+        52: aload_3
+        53: invokeinterface #206,  1          // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+        58: checkcast     #210                // class java/lang/Short
+        61: astore        4
+        63: iload_2
+        64: iconst_1
+        65: aload         4
+        67: invokevirtual #212                // Method java/lang/Short.intValue:()I
+        70: ishl
+        71: ior
+        72: istore_2
+        73: goto          43
+        76: aload_0
+        77: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+        80: ldc           #151                // String processingFuelSlots
+        82: iload_2
+        83: i2b
+        84: invokestatic  #215                // Method java/lang/Byte.valueOf:(B)Ljava/lang/Byte;
+        87: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        90: aload_0
+        91: invokevirtual #163                // Method invalidate:()V
+        94: return
+
+  public void handleAction(com.hypixel.hytale.component.Ref<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.component.Store<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.protocol.packets.window.WindowAction);
+    Code:
+         0: aload_2
+         1: invokevirtual #220                // Method com/hypixel/hytale/component/Store.getExternalData:()Ljava/lang/Object;
+         4: checkcast     #225                // class com/hypixel/hytale/server/core/universe/world/storage/EntityStore
+         7: invokevirtual #227                // Method com/hypixel/hytale/server/core/universe/world/storage/EntityStore.getWorld:()Lcom/hypixel/hytale/server/core/universe/world/World;
+        10: astore        4
+        12: aload         4
+        14: aload_0
+        15: getfield      #231                // Field x:I
+        18: aload_0
+        19: getfield      #234                // Field z:I
+        22: invokestatic  #237                // Method com/hypixel/hytale/math/util/ChunkUtil.indexChunkFromBlock:(II)J
+        25: invokevirtual #243                // Method com/hypixel/hytale/server/core/universe/world/World.getChunk:(J)Lcom/hypixel/hytale/server/core/universe/world/chunk/WorldChunk;
+        28: aload_0
+        29: getfield      #231                // Field x:I
+        32: aload_0
+        33: getfield      #249                // Field y:I
+        36: aload_0
+        37: getfield      #234                // Field z:I
+        40: invokevirtual #252                // Method com/hypixel/hytale/server/core/universe/world/chunk/WorldChunk.getState:(III)Lcom/hypixel/hytale/server/core/universe/world/meta/BlockState;
+        43: astore        5
+        45: aload         5
+        47: instanceof    #40                 // class com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState
+        50: ifeq          63
+        53: aload         5
+        55: checkcast     #40                 // class com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState
+        58: astore        6
+        60: goto          64
+        63: return
+        64: aload_3
+        65: dup
+        66: invokestatic  #258                // Method java/util/Objects.requireNonNull:(Ljava/lang/Object;)Ljava/lang/Object;
+        69: pop
+        70: astore        7
+        72: iconst_0
+        73: istore        8
+        75: aload         7
+        77: iload         8
+        79: invokedynamic #264,  0            // InvokeDynamic #0:typeSwitch:(Ljava/lang/Object;I)I
+        84: lookupswitch  { // 2
+
+                       0: 112
+
+                       1: 139
+                 default: 230
+            }
+       112: aload         7
+       114: checkcast     #268                // class com/hypixel/hytale/protocol/packets/window/SetActiveAction
+       117: astore        9
+       119: aload         6
+       121: aload         9
+       123: getfield      #270                // Field com/hypixel/hytale/protocol/packets/window/SetActiveAction.state:Z
+       126: invokevirtual #273                // Method com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState.setActive:(Z)Z
+       129: ifne          230
+       132: aload_0
+       133: invokevirtual #163                // Method invalidate:()V
+       136: goto          230
+       139: aload         7
+       141: checkcast     #277                // class com/hypixel/hytale/protocol/packets/window/TierUpgradeAction
+       144: astore        10
+       146: aload_2
+       147: aload_1
+       148: invokestatic  #279                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+       151: invokevirtual #285                // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+       154: checkcast     #280                // class com/hypixel/hytale/builtin/crafting/component/CraftingManager
+       157: astore        11
+       159: aload         11
+       161: ifnonnull     165
+       164: return
+       165: aload         11
+       167: aload_1
+       168: aload_2
+       169: aload_0
+       170: invokevirtual #289                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.startTierUpgrade:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentAccessor;Lcom/hypixel/hytale/builtin/crafting/window/BenchWindow;)Z
+       173: ifeq          227
+       176: aload_0
+       177: getfield      #293                // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+       180: invokevirtual #297                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getBenchUpgradeSoundEventIndex:()I
+       183: ifeq          227
+       186: aload_0
+       187: getfield      #293                // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+       190: invokevirtual #297                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getBenchUpgradeSoundEventIndex:()I
+       193: getstatic     #302                // Field com/hypixel/hytale/protocol/SoundCategory.SFX:Lcom/hypixel/hytale/protocol/SoundCategory;
+       196: aload_0
+       197: getfield      #231                // Field x:I
+       200: i2d
+       201: ldc2_w        #308                // double 0.5d
+       204: dadd
+       205: aload_0
+       206: getfield      #249                // Field y:I
+       209: i2d
+       210: ldc2_w        #308                // double 0.5d
+       213: dadd
+       214: aload_0
+       215: getfield      #234                // Field z:I
+       218: i2d
+       219: ldc2_w        #308                // double 0.5d
+       222: dadd
+       223: aload_2
+       224: invokestatic  #310                // Method com/hypixel/hytale/server/core/universe/world/SoundUtil.playSoundEvent3d:(ILcom/hypixel/hytale/protocol/SoundCategory;DDDLcom/hypixel/hytale/component/ComponentAccessor;)V
+       227: goto          230
+       230: return
+
+  protected boolean onOpen0(com.hypixel.hytale.component.Ref<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.component.Store<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>);
+    Code:
+         0: aload_0
+         1: aload_1
+         2: aload_2
+         3: invokespecial #316                // Method com/hypixel/hytale/builtin/crafting/window/BenchWindow.onOpen0:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/Store;)Z
+         6: pop
+         7: aload_2
+         8: aload_1
+         9: invokestatic  #320                // Method com/hypixel/hytale/server/core/entity/entities/Player.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+        12: invokevirtual #285                // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+        15: checkcast     #321                // class com/hypixel/hytale/server/core/entity/entities/Player
+        18: astore_3
+        19: getstatic     #323                // Field $assertionsDisabled:Z
+        22: ifne          37
+        25: aload_3
+        26: ifnonnull     37
+        29: new           #326                // class java/lang/AssertionError
+        32: dup
+        33: invokespecial #328                // Method java/lang/AssertionError."<init>":()V
+        36: athrow
+        37: aload_3
+        38: invokevirtual #329                // Method com/hypixel/hytale/server/core/entity/entities/Player.getInventory:()Lcom/hypixel/hytale/server/core/inventory/Inventory;
+        41: astore        4
+        43: aload_0
+        44: aload         4
+        46: invokevirtual #333                // Method com/hypixel/hytale/server/core/inventory/Inventory.getCombinedHotbarFirst:()Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        49: aload_0
+        50: aload         4
+        52: invokedynamic #338,  0            // InvokeDynamic #1:accept:(Lcom/hypixel/hytale/builtin/crafting/window/ProcessingBenchWindow;Lcom/hypixel/hytale/server/core/inventory/Inventory;)Ljava/util/function/Consumer;
+        57: invokevirtual #342                // Method com/hypixel/hytale/server/core/inventory/container/CombinedItemContainer.registerChangeEvent:(Ljava/util/function/Consumer;)Lcom/hypixel/hytale/event/EventRegistration;
+        60: putfield      #348                // Field inventoryRegistration:Lcom/hypixel/hytale/event/EventRegistration;
+        63: aload_0
+        64: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+        67: ldc_w         #352                // String inventoryHints
+        70: aload_0
+        71: getfield      #293                // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        74: aload         4
+        76: invokevirtual #333                // Method com/hypixel/hytale/server/core/inventory/Inventory.getCombinedHotbarFirst:()Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        79: invokestatic  #354                // Method generateInventoryHints:(Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;)Lcom/google/gson/JsonArray;
+        82: invokevirtual #130                // Method com/google/gson/JsonObject.add:(Ljava/lang/String;Lcom/google/gson/JsonElement;)V
+        85: iconst_1
+        86: ireturn
+
+  private void updateOutputSlots(int);
+    Code:
+         0: aload_0
+         1: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: ldc_w         #358                // String outputSlotsCount
+         7: aload_0
+         8: getfield      #27                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+        11: invokevirtual #31                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getBench:()Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        14: checkcast     #37                 // class com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench
+        17: iload_1
+        18: invokevirtual #360                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getOutputSlotsCount:(I)I
+        21: invokestatic  #142                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        24: invokevirtual #97                 // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/Number;)V
+        27: return
+
+  private void updateInputSlots(int);
+    Code:
+         0: aload_0
+         1: getfield      #27                 // Field blockType:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+         4: invokevirtual #31                 // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getBench:()Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+         7: checkcast     #37                 // class com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench
+        10: iload_1
+        11: invokevirtual #364                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench.getInput:(I)[Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot;
+        14: astore_2
+        15: aload_2
+        16: ifnull        109
+        19: aload_2
+        20: arraylength
+        21: ifle          109
+        24: new           #104                // class com/google/gson/JsonArray
+        27: dup
+        28: invokespecial #106                // Method com/google/gson/JsonArray."<init>":()V
+        31: astore_3
+        32: aload_2
+        33: astore        4
+        35: aload         4
+        37: arraylength
+        38: istore        5
+        40: iconst_0
+        41: istore        6
+        43: iload         6
+        45: iload         5
+        47: if_icmpge     98
+        50: aload         4
+        52: iload         6
+        54: aaload
+        55: astore        7
+        57: aload         7
+        59: ifnonnull     65
+        62: goto          92
+        65: new           #86                 // class com/google/gson/JsonObject
+        68: dup
+        69: invokespecial #107                // Method com/google/gson/JsonObject."<init>":()V
+        72: astore        8
+        74: aload         8
+        76: ldc           #108                // String icon
+        78: aload         7
+        80: invokevirtual #110                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/ProcessingBench$ProcessingSlot.getIcon:()Ljava/lang/String;
+        83: invokevirtual #116                // Method com/google/gson/JsonObject.addProperty:(Ljava/lang/String;Ljava/lang/String;)V
+        86: aload_3
+        87: aload         8
+        89: invokevirtual #124                // Method com/google/gson/JsonArray.add:(Lcom/google/gson/JsonElement;)V
+        92: iinc          6, 1
+        95: goto          43
+        98: aload_0
+        99: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+       102: ldc_w         #368                // String input
+       105: aload_3
+       106: invokevirtual #130                // Method com/google/gson/JsonObject.add:(Ljava/lang/String;Lcom/google/gson/JsonElement;)V
+       109: return
+
+  public void updateBenchTierLevel(int);
+    Code:
+         0: aload_0
+         1: iload_1
+         2: invokespecial #370                // Method com/hypixel/hytale/builtin/crafting/window/BenchWindow.updateBenchTierLevel:(I)V
+         5: aload_0
+         6: iload_1
+         7: invokevirtual #156                // Method updateInputSlots:(I)V
+        10: aload_0
+        11: iload_1
+        12: invokevirtual #160                // Method updateOutputSlots:(I)V
+        15: aload_0
+        16: getfield      #373                // Field benchState:Lcom/hypixel/hytale/builtin/crafting/state/BenchState;
+        19: astore_3
+        20: aload_3
+        21: instanceof    #40                 // class com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState
+        24: ifeq          40
+        27: aload_3
+        28: checkcast     #40                 // class com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState
+        31: astore_2
+        32: aload_0
+        33: aload_2
+        34: invokevirtual #54                 // Method com/hypixel/hytale/builtin/crafting/state/ProcessingBenchState.getItemContainer:()Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        37: putfield      #58                 // Field itemContainer:Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        40: return
+
+  public void onClose0(com.hypixel.hytale.component.Ref<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.component.ComponentAccessor<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>);
+    Code:
+         0: aload_0
+         1: aload_1
+         2: aload_2
+         3: invokespecial #377                // Method com/hypixel/hytale/builtin/crafting/window/BenchWindow.onClose0:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentAccessor;)V
+         6: aload_0
+         7: getfield      #348                // Field inventoryRegistration:Lcom/hypixel/hytale/event/EventRegistration;
+        10: ifnull        25
+        13: aload_0
+        14: getfield      #348                // Field inventoryRegistration:Lcom/hypixel/hytale/event/EventRegistration;
+        17: invokevirtual #381                // Method com/hypixel/hytale/event/EventRegistration.unregister:()V
+        20: aload_0
+        21: aconst_null
+        22: putfield      #348                // Field inventoryRegistration:Lcom/hypixel/hytale/event/EventRegistration;
+        25: return
+
+  private static com.google.gson.JsonArray generateInventoryHints(com.hypixel.hytale.server.core.asset.type.blocktype.config.bench.Bench, com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer);
+    Code:
+         0: aload_0
+         1: invokestatic  #386                // Method com/hypixel/hytale/builtin/crafting/CraftingPlugin.getBenchRecipes:(Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;)Ljava/util/List;
+         4: iconst_0
+         5: aload_1
+         6: invokestatic  #392                // Method com/hypixel/hytale/builtin/crafting/component/CraftingManager.generateInventoryHints:(Ljava/util/List;ILcom/hypixel/hytale/server/core/inventory/container/ItemContainer;)Lcom/google/gson/JsonArray;
+         9: areturn
+
+  public com.hypixel.hytale.server.core.inventory.container.ItemContainer getItemContainer();
+    Code:
+         0: aload_0
+         1: invokevirtual #395                // Method getItemContainer:()Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+         4: areturn
+
+  private void lambda$onOpen0$0(com.hypixel.hytale.server.core.inventory.Inventory, com.hypixel.hytale.server.core.inventory.container.ItemContainer$ItemContainerChangeEvent);
+    Code:
+         0: aload_0
+         1: getfield      #74                 // Field windowData:Lcom/google/gson/JsonObject;
+         4: ldc_w         #352                // String inventoryHints
+         7: aload_0
+         8: getfield      #293                // Field bench:Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+        11: aload_1
+        12: invokevirtual #333                // Method com/hypixel/hytale/server/core/inventory/Inventory.getCombinedHotbarFirst:()Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;
+        15: invokestatic  #354                // Method generateInventoryHints:(Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;Lcom/hypixel/hytale/server/core/inventory/container/CombinedItemContainer;)Lcom/google/gson/JsonArray;
+        18: invokevirtual #130                // Method com/google/gson/JsonObject.add:(Ljava/lang/String;Lcom/google/gson/JsonElement;)V
+        21: aload_0
+        22: invokevirtual #163                // Method invalidate:()V
+        25: return
+
+  static {};
+    Code:
+         0: ldc           #19                 // class com/hypixel/hytale/builtin/crafting/window/ProcessingBenchWindow
+         2: invokevirtual #396                // Method java/lang/Class.desiredAssertionStatus:()Z
+         5: ifne          12
+         8: iconst_1
+         9: goto          13
+        12: iconst_0
+        13: putstatic     #323                // Field $assertionsDisabled:Z
+        16: return
+}

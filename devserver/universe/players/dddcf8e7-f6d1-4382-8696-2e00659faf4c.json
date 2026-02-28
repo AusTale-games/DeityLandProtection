@@ -20,15 +20,27 @@
     "UIComponentList": {},
     "Transform": {
       "Position": {
-        "X": 2137.624755859375,
-        "Y": 116.875,
-        "Z": 314.20635986328125
+        "X": 1171.10205078125,
+        "Y": 283.4940185546875,
+        "Z": 1433.42041015625
       },
       "Rotation": {
         "Pitch": 0.0,
-        "Yaw": 0.8133475184440613,
+        "Yaw": 14.944236755371094,
         "Roll": 0.0
       }
+    },
+    "PlayerMemories": {
+      "Capacity": 48,
+      "Memories": [
+        {
+          "Id": "NPC",
+          "NPCRole": "Bunny",
+          "TranslationKey": "server.npcRoles.Bunny.name",
+          "CapturedTimestamp": 1772016181401,
+          "FoundLocationNameKey": "server.map.region.Zone1_Tier2"
+        }
+      ]
     },
     "BuilderTools": {
       "SelectionHistory": true
@@ -39,6 +51,9 @@
         "Y": 0.0,
         "Z": 0.0
       }
+    },
+    "ExplorationData": {
+      "ExploredChunks": []
     },
     "Player": {
       "Version": 5,
@@ -51,15 +66,7 @@
         "Storage": {
           "Id": "Simple",
           "Capacity": 36,
-          "Items": {
-            "10": {
-              "Id": "Ingredient_Life_Essence",
-              "Quantity": 84,
-              "Durability": 0.0,
-              "MaxDurability": 0.0,
-              "OverrideDroppedItemAnimation": false
-            }
-          }
+          "Items": {}
         },
         "Armor": {
           "Id": "Simple",
@@ -70,18 +77,46 @@
           "Id": "Simple",
           "Capacity": 9,
           "Items": {
+            "0": {
+              "Id": "OutlanderDeity_Block",
+              "Quantity": 1,
+              "Durability": 0.0,
+              "MaxDurability": 0.0,
+              "OverrideDroppedItemAnimation": false
+            },
             "2": {
-              "Id": "Ingredient_Life_Essence",
-              "Quantity": 100,
+              "Id": "SlumberingDeity_Block",
+              "Quantity": 1,
+              "Durability": 0.0,
+              "MaxDurability": 0.0,
+              "OverrideDroppedItemAnimation": false
+            },
+            "8": {
+              "Id": "Weapon_Battleaxe_Adamantite",
+              "Quantity": 1,
+              "Durability": 180.0,
+              "MaxDurability": 180.0,
+              "OverrideDroppedItemAnimation": false
+            },
+            "1": {
+              "Id": "Weapon_Spellbook_Grimoire_Purple",
+              "Quantity": 25,
               "Durability": 0.0,
               "MaxDurability": 0.0,
               "OverrideDroppedItemAnimation": false
             },
             "3": {
-              "Id": "DeityLandProtection_Block",
+              "Id": "Bench_WorkBench",
               "Quantity": 1,
               "Durability": 0.0,
               "MaxDurability": 0.0,
+              "OverrideDroppedItemAnimation": false
+            },
+            "7": {
+              "Id": "Tool_Pickaxe_Adamantite",
+              "Quantity": 1,
+              "Durability": 393.5,
+              "MaxDurability": 400.0,
               "OverrideDroppedItemAnimation": false
             }
           }
@@ -102,7 +137,7 @@
         "Backpack": {
           "Id": "Empty"
         },
-        "ActiveHotbarSlot": 4,
+        "ActiveHotbarSlot": 2,
         "Tool": {
           "Id": "Simple",
           "Capacity": 23,
@@ -162,15 +197,15 @@
         "PerWorldData": {
           "default": {
             "LastPosition": {
-              "X": 2137.624755859375,
-              "Y": 116.875,
-              "Z": 314.20635986328125,
-              "Pitch": -0.2527942359447479,
-              "Yaw": 1.5957456827163696,
+              "X": 1171.10205078125,
+              "Y": 283.4940185546875,
+              "Z": 1433.42041015625,
+              "Pitch": -0.7193074226379395,
+              "Yaw": -3.1199216842651367,
               "Roll": 0.0
             },
             "LastMovementStates": {
-              "Flying": false
+              "Flying": true
             },
             "FirstSpawn": false,
             "RespawnPoints": [
@@ -230,18 +265,29 @@
           }
         },
         "DiscoveredZones": [
-          "Zone1_Tier3",
-          "Zone4_Shallow_Ocean_Tier5",
-          "Zone2_Tier3",
-          "Zone4_Tier5",
-          "Zone1_Shore",
-          "Zone4_Shore_Tier5",
-          "Zone2_Tier2",
-          "Zone2_Tier1",
-          "Zone1_Tier1",
-          "Zone1_Tier2",
           "Oceans",
-          "Zone1_Shallow_Ocean"
+          "Zone2_Shore",
+          "Zone4_Shallow_Ocean_Tier5",
+          "Zone1_Shallow_Ocean",
+          "Zone3_Shallow_Ocean_Tier1",
+          "Zone1_Tier3",
+          "Zone3_Shallow_Ocean_Tier2",
+          "Zone1_Tier2",
+          "Zone1_Tier1",
+          "Zone3_Tier2",
+          "Zone3_Shore_Tier2",
+          "Zone4_Shore_Tier4",
+          "Zone3_Tier3",
+          "Zone4_Tier5",
+          "Zone4_Shore_Tier5",
+          "Zone3_Shore_Tier1",
+          "Zone2_Tier1",
+          "Zone2_Shallow_Ocean",
+          "Zone4_Tier4",
+          "Zone2_Tier2",
+          "Zone2_Tier3",
+          "Zone1_Shore",
+          "Zone3_Tier1"
         ],
         "DiscoveredInstances": [],
         "ReputationData": {},
@@ -254,18 +300,46 @@
             "Id": "Simple",
             "Capacity": 9,
             "Items": {
+              "0": {
+                "Id": "OutlanderDeity_Block",
+                "Quantity": 1,
+                "Durability": 0.0,
+                "MaxDurability": 0.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "7": {
+                "Id": "Tool_Pickaxe_Adamantite",
+                "Quantity": 1,
+                "Durability": 393.5,
+                "MaxDurability": 400.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "1": {
+                "Id": "Weapon_Spellbook_Grimoire_Purple",
+                "Quantity": 25,
+                "Durability": 0.0,
+                "MaxDurability": 0.0,
+                "OverrideDroppedItemAnimation": false
+              },
               "3": {
-                "Id": "DeityLandProtection_Block",
+                "Id": "Bench_WorkBench",
                 "Quantity": 1,
                 "Durability": 0.0,
                 "MaxDurability": 0.0,
                 "OverrideDroppedItemAnimation": false
               },
               "2": {
-                "Id": "Ingredient_Life_Essence",
-                "Quantity": 100,
+                "Id": "SlumberingDeity_Block",
+                "Quantity": 1,
                 "Durability": 0.0,
                 "MaxDurability": 0.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "8": {
+                "Id": "Weapon_Battleaxe_Adamantite",
+                "Quantity": 1,
+                "Durability": 180.0,
+                "MaxDurability": 180.0,
                 "OverrideDroppedItemAnimation": false
               }
             }
@@ -357,8 +431,8 @@
     },
     "HeadRotation": {
       "Rotation": {
-        "Pitch": -0.2527942359447479,
-        "Yaw": 1.5957456827163696,
+        "Pitch": -0.7193074226379395,
+        "Yaw": -3.1199216842651367,
         "Roll": 0.0
       }
     }

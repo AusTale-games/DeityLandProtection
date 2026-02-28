@@ -1,7 +1,7 @@
 {
     "Group": "games.Austale",
     "Name": "DeityLandProtection",
-    "Version": "1.0.2",
+    "Version": "1.0.5",
     "Description": "Land protection and claim management.",
     "Dependencies": {
         "Hytale:EntityModule": "*",
@@ -15,5 +15,5 @@
     "Website": "",
     "ServerVersion": "2026.02.19-1a311a592",
     "Main": "group.austale.deitylandprotection.DeityLandProtectionPlugin",
-    "IncludesAssetPack": true
+    "IncludesAssetPack": false
 }

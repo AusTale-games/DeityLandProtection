@@ -23,16 +23,12 @@ import group.austale.deitylandprotection.DeityLandProtectionText;
 import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import java.util.Collections;
 import java.util.UUID;
 
 public final class DeityLandProtectionBorderToggleInteraction
@@ -68,16 +64,6 @@ extends ChoiceInteraction {
         } else {
             this.plugin.enableBorder(actor, this.centerX, this.centerZ);
             this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.borderOn(lang));
-            try {
-                Transform t = playerRef.getTransform();
-                if (t != null && t.getPosition() != null) {
-                    Vector3d pos = t.getPosition();
-                    ParticleUtil.spawnParticleEffect((String)"Impact_Critical", (Vector3d)new Vector3d(pos.x, pos.y + 1.0, pos.z), Collections.singletonList(playerRef.getReference()), store);
-                }
-            }
-            catch (Exception t) {
-                // empty catch block
-            }
         }
         Player playerEntity = (Player)store.getComponent(ref, Player.getComponentType());
         if (playerEntity == null) {

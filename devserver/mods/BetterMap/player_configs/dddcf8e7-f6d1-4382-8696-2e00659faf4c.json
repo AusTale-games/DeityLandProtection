@@ -1,0 +1,22 @@
+{
+  "minScale": 10.0,
+  "maxScale": 256.0,
+  "locationEnabled": false,
+  "caveModeEnabled": true,
+  "hideAllPoiOnMap": false,
+  "hideSpawnOnMap": false,
+  "hideDeathMarkerOnMap": false,
+  "hiddenPoiNames": [],
+  "hidePlayersOnMap": false,
+  "hideAllWarpsOnMap": false,
+  "hideOtherWarpsOnMap": false,
+  "overrideGlobalPoiHide": false,
+  "overrideGlobalSpawnHide": false,
+  "overrideGlobalDeathHide": false,
+  "overrideGlobalPlayersHide": false,
+  "overrideGlobalAllWarpsHide": false,
+  "overrideGlobalOtherWarpsHide": false,
+  "hideGlobalWaypointsOnMap": false,
+  "hidePersonalWaypointsOnMap": false,
+  "overrideGlobalWaypointHide": false
+}

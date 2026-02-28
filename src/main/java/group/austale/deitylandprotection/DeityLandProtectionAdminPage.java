@@ -53,6 +53,7 @@ extends ChoiceBasePage {
         els.add(new DeityLandProtectionHeaderElement(DeityLandProtectionText.uiAdminServerSettings(lang), ""));
         els.add(new DeityLandProtectionAdminActionElement(plugin, DeityLandProtectionText.uiAdminClaimRadius(lang), String.valueOf(plugin.getClaimRadius()), new DeityLandProtectionAdminActionInteraction(plugin, DeityLandProtectionAdminActionInteraction.Action.CYCLE_RADIUS)));
         els.add(new DeityLandProtectionAdminActionElement(plugin, DeityLandProtectionText.uiAdminMaxClaims(lang), String.valueOf(plugin.getMaxClaimsPerPlayer()), new DeityLandProtectionAdminActionInteraction(plugin, DeityLandProtectionAdminActionInteraction.Action.CYCLE_MAXCLAIMS)));
+        els.add(new DeityLandProtectionAdminActionElement(plugin, DeityLandProtectionText.uiAdminMapClaimVisual(lang), plugin.isMapClaimVisualEnabled() ? "ON" : "OFF", new DeityLandProtectionAdminActionInteraction(plugin, DeityLandProtectionAdminActionInteraction.Action.TOGGLE_MAP_CLAIM_VISUAL)));
         els.add(new DeityLandProtectionHeaderElement(DeityLandProtectionText.uiAdminUpkeep(lang), ""));
         els.add(new DeityLandProtectionAdminActionElement(plugin, DeityLandProtectionText.uiAdminUpkeepEnabled(lang), plugin.isUpkeepEnabled() ? "ON" : "OFF", new DeityLandProtectionAdminActionInteraction(plugin, DeityLandProtectionAdminActionInteraction.Action.TOGGLE_UPKEEP)));
         int grace = plugin.getUpkeepGraceMinutes();

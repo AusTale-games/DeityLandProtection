@@ -28,7 +28,6 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.CraftRecipeEvent;
 import com.hypixel.hytale.server.core.inventory.MaterialQuantity;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import java.util.Locale;
 
 public final class DeityLandProtectionCraftSystem
 extends EntityEventSystem<EntityStore, CraftRecipeEvent.Pre> {
@@ -41,25 +40,6 @@ extends EntityEventSystem<EntityStore, CraftRecipeEvent.Pre> {
 
     public Query<EntityStore> getQuery() {
         return Query.and((Query[])new Query[]{Player.getComponentType()});
-    }
-
-    private boolean isDeityLandProtectionItem(String itemId) {
-        String confLower;
-        if (itemId == null) {
-            return false;
-        }
-        String configured = this.plugin.getDeityLandProtectionItemId();
-        if (configured == null || configured.isEmpty()) {
-            return false;
-        }
-        String itemLower = itemId.toLowerCase(Locale.ROOT);
-        if (itemLower.equals(confLower = configured.toLowerCase(Locale.ROOT))) {
-            return true;
-        }
-        if (itemLower.endsWith(":" + confLower)) {
-            return true;
-        }
-        return itemLower.contains(confLower);
     }
 
     public void handle(int entityIndex, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store, CommandBuffer<EntityStore> commandBuffer, CraftRecipeEvent.Pre event) {
@@ -96,7 +76,7 @@ extends EntityEventSystem<EntityStore, CraftRecipeEvent.Pre> {
         catch (Exception ignored) {
             return;
         }
-        if (!this.isDeityLandProtectionItem(outId)) {
+        if (!this.plugin.isClaimItemId(outId)) {
             return;
         }
         event.setCancelled(true);

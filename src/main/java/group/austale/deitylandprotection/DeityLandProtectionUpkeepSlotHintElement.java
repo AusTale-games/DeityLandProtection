@@ -24,13 +24,12 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 public final class DeityLandProtectionUpkeepSlotHintElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
-    private static final String ESSENCE_ITEM_ID = "Ingredient_Life_Essence";
     private final DeityLandProtectionPlugin plugin;
-    private final String title;
+    private final Claim claim;
 
-    public DeityLandProtectionUpkeepSlotHintElement(DeityLandProtectionPlugin plugin, String title) {
+    public DeityLandProtectionUpkeepSlotHintElement(DeityLandProtectionPlugin plugin, Claim claim) {
         this.plugin = plugin;
-        this.title = title;
+        this.claim = claim;
         this.interactions = new ChoiceInteraction[0];
     }
 
@@ -40,7 +39,8 @@ extends ChoiceElement {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        if ((iconId = ESSENCE_ITEM_ID) != null && !iconId.isEmpty()) {
+        iconId = this.plugin == null ? null : this.plugin.getUpkeepEssenceItemIdForClaim(this.claim);
+        if (iconId != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
         DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
@@ -49,11 +49,11 @@ extends ChoiceElement {
     }
 
     private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
-        String baseTitle = this.title == null ? "" : this.title;
+        String baseTitle = this.plugin == null ? DeityLandProtectionText.uiSlot0Title(lang) : this.plugin.getUpkeepEssenceTitleForClaim(this.claim, lang);
         if (baseTitle.isEmpty()) {
             return "";
         }
-        int cost = this.plugin == null ? 1 : this.plugin.getUpkeepEssenceCostPerHour();
+        int cost = this.plugin == null ? 1 : this.plugin.getUpkeepEssenceCostPerHourForClaim(this.claim);
         return cost + " x " + baseTitle;
     }
 

@@ -62,9 +62,14 @@ extends ChoiceBasePage {
         Map<UUID, Integer> trusted = claim.getTrusted();
         ArrayList<ChoiceElement> els = new ArrayList<ChoiceElement>();
         if (plugin.isUpkeepEnabled()) {
-            els.add(new DeityLandProtectionOpenUpkeepElement(plugin, centerX, centerZ));
-            els.add(new DeityLandProtectionUpkeepSlotHintElement(plugin, DeityLandProtectionText.uiSlot0Title(lang)));
+            els.add(new DeityLandProtectionOpenUpkeepElement(plugin, claim, centerX, centerZ));
+            els.add(new DeityLandProtectionUpkeepSlotHintElement(plugin, claim));
             els.add(new DeityLandProtectionUpkeepStatusElement(plugin, centerX, centerZ));
+            DeityLandProtectionUpkeepStore upkeepStore = plugin.getUpkeepStore();
+            DeityLandProtectionUpkeepState st = upkeepStore == null ? null : upkeepStore.get(centerX, centerZ);
+            if (st != null && st.getGraceUntilMs() > System.currentTimeMillis()) {
+                els.add(new DeityLandProtectionUpkeepGraceElement(plugin, centerX, centerZ));
+            }
         }
         els.add(new DeityLandProtectionBorderToggleElement(plugin, centerX, centerZ));
         els.add(new DeityLandProtectionTrustElement(plugin, centerX, centerZ, null, 0, true));

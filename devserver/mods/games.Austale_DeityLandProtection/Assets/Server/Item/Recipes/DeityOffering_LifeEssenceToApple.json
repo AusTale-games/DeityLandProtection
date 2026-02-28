@@ -1,0 +1,20 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Life_Essence",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Plant_Fruit_Apple",
+    "Quantity": 1
+  },
+  "OutputQuantity": 1,
+  "BenchRequirement": [
+    {
+      "Id": "DeityOffering",
+      "Type": "Processing"
+    }
+  ],
+  "TimeSeconds": 5
+}
