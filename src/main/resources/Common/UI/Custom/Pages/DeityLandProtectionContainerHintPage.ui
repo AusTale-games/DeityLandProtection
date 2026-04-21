@@ -1,0 +1,57 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+$C.@PageOverlay {
+  $C.@DecoratedContainer {
+    Anchor: (Width: 560, Height: 340);
+
+    #Title {
+      Group {
+        $C.@Title {
+          @Text = "Haz una ofrenda";
+        }
+      }
+    }
+
+    #Content {
+      Group {
+        LayoutMode: Top;
+        Padding: (Horizontal: 16, Vertical: 12);
+
+        Label {
+          Text: "Abrir slots para agregar esencia";
+          Style: (...$C.@DefaultLabelStyle, Wrap: true);
+        }
+
+        Group {
+          LayoutMode: Left;
+          Padding: (Top: 16);
+          ItemIcon #CopperIcon {
+            Anchor: (Width: 48, Height: 48);
+          }
+          Label {
+            Padding: (Left: 12);
+            Text: "Esencia de vida (ofrenda)";
+            Style: (...$C.@DefaultLabelStyle, Wrap: true);
+            FlexWeight: 1;
+          }
+        }
+
+        Group {
+          LayoutMode: Left;
+          Padding: (Top: 12);
+          ItemIcon #SilverIcon {
+            Anchor: (Width: 48, Height: 48);
+          }
+          Label {
+            Padding: (Left: 12);
+            Text: "Mejoras de zona (cuando apliquen)";
+            Style: (...$C.@DefaultLabelStyle, Wrap: true);
+            FlexWeight: 1;
+          }
+        }
+      }
+    }
+  }
+
+  $C.@BackButton {}
+}

@@ -1,0 +1,88 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.hypixel.hytale.component.Ref
+ *  com.hypixel.hytale.component.Store
+ *  com.hypixel.hytale.server.core.entity.entities.Player
+ *  com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage
+ *  com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager
+ *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
+ *  com.hypixel.hytale.server.core.universe.PlayerRef
+ *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
+ */
+package group.austale.deitylandprotection;
+
+import group.austale.deitylandprotection.Claim;
+import group.austale.deitylandprotection.ClaimStore;
+import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.DeityLandProtectionPlugin;
+import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.util.UUID;
+
+public final class DeityLandProtectionTrustCycleInteraction
+extends ChoiceInteraction {
+    private final DeityLandProtectionPlugin plugin;
+    private final int centerX;
+    private final int centerZ;
+    private final UUID target;
+
+    public DeityLandProtectionTrustCycleInteraction(DeityLandProtectionPlugin plugin, int centerX, int centerZ, UUID target) {
+        this.plugin = plugin;
+        this.centerX = centerX;
+        this.centerZ = centerZ;
+        this.target = target;
+    }
+
+    public void run(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef) {
+        if (this.plugin == null || store == null || ref == null || playerRef == null) {
+            return;
+        }
+        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(playerRef);
+        ClaimStore claims = this.plugin.getClaimStore();
+        if (claims == null) {
+            return;
+        }
+        Claim claim = claims.findClaimByCenter(this.centerX, this.centerZ);
+        if (claim == null || this.target == null) {
+            return;
+        }
+        UUID actor = playerRef.getUuid();
+        if (actor == null) {
+            return;
+        }
+        if (!this.plugin.isOpBypass(actor) && !claim.getOwner().equals(actor)) {
+            this.plugin.sendPlayerMessage(playerRef, DeityLandProtectionText.onlyOwnerEditFriends(lang));
+            return;
+        }
+        int current = claim.getPermissionsFor(this.target);
+        int next = current == 0 ? 1 : (current == 1 ? 2 : (current == 2 ? 4 : (current == 4 ? 7 : 0)));
+        if (next == 0) {
+            claim.removeTrusted(this.target);
+        } else {
+            claim.setTrusted(this.target, next);
+        }
+        claims.markDirty();
+        Player playerEntity = (Player)store.getComponent(ref, Player.getComponentType());
+        if (playerEntity == null) {
+            return;
+        }
+        PageManager pages = playerEntity.getPageManager();
+        if (pages == null) {
+            return;
+        }
+        pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+    }
+}
+
+
+

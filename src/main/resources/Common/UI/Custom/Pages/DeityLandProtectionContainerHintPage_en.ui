@@ -1,0 +1,57 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+$C.@PageOverlay {
+  $C.@DecoratedContainer {
+    Anchor: (Width: 560, Height: 340);
+
+    #Title {
+      Group {
+        $C.@Title {
+          @Text = "Make an Offering";
+        }
+      }
+    }
+
+    #Content {
+      Group {
+        LayoutMode: Top;
+        Padding: (Horizontal: 16, Vertical: 12);
+
+        Label {
+          Text: "Open slots to add essence";
+          Style: (...$C.@DefaultLabelStyle, Wrap: true);
+        }
+
+        Group {
+          LayoutMode: Left;
+          Padding: (Top: 16);
+          ItemIcon #CopperIcon {
+            Anchor: (Width: 48, Height: 48);
+          }
+          Label {
+            Padding: (Left: 12);
+            Text: "Life essence for offerings";
+            Style: (...$C.@DefaultLabelStyle, Wrap: true);
+            FlexWeight: 1;
+          }
+        }
+
+        Group {
+          LayoutMode: Left;
+          Padding: (Top: 12);
+          ItemIcon #SilverIcon {
+            Anchor: (Width: 48, Height: 48);
+          }
+          Label {
+            Padding: (Left: 12);
+            Text: "Zone upgrades (when applicable)";
+            Style: (...$C.@DefaultLabelStyle, Wrap: true);
+            FlexWeight: 1;
+          }
+        }
+      }
+    }
+  }
+
+  $C.@BackButton {}
+}

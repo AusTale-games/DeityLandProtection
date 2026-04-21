@@ -1,0 +1,240 @@
+Compiled from "OpenProcessingBenchInteraction.java"
+public class com.hypixel.hytale.builtin.crafting.interaction.OpenProcessingBenchInteraction extends com.hypixel.hytale.server.core.modules.interaction.interaction.config.client.SimpleBlockInteraction {
+  public static final com.hypixel.hytale.codec.builder.BuilderCodec<com.hypixel.hytale.builtin.crafting.interaction.OpenProcessingBenchInteraction> CODEC;
+
+  public com.hypixel.hytale.builtin.crafting.interaction.OpenProcessingBenchInteraction();
+    Code:
+         0: aload_0
+         1: invokespecial #3                  // Method com/hypixel/hytale/server/core/modules/interaction/interaction/config/client/SimpleBlockInteraction."<init>":()V
+         4: return
+
+  protected void interactWithBlock(com.hypixel.hytale.server.core.universe.world.World, com.hypixel.hytale.component.CommandBuffer<com.hypixel.hytale.server.core.universe.world.storage.EntityStore>, com.hypixel.hytale.protocol.InteractionType, com.hypixel.hytale.server.core.entity.InteractionContext, com.hypixel.hytale.server.core.inventory.ItemStack, com.hypixel.hytale.math.vector.Vector3i, com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler);
+    Code:
+         0: aload         4
+         2: invokevirtual #9                  // Method com/hypixel/hytale/server/core/entity/InteractionContext.getEntity:()Lcom/hypixel/hytale/component/Ref;
+         5: astore        8
+         7: aload         8
+         9: invokevirtual #15                 // Method com/hypixel/hytale/component/Ref.getStore:()Lcom/hypixel/hytale/component/Store;
+        12: astore        9
+        14: aload_2
+        15: aload         8
+        17: invokestatic  #21                 // Method com/hypixel/hytale/server/core/entity/entities/Player.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+        20: invokevirtual #27                 // Method com/hypixel/hytale/component/CommandBuffer.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+        23: checkcast     #22                 // class com/hypixel/hytale/server/core/entity/entities/Player
+        26: astore        10
+        28: aload         10
+        30: ifnonnull     34
+        33: return
+        34: aload_1
+        35: invokevirtual #33                 // Method com/hypixel/hytale/server/core/universe/world/World.getChunkStore:()Lcom/hypixel/hytale/server/core/universe/world/storage/ChunkStore;
+        38: astore        11
+        40: aload         11
+        42: aload         6
+        44: getfield      #39                 // Field com/hypixel/hytale/math/vector/Vector3i.x:I
+        47: aload         6
+        49: getfield      #45                 // Field com/hypixel/hytale/math/vector/Vector3i.z:I
+        52: invokestatic  #48                 // Method com/hypixel/hytale/math/util/ChunkUtil.indexChunkFromBlock:(II)J
+        55: invokevirtual #54                 // Method com/hypixel/hytale/server/core/universe/world/storage/ChunkStore.getChunkReference:(J)Lcom/hypixel/hytale/component/Ref;
+        58: astore        12
+        60: aload         12
+        62: ifnull        73
+        65: aload         12
+        67: invokevirtual #60                 // Method com/hypixel/hytale/component/Ref.isValid:()Z
+        70: ifne          74
+        73: return
+        74: aload         11
+        76: invokevirtual #64                 // Method com/hypixel/hytale/server/core/universe/world/storage/ChunkStore.getStore:()Lcom/hypixel/hytale/component/Store;
+        79: astore        13
+        81: aload         13
+        83: aload         12
+        85: invokestatic  #65                 // Method com/hypixel/hytale/server/core/universe/world/chunk/BlockComponentChunk.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+        88: invokevirtual #68                 // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+        91: checkcast     #66                 // class com/hypixel/hytale/server/core/universe/world/chunk/BlockComponentChunk
+        94: astore        14
+        96: aload         14
+        98: ifnonnull     102
+       101: return
+       102: aload         14
+       104: aload         6
+       106: getfield      #39                 // Field com/hypixel/hytale/math/vector/Vector3i.x:I
+       109: aload         6
+       111: getfield      #71                 // Field com/hypixel/hytale/math/vector/Vector3i.y:I
+       114: aload         6
+       116: getfield      #45                 // Field com/hypixel/hytale/math/vector/Vector3i.z:I
+       119: invokestatic  #74                 // Method com/hypixel/hytale/math/util/ChunkUtil.indexBlockInColumn:(III)I
+       122: invokevirtual #78                 // Method com/hypixel/hytale/server/core/universe/world/chunk/BlockComponentChunk.getEntityReference:(I)Lcom/hypixel/hytale/component/Ref;
+       125: astore        15
+       127: aload         15
+       129: ifnull        140
+       132: aload         15
+       134: invokevirtual #60                 // Method com/hypixel/hytale/component/Ref.isValid:()Z
+       137: ifne          141
+       140: return
+       141: aload         13
+       143: aload         15
+       145: invokestatic  #82                 // Method com/hypixel/hytale/builtin/crafting/component/ProcessingBenchBlock.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+       148: invokevirtual #68                 // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+       151: checkcast     #1                  // class com/hypixel/hytale/builtin/crafting/component/ProcessingBenchBlock
+       154: astore        16
+       156: aload         16
+       158: ifnonnull     191
+       161: aload         10
+       163: ldc           #83                 // String server.interactions.invalidBlockState
+       165: invokestatic  #85                 // Method com/hypixel/hytale/server/core/Message.translation:(Ljava/lang/String;)Lcom/hypixel/hytale/server/core/Message;
+       168: ldc           #91                 // String interaction
+       170: aload_0
+       171: invokevirtual #93                 // Method java/lang/Object.getClass:()Ljava/lang/Class;
+       174: invokevirtual #99                 // Method java/lang/Class.getSimpleName:()Ljava/lang/String;
+       177: invokevirtual #105                // Method com/hypixel/hytale/server/core/Message.param:(Ljava/lang/String;Ljava/lang/String;)Lcom/hypixel/hytale/server/core/Message;
+       180: ldc           #109                // String blockState
+       182: ldc           #111                // String null
+       184: invokevirtual #105                // Method com/hypixel/hytale/server/core/Message.param:(Ljava/lang/String;Ljava/lang/String;)Lcom/hypixel/hytale/server/core/Message;
+       187: invokevirtual #113                // Method com/hypixel/hytale/server/core/entity/entities/Player.sendMessage:(Lcom/hypixel/hytale/server/core/Message;)V
+       190: return
+       191: aload         13
+       193: aload         15
+       195: invokestatic  #117                // Method com/hypixel/hytale/builtin/crafting/component/BenchBlock.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+       198: invokevirtual #68                 // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+       201: checkcast     #118                // class com/hypixel/hytale/builtin/crafting/component/BenchBlock
+       204: astore        17
+       206: aload         17
+       208: ifnonnull     212
+       211: return
+       212: aload         13
+       214: aload         15
+       216: invokestatic  #120                // Method com/hypixel/hytale/server/core/modules/block/BlockModule$BlockStateInfo.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+       219: invokevirtual #68                 // Method com/hypixel/hytale/component/Store.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+       222: checkcast     #121                // class com/hypixel/hytale/server/core/modules/block/BlockModule$BlockStateInfo
+       225: astore        18
+       227: aload_1
+       228: aload         6
+       230: getfield      #39                 // Field com/hypixel/hytale/math/vector/Vector3i.x:I
+       233: aload         6
+       235: getfield      #71                 // Field com/hypixel/hytale/math/vector/Vector3i.y:I
+       238: aload         6
+       240: getfield      #45                 // Field com/hypixel/hytale/math/vector/Vector3i.z:I
+       243: invokevirtual #123                // Method com/hypixel/hytale/server/core/universe/world/World.getBlockType:(III)Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;
+       246: astore        19
+       248: aload_2
+       249: aload         8
+       251: invokestatic  #127                // Method com/hypixel/hytale/server/core/entity/UUIDComponent.getComponentType:()Lcom/hypixel/hytale/component/ComponentType;
+       254: invokevirtual #27                 // Method com/hypixel/hytale/component/CommandBuffer.getComponent:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/ComponentType;)Lcom/hypixel/hytale/component/Component;
+       257: checkcast     #128                // class com/hypixel/hytale/server/core/entity/UUIDComponent
+       260: astore        20
+       262: aload         20
+       264: ifnonnull     268
+       267: return
+       268: aload         20
+       270: invokevirtual #130                // Method com/hypixel/hytale/server/core/entity/UUIDComponent.getUuid:()Ljava/util/UUID;
+       273: astore        21
+       275: aload_1
+       276: aload         6
+       278: getfield      #39                 // Field com/hypixel/hytale/math/vector/Vector3i.x:I
+       281: aload         6
+       283: getfield      #45                 // Field com/hypixel/hytale/math/vector/Vector3i.z:I
+       286: invokestatic  #48                 // Method com/hypixel/hytale/math/util/ChunkUtil.indexChunkFromBlock:(II)J
+       289: invokevirtual #134                // Method com/hypixel/hytale/server/core/universe/world/World.getChunk:(J)Lcom/hypixel/hytale/server/core/universe/world/chunk/WorldChunk;
+       292: astore        22
+       294: aload         22
+       296: ifnonnull     300
+       299: return
+       300: aload         22
+       302: aload         6
+       304: getfield      #39                 // Field com/hypixel/hytale/math/vector/Vector3i.x:I
+       307: aload         6
+       309: getfield      #71                 // Field com/hypixel/hytale/math/vector/Vector3i.y:I
+       312: aload         6
+       314: getfield      #45                 // Field com/hypixel/hytale/math/vector/Vector3i.z:I
+       317: invokevirtual #138                // Method com/hypixel/hytale/server/core/universe/world/chunk/WorldChunk.getRotationIndex:(III)I
+       320: istore        23
+       322: new           #143                // class com/hypixel/hytale/builtin/crafting/window/ProcessingBenchWindow
+       325: dup
+       326: aload         16
+       328: aload         17
+       330: aload         18
+       332: aload         6
+       334: getfield      #39                 // Field com/hypixel/hytale/math/vector/Vector3i.x:I
+       337: aload         6
+       339: getfield      #71                 // Field com/hypixel/hytale/math/vector/Vector3i.y:I
+       342: aload         6
+       344: getfield      #45                 // Field com/hypixel/hytale/math/vector/Vector3i.z:I
+       347: iload         23
+       349: aload         19
+       351: invokespecial #145                // Method com/hypixel/hytale/builtin/crafting/window/ProcessingBenchWindow."<init>":(Lcom/hypixel/hytale/builtin/crafting/component/ProcessingBenchBlock;Lcom/hypixel/hytale/builtin/crafting/component/BenchBlock;Lcom/hypixel/hytale/server/core/modules/block/BlockModule$BlockStateInfo;IIIILcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;)V
+       354: astore        24
+       356: aload         17
+       358: invokevirtual #148                // Method com/hypixel/hytale/builtin/crafting/component/BenchBlock.getWindows:()Ljava/util/Map;
+       361: astore        25
+       363: aload         25
+       365: aload         21
+       367: aload         24
+       369: invokeinterface #152,  3          // InterfaceMethod java/util/Map.putIfAbsent:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+       374: ifnonnull     484
+       377: aload         16
+       379: aload         17
+       381: invokevirtual #148                // Method com/hypixel/hytale/builtin/crafting/component/BenchBlock.getWindows:()Ljava/util/Map;
+       384: invokevirtual #158                // Method com/hypixel/hytale/builtin/crafting/component/ProcessingBenchBlock.updateFuelValues:(Ljava/util/Map;)V
+       387: aload         10
+       389: invokevirtual #162                // Method com/hypixel/hytale/server/core/entity/entities/Player.getPageManager:()Lcom/hypixel/hytale/server/core/entity/entities/player/pages/PageManager;
+       392: aload         8
+       394: aload         9
+       396: getstatic     #166                // Field com/hypixel/hytale/protocol/packets/interface_/Page.Bench:Lcom/hypixel/hytale/protocol/packets/interface_/Page;
+       399: iconst_1
+       400: iconst_1
+       401: anewarray     #172                // class com/hypixel/hytale/server/core/entity/entities/player/windows/Window
+       404: dup
+       405: iconst_0
+       406: aload         24
+       408: aastore
+       409: invokevirtual #174                // Method com/hypixel/hytale/server/core/entity/entities/player/pages/PageManager.setPageWithWindows:(Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/Store;Lcom/hypixel/hytale/protocol/packets/interface_/Page;Z[Lcom/hypixel/hytale/server/core/entity/entities/player/windows/Window;)Z
+       412: ifeq          472
+       415: aload         24
+       417: aload         25
+       419: aload         21
+       421: aload         24
+       423: aload_1
+       424: aload         6
+       426: aload         17
+       428: aload         19
+       430: aload         8
+       432: aload_2
+       433: invokedynamic #180,  0            // InvokeDynamic #0:accept:(Ljava/util/Map;Ljava/util/UUID;Lcom/hypixel/hytale/builtin/crafting/window/ProcessingBenchWindow;Lcom/hypixel/hytale/server/core/universe/world/World;Lcom/hypixel/hytale/math/vector/Vector3i;Lcom/hypixel/hytale/builtin/crafting/component/BenchBlock;Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType;Lcom/hypixel/hytale/component/Ref;Lcom/hypixel/hytale/component/CommandBuffer;)Ljava/util/function/Consumer;
+       438: invokevirtual #184                // Method com/hypixel/hytale/builtin/crafting/window/ProcessingBenchWindow.registerCloseEvent:(Ljava/util/function/Consumer;)Lcom/hypixel/hytale/event/EventRegistration;
+       441: pop
+       442: aload         19
+       444: invokevirtual #188                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/BlockType.getBench:()Lcom/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench;
+       447: invokevirtual #194                // Method com/hypixel/hytale/server/core/asset/type/blocktype/config/bench/Bench.getLocalOpenSoundEventIndex:()I
+       450: istore        26
+       452: iload         26
+       454: ifne          458
+       457: return
+       458: aload         8
+       460: iload         26
+       462: getstatic     #200                // Field com/hypixel/hytale/protocol/SoundCategory.UI:Lcom/hypixel/hytale/protocol/SoundCategory;
+       465: aload_2
+       466: invokestatic  #206                // Method com/hypixel/hytale/server/core/universe/world/SoundUtil.playSoundEvent2d:(Lcom/hypixel/hytale/component/Ref;ILcom/hypixel/hytale/protocol/SoundCategory;Lcom/hypixel/hytale/component/ComponentAccessor;)V
+       469: goto          484
+       472: aload         25
+       474: aload         21
+       476: aload         24
+       478: invokeinterface #212,  3          // InterfaceMethod java/util/Map.remove:(Ljava/lang/Object;Ljava/lang/Object;)Z
+       483: pop
+       484: return
+
+  protected void simulateInteractWithBlock(com.hypixel.hytale.protocol.InteractionType, com.hypixel.hytale.server.core.entity.InteractionContext, com.hypixel.hytale.server.core.inventory.ItemStack, com.hypixel.hytale.server.core.universe.world.World, com.hypixel.hytale.math.vector.Vector3i);
+    Code:
+         0: return
+
+  static {};
+    Code:
+         0: ldc_w         #259                // class com/hypixel/hytale/builtin/crafting/interaction/OpenProcessingBenchInteraction
+         3: invokedynamic #261,  0            // InvokeDynamic #1:get:()Ljava/util/function/Supplier;
+         8: getstatic     #265                // Field com/hypixel/hytale/server/core/modules/interaction/interaction/config/client/SimpleBlockInteraction.CODEC:Lcom/hypixel/hytale/codec/builder/BuilderCodec;
+        11: invokestatic  #269                // Method com/hypixel/hytale/codec/builder/BuilderCodec.builder:(Ljava/lang/Class;Ljava/util/function/Supplier;Lcom/hypixel/hytale/codec/builder/BuilderCodec;)Lcom/hypixel/hytale/codec/builder/BuilderCodec$Builder;
+        14: ldc_w         #275                // String Opens the processing bench page.
+        17: invokevirtual #277                // Method com/hypixel/hytale/codec/builder/BuilderCodec$Builder.documentation:(Ljava/lang/String;)Lcom/hypixel/hytale/codec/builder/BuilderCodec$BuilderBase;
+        20: checkcast     #278                // class com/hypixel/hytale/codec/builder/BuilderCodec$Builder
+        23: invokevirtual #283                // Method com/hypixel/hytale/codec/builder/BuilderCodec$Builder.build:()Lcom/hypixel/hytale/codec/builder/BuilderCodec;
+        26: putstatic     #287                // Field CODEC:Lcom/hypixel/hytale/codec/builder/BuilderCodec;
+        29: return
+}

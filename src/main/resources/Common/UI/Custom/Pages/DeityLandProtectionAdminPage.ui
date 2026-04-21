@@ -1,0 +1,42 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+$C.@PageOverlay {
+  $C.@DecoratedContainer {
+    Anchor: (Width: 920, Height: 460);
+
+    #Title {
+      Group {
+        $C.@Title {
+          @Text = "Admin DeityLandProtection";
+        }
+      }
+    }
+
+    #Content {
+      Group {
+        LayoutMode: Left;
+        Padding: (Right: 15, Bottom: 5);
+
+        Label {
+          FlexWeight: 1;
+          Text: %server.customUI.itemRepairPage.item;
+          Style: (RenderBold: true);
+        }
+
+        Label {
+          Text: %server.customUI.itemRepairPage.durability;
+          Style: (RenderBold: true);
+        }
+      }
+
+      Group #ElementList {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      }
+    }
+  }
+
+  $C.@BackButton {}
+}
+

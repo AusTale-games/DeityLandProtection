@@ -1,0 +1,87 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.hypixel.hytale.server.core.Message
+ *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
+ *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
+ *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
+ *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
+ *  com.hypixel.hytale.server.core.universe.PlayerRef
+ */
+package group.austale.deitylandprotection;
+
+import group.austale.deitylandprotection.Claim;
+import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.DeityLandProtectionPlugin;
+import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
+import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
+import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
+import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+
+public final class DeityLandProtectionUpkeepStatusElement
+extends ChoiceElement {
+    private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
+    private final DeityLandProtectionPlugin plugin;
+    private final int centerX;
+    private final int centerZ;
+
+    public DeityLandProtectionUpkeepStatusElement(DeityLandProtectionPlugin plugin, int centerX, int centerZ) {
+        this.plugin = plugin;
+        this.centerX = centerX;
+        this.centerZ = centerZ;
+        this.interactions = new ChoiceInteraction[0];
+    }
+
+    public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {
+        if (commands == null || selector == null) {
+            return;
+        }
+        commands.append("#ElementList", ELEMENT_LAYOUT);
+        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        commands.set(selector + " #Name.TextSpans", Message.raw((String)this.buildTitle(lang)));
+        commands.set(selector + " #Durability.Text", this.buildValue(lang));
+    }
+
+    private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
+        if (lang == DeityLandProtectionLangPreferenceManager.Language.ES) {
+            return "Tiempo restante:";
+        }
+        return "Time Remaining:";
+    }
+
+    private String buildValue(DeityLandProtectionLangPreferenceManager.Language lang) {
+        if (this.plugin == null) {
+            return "0d 0h 0m";
+        }
+        Claim claim = this.plugin.getClaimStore().findClaimByCenter(this.centerX, this.centerZ);
+        if (claim == null) {
+            return "0d 0h 0m";
+        }
+        DeityLandProtectionUpkeepStore store = this.plugin.getUpkeepStore();
+        DeityLandProtectionUpkeepState st = store == null ? null : store.get(this.centerX, this.centerZ);
+        long now = System.currentTimeMillis();
+        long until = st == null ? 0L : st.getProtectionUntilMs();
+        long remainingMs = until > now ? until - now : 0L;
+        return DeityLandProtectionUpkeepStatusElement.formatDuration(remainingMs);
+    }
+
+    private static String formatDuration(long ms) {
+        if (ms <= 0L) {
+            return "0d 0h 0m";
+        }
+        long totalMinutes = ms / 60000L;
+        long days = totalMinutes / 1440L;
+        long hours = totalMinutes % 1440L / 60L;
+        long minutes = totalMinutes % 60L;
+        return days + "d " + hours + "h " + minutes + "m";
+    }
+}
+
+
+

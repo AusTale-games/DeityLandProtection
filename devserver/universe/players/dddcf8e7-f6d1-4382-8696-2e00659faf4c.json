@@ -1,0 +1,439 @@
+{
+  "Components": {
+    "Nameplate": {
+      "Text": "WhiteMan"
+    },
+    "BackpackInventory": {
+      "Inventory": {
+        "Id": "Empty"
+      }
+    },
+    "UtilityInventory": {
+      "Inventory": {
+        "Id": "Simple",
+        "Capacity": 4,
+        "Items": {
+          "1": {
+            "Id": "Weapon_Shield_Orbis_Knight",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          }
+        }
+      },
+      "ActiveSlot": 0
+    },
+    "EffectController": {},
+    "ObjectiveHistory": {
+      "ObjectiveHistory": {},
+      "ObjectiveLineHistory": {}
+    },
+    "ToolInventory": {
+      "Inventory": {
+        "Id": "Simple",
+        "Capacity": 23,
+        "Items": {
+          "0": {
+            "Id": "EditorTool_Paint",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "2": {
+            "Id": "EditorTool_Selection",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "4": {
+            "Id": "EditorTool_Line",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "1": {
+            "Id": "EditorTool_Sculpt",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "3": {
+            "Id": "EditorTool_Paste",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "5": {
+            "Id": "EditorTool_Layers",
+            "Quantity": 1,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          }
+        }
+      },
+      "ActiveSlot": -1
+    },
+    "DisplayName": {
+      "DisplayName": {
+        "RawText": "WhiteMan",
+        "Bold": null,
+        "Italic": null,
+        "Monospace": null,
+        "Underline": null
+      }
+    },
+    "UIComponentList": {},
+    "HotbarInventory": {
+      "Inventory": {
+        "Id": "Simple",
+        "Capacity": 9,
+        "Items": {
+          "2": {
+            "Id": "SlumberingDeity_Block",
+            "Quantity": 100,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "6": {
+            "Id": "Plant_Fruit_Apple",
+            "Quantity": 9,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "8": {
+            "Id": "Weapon_Battleaxe_Adamantite",
+            "Quantity": 1,
+            "Durability": 180.0,
+            "MaxDurability": 180.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "1": {
+            "Id": "Weapon_Spellbook_Grimoire_Purple",
+            "Quantity": 25,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          },
+          "7": {
+            "Id": "Tool_Pickaxe_Adamantite",
+            "Quantity": 1,
+            "Durability": 393.5,
+            "MaxDurability": 400.0,
+            "OverrideDroppedItemAnimation": false
+          }
+        }
+      },
+      "ActiveSlot": 3
+    },
+    "Transform": {
+      "Position": {
+        "X": 2055.281494140625,
+        "Y": 132.0614471435547,
+        "Z": 71.16873931884766
+      },
+      "Rotation": {
+        "Pitch": 0.0,
+        "Yaw": 1.4145582914352417,
+        "Roll": 0.0
+      }
+    },
+    "PlayerMemories": {
+      "Capacity": 48,
+      "Memories": [
+        {
+          "Id": "NPC",
+          "NPCRole": "Bunny",
+          "TranslationKey": "server.npcRoles.Bunny.name",
+          "CapturedTimestamp": 1772016181401,
+          "FoundLocationNameKey": "server.map.region.Zone1_Tier2"
+        }
+      ]
+    },
+    "BuilderTools": {
+      "SelectionHistory": true
+    },
+    "StorageInventory": {
+      "Inventory": {
+        "Id": "Simple",
+        "Capacity": 36,
+        "Items": {
+          "5": {
+            "Id": "Plant_Fruit_Apple",
+            "Quantity": 100,
+            "Durability": 0.0,
+            "MaxDurability": 0.0,
+            "OverrideDroppedItemAnimation": false
+          }
+        }
+      }
+    },
+    "Velocity": {
+      "Velocity": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    },
+    "Player": {
+      "Version": 5,
+      "UUID": {
+        "$binary": "3dz45/bRQ4KGli4AZZ+vTA==",
+        "$type": "04"
+      },
+      "Inventory": {
+        "Version": 4,
+        "ActiveHotbarSlot": 3,
+        "ActiveToolsSlot": -1,
+        "ActiveUtilitySlot": 0
+      },
+      "PlayerData": {
+        "BlockIdVersion": 11,
+        "World": "default",
+        "KnownRecipes": [],
+        "PerWorldData": {
+          "default": {
+            "LastPosition": {
+              "X": 2048.921630859375,
+              "Y": 123.0000991821289,
+              "Z": 73.3250961303711,
+              "Pitch": 0.04310792684555054,
+              "Yaw": -0.9388135671615601,
+              "Roll": 0.0
+            },
+            "LastMovementStates": {
+              "Flying": true
+            },
+            "FirstSpawn": false,
+            "RespawnPoints": [
+              {
+                "BlockPosition": {
+                  "X": 2146,
+                  "Y": 117,
+                  "Z": 282
+                },
+                "RespawnPosition": {
+                  "X": 2146.0,
+                  "Y": 118.35,
+                  "Z": 281.75
+                },
+                "Name": "WhiteMan's bed"
+              }
+            ],
+            "DeathPositions": [
+              {
+                "MarkerId": "death-marker-18ebf6f7-67cb-4021-84e7-2759be76a2a3",
+                "Transform": {
+                  "X": 2114.85400390625,
+                  "Y": 117.0,
+                  "Z": 206.94276428222656,
+                  "Pitch": 0.0,
+                  "Yaw": 0.0,
+                  "Roll": 0.0
+                },
+                "Day": 9
+              },
+              {
+                "MarkerId": "death-marker-0d4fe37b-22a0-48ab-b570-60d96f7c9b2b",
+                "Transform": {
+                  "X": 2300.267333984375,
+                  "Y": 121.0,
+                  "Z": 188.66038513183594,
+                  "Pitch": 0.0,
+                  "Yaw": 0.0,
+                  "Roll": 0.0
+                },
+                "Day": 17
+              },
+              {
+                "MarkerId": "death-marker-5062842e-b66b-4ad5-8072-f017430553b5",
+                "Transform": {
+                  "X": 2184.36279296875,
+                  "Y": 124.0,
+                  "Z": 214.37704467773438,
+                  "Pitch": 0.0,
+                  "Yaw": 0.0,
+                  "Roll": 0.0
+                },
+                "Day": 17
+              }
+            ],
+            "UserMarkers": []
+          }
+        },
+        "DiscoveredZones": [
+          "Zone4_Shallow_Ocean_Tier5",
+          "Zone1_Shore",
+          "Zone4_Tier5",
+          "Zone2_Tier3",
+          "Zone2_Tier2",
+          "Zone2_Tier1",
+          "Zone4_Tier4",
+          "Oceans",
+          "Zone3_Shore_Tier1",
+          "Zone4_Shore_Tier5",
+          "Zone1_Tier3",
+          "Zone1_Tier2",
+          "Zone1_Tier1",
+          "Zone3_Tier3",
+          "Zone3_Tier2",
+          "Zone3_Tier1",
+          "Zone1_Shallow_Ocean"
+        ],
+        "DiscoveredInstances": [],
+        "ReputationData": {},
+        "ActiveObjectiveUUIDs": []
+      },
+      "BlockPlacementOverride": false,
+      "HotbarManager": {
+        "SavedHotbars": [
+          {
+            "Id": "Simple",
+            "Capacity": 9,
+            "Items": {
+              "1": {
+                "Id": "Weapon_Spellbook_Grimoire_Purple",
+                "Quantity": 25,
+                "Durability": 0.0,
+                "MaxDurability": 0.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "7": {
+                "Id": "Tool_Pickaxe_Adamantite",
+                "Quantity": 1,
+                "Durability": 393.5,
+                "MaxDurability": 400.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "2": {
+                "Id": "SlumberingDeity_Block",
+                "Quantity": 100,
+                "Durability": 0.0,
+                "MaxDurability": 0.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "8": {
+                "Id": "Weapon_Battleaxe_Adamantite",
+                "Quantity": 1,
+                "Durability": 180.0,
+                "MaxDurability": 180.0,
+                "OverrideDroppedItemAnimation": false
+              },
+              "6": {
+                "Id": "Plant_Fruit_Apple",
+                "Quantity": 9,
+                "Durability": 0.0,
+                "MaxDurability": 0.0,
+                "OverrideDroppedItemAnimation": false
+              }
+            }
+          },
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "CurrentHotbar": 0
+      },
+      "GameMode": "Creative"
+    },
+    "Invulnerable": {},
+    "HitboxCollision": {
+      "HitboxCollisionConfigIndex": 1
+    },
+    "UniqueItemUsages": {
+      "UniqueItemUsed": []
+    },
+    "Instance": {},
+    "UUID": {
+      "UUID": {
+        "$binary": "3dz45/bRQ4KGli4AZZ+vTA==",
+        "$type": "04"
+      }
+    },
+    "EntityStats": {
+      "Version": 5,
+      "Stats": {
+        "Oxygen": {
+          "Id": "Oxygen",
+          "Value": 100.0
+        },
+        "Mana": {
+          "Id": "Mana",
+          "Value": 0.0
+        },
+        "Health": {
+          "Id": "Health",
+          "Value": 100.0
+        },
+        "GlidingActive": {
+          "Id": "GlidingActive",
+          "Value": 0.0
+        },
+        "Immunity": {
+          "Id": "Immunity",
+          "Value": 0.0
+        },
+        "SignatureCharges": {
+          "Id": "SignatureCharges",
+          "Value": 0.0
+        },
+        "Stamina": {
+          "Id": "Stamina",
+          "Value": 10.0
+        },
+        "Ammo": {
+          "Id": "Ammo",
+          "Value": 0.0
+        },
+        "Unknown": {
+          "Id": "Unknown",
+          "Value": 0.0
+        },
+        "SignatureEnergy": {
+          "Id": "SignatureEnergy",
+          "Value": 0.0
+        },
+        "DeployablePreview": {
+          "Id": "DeployablePreview",
+          "Value": 0.0
+        },
+        "StaminaRegenDelay": {
+          "Id": "StaminaRegenDelay",
+          "Value": 0.0
+        },
+        "MagicCharges": {
+          "Id": "MagicCharges",
+          "Value": 0.0
+        }
+      }
+    },
+    "ArmorInventory": {
+      "Inventory": {
+        "Id": "Simple",
+        "Capacity": 4,
+        "Items": {}
+      }
+    },
+    "HeadRotation": {
+      "Rotation": {
+        "Pitch": -0.4653935432434082,
+        "Yaw": 1.245187759399414,
+        "Roll": 0.0
+      }
+    }
+  }
+}

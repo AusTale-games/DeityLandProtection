@@ -1,0 +1,212 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.OutlanderDeity_Block.name",
+    "Description": "server.items.OutlanderDeity_Block.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Furniture_Temple_Dark_Statue_Gaia.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Recipe": {
+    "TimeSeconds": 3,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Rock_Slate_Cobble",
+        "Quantity": 20
+      },
+      {
+        "ItemId": "Ingredient_Void_Essence",
+        "Quantity": 10
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Crafting"
+        ]
+      }
+    ],
+    "OutputQuantity": 1
+  },
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Block_Secondary"
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Decorative_Sets/Temple_Dark/Statue.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Decorative_Sets/Temple_Dark/Statue_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "Group": "Wood",
+    "HitboxType": "Statue",
+    "VariantRotation": "NESW",
+    "Bench": {
+      "Type": "Processing",
+      "Input": [
+        {
+          "FilterValidIngredients": false
+        },
+        {
+          "FilterValidIngredients": false
+        }
+      ],
+      "OutputSlotsCount": 1,
+      "LocalOpenSoundEventId": "SFX_Workbench_Open",
+      "LocalCloseSoundEventId": "SFX_Workbench_Close",
+      "BenchUpgradeSoundEventId": "SFX_Workbench_Upgrade_Start_Default",
+      "BenchUpgradeCompletedSoundEventId": "SFX_Workbench_Upgrade_Complete_Default",
+      "Id": "OutlanderDeityOffering",
+      "DescriptiveLabel": "server.items.OutlanderDeity_Block.description",
+      "TierLevels": [
+        {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Ingredient_Bar_Adamantite",
+                "Quantity": 25
+              }
+            ],
+            "TimeSeconds": 3
+          },
+          "CraftingTimeReductionModifier": 0.0
+        },
+        {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Wood_Crystal_Trunk",
+                "Quantity": 100
+              }
+            ],
+            "TimeSeconds": 3
+          },
+          "CraftingTimeReductionModifier": 0.0
+        },
+        {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Rock_Gem_Ruby",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Rock_Gem_Sapphire",
+                "Quantity": 1
+              }
+            ],
+            "TimeSeconds": 3
+          },
+          "CraftingTimeReductionModifier": 0.0
+        },
+        {
+          "CraftingTimeReductionModifier": 0.0
+        }
+      ]
+    },
+    "BlockEntity": {
+      "Components": {
+        "BenchBlock": {},
+        "ProcessingBenchBlock": {}
+      }
+    },
+    "State": {
+      "Id": "processingBench",
+      "Definitions": {
+        "Processing": {
+          "Looping": true
+        },
+        "ProcessCompleted": {
+          "Looping": true
+        },
+        "Tier2": {
+          "State": {
+            "Id": "processingBench",
+            "Definitions": {
+              "Processing": {
+                "Looping": true
+              },
+              "ProcessCompleted": {
+                "Looping": true
+              }
+            }
+          }
+        },
+        "Tier3": {
+          "State": {
+            "Id": "processingBench",
+            "Definitions": {
+              "Processing": {
+                "Looping": true
+              },
+              "ProcessCompleted": {
+                "Looping": true
+              }
+            }
+          }
+        },
+        "Tier4": {
+          "State": {
+            "Id": "processingBench",
+            "Definitions": {
+              "Processing": {
+                "Looping": true
+              },
+              "ProcessCompleted": {
+                "Looping": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "Flags": {
+      "IsUsable": true
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockSoundSetId": "Stone",
+    "Interactions": {
+      "Use": "Open_Processing_Bench"
+    },
+    "InteractionHint": "server.interactionHints.turnoff",
+    "Particles": []
+  },
+  "PlayerAnimationsId": "Block",
+  "Model": "Blocks/Decorative_Sets/Temple_Dark/Statue.blockymodel",
+  "Texture": "Blocks/Decorative_Sets/Temple_Dark/Statue_Texture.png",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      -1.0,
+      -30.0
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ],
+    "Family": [
+      "Outlander"
+    ]
+  },
+  "Scale": 0.5,
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "Quality": "Legendary"
+}

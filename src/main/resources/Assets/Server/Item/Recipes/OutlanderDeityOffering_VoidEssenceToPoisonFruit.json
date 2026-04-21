@@ -1,0 +1,20 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Void_Essence",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Plant_Fruit_Poison",
+    "Quantity": 1
+  },
+  "OutputQuantity": 1,
+  "BenchRequirement": [
+    {
+      "Id": "OutlanderDeityOffering",
+      "Type": "Processing"
+    }
+  ],
+  "TimeSeconds": 5
+}
