@@ -126,17 +126,9 @@ extends JavaPlugin {
     private Path absDataDir;
     private DeityLandProtectionLangPreferenceManager langPreferenceManager;
     private DeityLandProtectionLocalizer localizer;
-    private final ConcurrentHashMap<Long, Long> recentClaimPlacements = new ConcurrentHashMap();
-    private final ConcurrentHashMap<UUID, Long> lastPlayerMessageMs = new ConcurrentHashMap();
-    private final ConcurrentHashMap<UUID, Long> borderCenterByPlayer = new ConcurrentHashMap();
-    private final ConcurrentHashMap<UUID, Long> lastBorderSpawnMsByPlayer = new ConcurrentHashMap();
-    private final ConcurrentHashMap<UUID, String> borderWorldByPlayer = new ConcurrentHashMap();
+    private final DeityLandProtectionPlayerStateRegistry playerState = new DeityLandProtectionPlayerStateRegistry();
     private final DeityLandProtectionBorderSurfaceCache borderSurfaceCache = new DeityLandProtectionBorderSurfaceCache();
     private final ConcurrentHashMap<String, Integer> borderSurfaceScanBaseYByWorldCenter = new ConcurrentHashMap();
-    private final ConcurrentHashMap<UUID, Long> lastZoneKeyByPlayer = new ConcurrentHashMap();
-    private final ConcurrentHashMap<UUID, String> knownUsernameByUuid = new ConcurrentHashMap();
-    private final ConcurrentHashMap<String, UUID> knownUuidByUsername = new ConcurrentHashMap();
-    private final ConcurrentHashMap<Long, ConcurrentHashMap<UUID, String>> playersInClaim = new ConcurrentHashMap();
     private DeityLandProtectionMapUpdateQueue mapUpdateQueue;
 
     public DeityLandProtectionPlugin(JavaPluginInit init) {
@@ -908,70 +900,35 @@ extends JavaPlugin {
     }
 
     public void markRecentClaimPlacement(int x, int z) {
-        this.recentClaimPlacements.put(DeityLandProtectionPlugin.centerKey(x, z), System.currentTimeMillis());
+        this.playerState.markRecentClaimPlacement(x, z);
     }
 
     public void enableBorder(UUID playerUuid, int centerX, int centerZ) {
-        if (playerUuid == null) {
-            return;
-        }
-        this.borderCenterByPlayer.put(playerUuid, DeityLandProtectionPlugin.centerKey(centerX, centerZ));
+        this.playerState.enableBorder(playerUuid, centerX, centerZ);
     }
 
     public void disableBorder(UUID playerUuid) {
-        if (playerUuid == null) {
-            return;
-        }
-        this.borderCenterByPlayer.remove(playerUuid);
-        this.lastBorderSpawnMsByPlayer.remove(playerUuid);
-        this.borderWorldByPlayer.remove(playerUuid);
+        this.playerState.disableBorder(playerUuid);
     }
 
     public void clearBorderForClaim(int centerX, int centerZ) {
-        long key = DeityLandProtectionPlugin.centerKey(centerX, centerZ);
-        for (Map.Entry<UUID, Long> e : this.borderCenterByPlayer.entrySet()) {
-            if (e == null) continue;
-            UUID u = e.getKey();
-            Long v = e.getValue();
-            if (u == null || v == null || v != key) continue;
-            this.disableBorder(u);
-        }
+        this.playerState.clearBorderForClaim(centerX, centerZ);
     }
 
     public boolean isBorderEnabled(UUID playerUuid, long centerKey) {
-        if (playerUuid == null) {
-            return false;
-        }
-        Long v = this.borderCenterByPlayer.get(playerUuid);
-        return v != null && v == centerKey;
+        return this.playerState.isBorderEnabled(playerUuid, centerKey);
     }
 
     public Long getBorderCenterKey(UUID playerUuid) {
-        if (playerUuid == null) {
-            return null;
-        }
-        return this.borderCenterByPlayer.get(playerUuid);
+        return this.playerState.getBorderCenterKey(playerUuid);
     }
 
     public boolean shouldSpawnBorderNow(UUID playerUuid, long nowMs, long cooldownMs) {
-        if (playerUuid == null) {
-            return false;
-        }
-        Long last = this.lastBorderSpawnMsByPlayer.get(playerUuid);
-        if (last != null && nowMs - last < cooldownMs) {
-            return false;
-        }
-        this.lastBorderSpawnMsByPlayer.put(playerUuid, nowMs);
-        return true;
+        return this.playerState.shouldSpawnBorderNow(playerUuid, nowMs, cooldownMs);
     }
 
     public void recordBorderPlayerWorld(UUID playerUuid, String worldName) {
-        if (playerUuid == null || worldName == null || worldName.isEmpty()) {
-            return;
-        }
-        if (this.borderCenterByPlayer.containsKey(playerUuid)) {
-            this.borderWorldByPlayer.put(playerUuid, worldName);
-        }
+        this.playerState.recordBorderPlayerWorld(playerUuid, worldName);
     }
 
     private static String borderSurfaceCompositeKey(String worldName, long centerKey) {
@@ -998,63 +955,24 @@ extends JavaPlugin {
     }
 
     public void collectActiveBorderCenterKeysForWorld(String worldName, LongOpenHashSet out) {
-        if (worldName == null || worldName.isEmpty() || out == null) {
-            return;
-        }
-        out.clear();
-        for (Map.Entry<UUID, Long> e : this.borderCenterByPlayer.entrySet()) {
-            if (e == null) {
-                continue;
-            }
-            UUID u = e.getKey();
-            Long ck = e.getValue();
-            if (u == null || ck == null) {
-                continue;
-            }
-            String w = this.borderWorldByPlayer.get(u);
-            if (worldName.equals(w)) {
-                out.add(ck.longValue());
-            }
-        }
+        this.playerState.collectActiveBorderCenterKeysForWorld(worldName, out);
     }
 
     public boolean hasAnyBorderSessionForWorld(String worldName) {
-        if (worldName == null || worldName.isEmpty()) {
-            return false;
-        }
-        for (String w : this.borderWorldByPlayer.values()) {
-            if (w != null && worldName.equals(w)) {
-                return true;
-            }
-        }
-        return false;
+        return this.playerState.hasAnyBorderSessionForWorld(worldName);
     }
 
     public boolean shouldIgnoreCenterBreak(int x, int z) {
-        long key = DeityLandProtectionPlugin.centerKey(x, z);
-        Long ts = this.recentClaimPlacements.get(key);
-        if (ts == null) {
-            return false;
-        }
-        long age = System.currentTimeMillis() - ts;
-        if (age >= 0L && age < RECENT_PLACEMENT_IGNORE_BREAK_MS) {
-            return true;
-        }
-        this.recentClaimPlacements.remove(key, ts);
-        return false;
+        return this.playerState.shouldIgnoreCenterBreak(x, z, RECENT_PLACEMENT_IGNORE_BREAK_MS);
     }
 
     public void sendPlayerMessage(PlayerRef player, String text) {
         if (player == null || text == null || text.isEmpty()) {
             return;
         }
-        UUID uuid = player.getUuid();
-        long now = System.currentTimeMillis();
-        Long last = this.lastPlayerMessageMs.get(uuid);
-        if (last != null && now - last < PLAYER_MESSAGE_COOLDOWN_MS) {
+        if (!this.playerState.shouldSendRateLimitedMessage(player.getUuid(), System.currentTimeMillis(), PLAYER_MESSAGE_COOLDOWN_MS)) {
             return;
         }
-        this.lastPlayerMessageMs.put(uuid, now);
         try {
             player.sendMessage(Message.raw(text));
         }
@@ -1076,83 +994,31 @@ extends JavaPlugin {
     }
 
     public Long getLastZoneKey(UUID playerUuid) {
-        if (playerUuid == null) {
-            return null;
-        }
-        return this.lastZoneKeyByPlayer.get(playerUuid);
+        return this.playerState.getLastZoneKey(playerUuid);
     }
 
     public void setLastZoneKey(UUID playerUuid, Long zoneKey) {
-        if (playerUuid == null) {
-            return;
-        }
-        if (zoneKey == null) {
-            this.lastZoneKeyByPlayer.remove(playerUuid);
-            return;
-        }
-        this.lastZoneKeyByPlayer.put(playerUuid, zoneKey);
+        this.playerState.setLastZoneKey(playerUuid, zoneKey);
     }
 
     public void rememberUsername(UUID playerUuid, String username) {
-        if (playerUuid == null || username == null) {
-            return;
-        }
-        String u = username.trim();
-        if (u.isEmpty()) {
-            return;
-        }
-        this.knownUsernameByUuid.put(playerUuid, u);
-        this.knownUuidByUsername.put(u.toLowerCase(), playerUuid);
+        this.playerState.rememberUsername(playerUuid, username);
     }
 
     public String getKnownUsername(UUID playerUuid) {
-        if (playerUuid == null) {
-            return null;
-        }
-        return this.knownUsernameByUuid.get(playerUuid);
+        return this.playerState.getKnownUsername(playerUuid);
     }
 
     public UUID getKnownUuidForUsername(String username) {
-        if (username == null) {
-            return null;
-        }
-        String u = username.trim().toLowerCase();
-        if (u.isEmpty()) {
-            return null;
-        }
-        return this.knownUuidByUsername.get(u);
+        return this.playerState.getKnownUuidForUsername(username);
     }
 
     public Map<UUID, String> getPlayersInClaim(int centerX, int centerZ) {
-        long key = DeityLandProtectionPlugin.centerKey(centerX, centerZ);
-        Map m = this.playersInClaim.get(key);
-        if (m == null || m.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        return Collections.unmodifiableMap(m);
+        return this.playerState.getPlayersInClaim(centerX, centerZ);
     }
 
     public void updatePlayerClaimMembership(UUID playerUuid, Long prevCenterKey, Long nowCenterKey, String username) {
-        ConcurrentHashMap<UUID, String> prev;
-        if (playerUuid == null) {
-            return;
-        }
-        if (prevCenterKey != null && (prev = this.playersInClaim.get(prevCenterKey)) != null) {
-            prev.remove(playerUuid);
-            if (prev.isEmpty()) {
-                this.playersInClaim.remove(prevCenterKey, prev);
-            }
-        }
-        if (nowCenterKey != null) {
-            String u = username == null ? null : username.trim();
-            if (u == null || u.isEmpty()) {
-                u = this.knownUsernameByUuid.get(playerUuid);
-            }
-            if (u == null || u.isEmpty()) {
-                u = playerUuid.toString();
-            }
-            this.playersInClaim.computeIfAbsent(nowCenterKey, k -> new ConcurrentHashMap()).put(playerUuid, u);
-        }
+        this.playerState.updatePlayerClaimMembership(playerUuid, prevCenterKey, nowCenterKey, username);
     }
 
     public static long centerKey(int x, int z) {
