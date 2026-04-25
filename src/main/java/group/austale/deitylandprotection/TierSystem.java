@@ -7,11 +7,11 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public final class DeityLandProtectionTierSystem {
+public final class TierSystem {
     private static final int MIN_TIER = 1;
     private static final int MAX_TIER = 4;
 
-    private DeityLandProtectionTierSystem() {
+    private TierSystem() {
     }
 
     public static int getUpkeepTierForClaim(UpkeepStore upkeepStore, Claim claim) {
@@ -59,7 +59,7 @@ public final class DeityLandProtectionTierSystem {
         }
         int nextRadius = getClaimRadiusForTier(plugin.getClaimRadius(), nextTier);
         if (nextRadius > claim.getRadius() && !claims.hasUnclaimedTerritoryInRadius(claim.getCenterX(), claim.getCenterZ(), nextRadius)) {
-            DeityLandProtectionTierSystem.sendNoUnclaimedTerritoryMessage(plugin, world, claim);
+            TierSystem.sendNoUnclaimedTerritoryMessage(plugin, world, claim);
             return false;
         }
         consumeUpgradeMaterials(plugin, container, nextTier);

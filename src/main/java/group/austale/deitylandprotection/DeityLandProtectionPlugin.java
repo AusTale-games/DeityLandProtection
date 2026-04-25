@@ -2,21 +2,21 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.DeityLandProtectionBorderTickSystem;
-import group.austale.deitylandprotection.DeityLandProtectionBreakSystem;
+import group.austale.deitylandprotection.BorderTickSystem;
+import group.austale.deitylandprotection.BreakSystem;
 import group.austale.deitylandprotection.DeityCommand;
-import group.austale.deitylandprotection.DeityLandProtectionCraftSystem;
-import group.austale.deitylandprotection.DeityLandProtectionEnterExitTickSystem;
+import group.austale.deitylandprotection.CraftSystem;
+import group.austale.deitylandprotection.EnterExitTickSystem;
 import group.austale.deitylandprotection.LangCommand;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.LocalizationCatalog;
 import group.austale.deitylandprotection.Localizer;
-import group.austale.deitylandprotection.DeityLandProtectionPlaceSystem;
+import group.austale.deitylandprotection.PlaceSystem;
 import group.austale.deitylandprotection.UpkeepStore;
-import group.austale.deitylandprotection.DeityLandProtectionUseBlockSystem;
-import group.austale.deitylandprotection.DeityLandProtectionBorderSurfaceRefreshSystem;
+import group.austale.deitylandprotection.UseBlockSystem;
+import group.austale.deitylandprotection.BorderSurfaceRefreshSystem;
 import group.austale.deitylandprotection.DeityLandProtectionWorldMapProvider;
-import group.austale.deitylandprotection.DeityLandProtectionWorldMapUpdateTickingSystem;
+import group.austale.deitylandprotection.WorldMapUpdateTickingSystem;
 import com.hypixel.hytale.component.system.ISystem;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
@@ -104,15 +104,15 @@ extends JavaPlugin {
         this.upkeepStore = new UpkeepStore(this.absDataDir.resolve("upkeep.json"), this.getLogger());
         this.upkeepStore.load();
         this.mapUpdateQueue = new DeityLandProtectionMapUpdateQueue(this.claimStore);
-        this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionPlaceSystem(this));
-        this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionBreakSystem(this));
-        this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionUseBlockSystem(this));
-        this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionCraftSystem(this));
-        this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionBorderTickSystem(this));
-        this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionEnterExitTickSystem(this));
-        this.getChunkStoreRegistry().registerSystem((ISystem)new DeityLandProtectionUpkeepTickingSystem(this));
-        this.getChunkStoreRegistry().registerSystem((ISystem)new DeityLandProtectionBorderSurfaceRefreshSystem(this));
-        this.getChunkStoreRegistry().registerSystem((ISystem)new DeityLandProtectionWorldMapUpdateTickingSystem(this));
+        this.getEntityStoreRegistry().registerSystem((ISystem)new PlaceSystem(this));
+        this.getEntityStoreRegistry().registerSystem((ISystem)new BreakSystem(this));
+        this.getEntityStoreRegistry().registerSystem((ISystem)new UseBlockSystem(this));
+        this.getEntityStoreRegistry().registerSystem((ISystem)new CraftSystem(this));
+        this.getEntityStoreRegistry().registerSystem((ISystem)new BorderTickSystem(this));
+        this.getEntityStoreRegistry().registerSystem((ISystem)new EnterExitTickSystem(this));
+        this.getChunkStoreRegistry().registerSystem((ISystem)new UpkeepTickingSystem(this));
+        this.getChunkStoreRegistry().registerSystem((ISystem)new BorderSurfaceRefreshSystem(this));
+        this.getChunkStoreRegistry().registerSystem((ISystem)new WorldMapUpdateTickingSystem(this));
         IWorldMapProvider.CODEC.register("DeityLandProtection", DeityLandProtectionWorldMapProvider.class, DeityLandProtectionWorldMapProvider.CODEC);
         this.getEventRegistry().registerGlobal(AddWorldEvent.class, event -> {
             if (event.getWorld().getWorldConfig().isDeleteOnRemove()) {
@@ -276,15 +276,15 @@ extends JavaPlugin {
     }
 
     public int getUpkeepTierForClaim(Claim claim) {
-        return DeityLandProtectionTierSystem.getUpkeepTierForClaim(this.upkeepStore, claim);
+        return TierSystem.getUpkeepTierForClaim(this.upkeepStore, claim);
     }
 
     public int getClaimRadiusForTier(int tier) {
-        return DeityLandProtectionTierSystem.getClaimRadiusForTier(this.getClaimRadius(), tier);
+        return TierSystem.getClaimRadiusForTier(this.getClaimRadius(), tier);
     }
 
     public int getUpkeepEssenceCostPerHourForTier(int tier) {
-        return DeityLandProtectionTierSystem.getUpkeepEssenceCostPerHourForTier(this.getUpkeepEssenceCostPerHour(), tier);
+        return TierSystem.getUpkeepEssenceCostPerHourForTier(this.getUpkeepEssenceCostPerHour(), tier);
     }
 
     public int getUpkeepEssenceCostPerHourForClaim(Claim claim) {
@@ -292,7 +292,7 @@ extends JavaPlugin {
     }
 
     public int getTierMultiplier(int tier) {
-        return DeityLandProtectionTierSystem.getTierMultiplier(tier);
+        return TierSystem.getTierMultiplier(tier);
     }
 
     public boolean isUpgradeMaterialItemId(String itemId) {

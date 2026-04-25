@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public final class DeityLandProtectionBorderTickSystem
+public final class BorderTickSystem
 extends EntityTickingSystem<EntityStore> {
     private static final long SPAWN_COOLDOWN_MS = 6000L;
     private static final int STEP = 1;
@@ -32,7 +32,7 @@ extends EntityTickingSystem<EntityStore> {
     private static final Color PARTICLE_COLOR = new Color((byte)0, (byte)96, (byte)127);
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionBorderTickSystem(DeityLandProtectionPlugin plugin) {
+    public BorderTickSystem(DeityLandProtectionPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -72,7 +72,7 @@ extends EntityTickingSystem<EntityStore> {
             this.plugin.disableBorder(uuid);
             return;
         }
-        String particleSystemId = DeityLandProtectionBorderTickSystem.resolveParticleSystemId(this.plugin, claim);
+        String particleSystemId = BorderTickSystem.resolveParticleSystemId(this.plugin, claim);
         World world = ((EntityStore)store.getExternalData()).getWorld();
         if (world == null) {
             return;
@@ -99,7 +99,7 @@ extends EntityTickingSystem<EntityStore> {
         if (ref == null || !ref.isValid()) {
             return;
         }
-        List<Ref<EntityStore>> borderViewers = DeityLandProtectionBorderTickSystem.collectViewerRefs(world);
+        List<Ref<EntityStore>> borderViewers = BorderTickSystem.collectViewerRefs(world);
         if (borderViewers.isEmpty()) {
             return;
         }
@@ -142,7 +142,7 @@ extends EntityTickingSystem<EntityStore> {
                     }
                     surfaceY = DeityLandProtectionBorderSurfaceUtil.resolveSurfaceY(world, x, baseY, z);
                 }
-                DeityLandProtectionBorderTickSystem.spawnPoint(store, borderViewers, particleSystemId, x, (double)surfaceY + 0.15, z);
+                BorderTickSystem.spawnPoint(store, borderViewers, particleSystemId, x, (double)surfaceY + 0.15, z);
             }
         }
     }

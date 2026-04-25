@@ -13,11 +13,11 @@ import com.hypixel.hytale.server.core.event.events.ecs.CraftRecipeEvent;
 import com.hypixel.hytale.server.core.inventory.MaterialQuantity;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-public final class DeityLandProtectionCraftSystem
+public final class CraftSystem
 extends EntityEventSystem<EntityStore, CraftRecipeEvent.Pre> {
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionCraftSystem(DeityLandProtectionPlugin plugin) {
+    public CraftSystem(DeityLandProtectionPlugin plugin) {
         super(CraftRecipeEvent.Pre.class);
         this.plugin = plugin;
     }

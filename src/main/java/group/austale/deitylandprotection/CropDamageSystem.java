@@ -15,13 +15,13 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class DeityLandProtectionCropDamageSystem
+public final class CropDamageSystem
 extends EntityEventSystem<EntityStore, DamageBlockEvent> {
     private final DeityLandProtectionPlugin plugin;
     private static final long MSG_COOLDOWN_MS = 1500L;
     private static final ConcurrentHashMap<UUID, Long> LAST_MSG_MS = new ConcurrentHashMap();
 
-    public DeityLandProtectionCropDamageSystem(DeityLandProtectionPlugin plugin) {
+    public CropDamageSystem(DeityLandProtectionPlugin plugin) {
         super(DamageBlockEvent.class);
         this.plugin = plugin;
     }

@@ -27,7 +27,7 @@ import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import java.util.Iterator;
 import java.util.UUID;
 
-public final class DeityLandProtectionUpkeepTickingSystem
+public final class UpkeepTickingSystem
 extends DelayedSystem<ChunkStore> {
     private static final long ONE_HOUR_MS = 3600000L;
     private static final String SLUMBERING_OUTPUT_ITEM_ID = "Plant_Fruit_Apple";
@@ -35,7 +35,7 @@ extends DelayedSystem<ChunkStore> {
 
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionUpkeepTickingSystem(DeityLandProtectionPlugin plugin) {
+    public UpkeepTickingSystem(DeityLandProtectionPlugin plugin) {
         super(1.0f);
         this.plugin = plugin;
     }
@@ -143,7 +143,7 @@ extends DelayedSystem<ChunkStore> {
                 }
                 continue;
             }
-            if (st.isPendingRemoveBlock() && DeityLandProtectionUpkeepTickingSystem.tryRemoveDeityLandProtectionBlock(world, centerX, centerY, centerZ)) {
+            if (st.isPendingRemoveBlock() && UpkeepTickingSystem.tryRemoveDeityLandProtectionBlock(world, centerX, centerY, centerZ)) {
                 st.setPendingRemoveBlock(false);
                 upkeep.markDirty();
             }
@@ -192,18 +192,18 @@ extends DelayedSystem<ChunkStore> {
                     st.setUpgradeTier(benchTier);
                     changed = true;
                 }
-            } else if (DeityLandProtectionTierSystem.tryUpgradeClaimTier(this.plugin, claims, world, liveClaim, container, st)) {
+            } else if (TierSystem.tryUpgradeClaimTier(this.plugin, claims, world, liveClaim, container, st)) {
                 changed = true;
             }
             String upkeepOutputItemId = this.plugin.isOutlanderClaimItemId(liveClaim.getDeityItemId()) ? OUTLANDER_OUTPUT_ITEM_ID : SLUMBERING_OUTPUT_ITEM_ID;
             int baseEssenceCostPerHour = Math.max(1, this.plugin.getUpkeepEssenceCostPerHour());
             int effectiveEssenceCostPerHour = this.plugin.getUpkeepEssenceCostPerHourForTier(st.getUpgradeTier());
-            int processedRequiredPerHour = DeityLandProtectionUpkeepTickingSystem.divideCeil(Math.max(1, effectiveEssenceCostPerHour), baseEssenceCostPerHour);
+            int processedRequiredPerHour = UpkeepTickingSystem.divideCeil(Math.max(1, effectiveEssenceCostPerHour), baseEssenceCostPerHour);
             if (st.getProcessEndsAtMs() != 0L) {
                 st.setProcessEndsAtMs(0L);
                 changed = true;
             }
-            if (DeityLandProtectionUpkeepTickingSystem.trackNativeProcessedOutput(container, st, upkeepOutputItemId, processedRequiredPerHour, now)) {
+            if (UpkeepTickingSystem.trackNativeProcessedOutput(container, st, upkeepOutputItemId, processedRequiredPerHour, now)) {
                 changed = true;
             }
             boolean active = st.getProtectionUntilMs() > now;
@@ -254,7 +254,7 @@ extends DelayedSystem<ChunkStore> {
                 if (secondsRemaining <= 30L && lastSent != secondsRemaining) {
                     st.setGraceCountdownLastSecond(secondsRemaining);
                     changed = true;
-                    PlayerRef ownerRef = DeityLandProtectionUpkeepTickingSystem.findPlayer(world, liveClaim.getOwner());
+                    PlayerRef ownerRef = UpkeepTickingSystem.findPlayer(world, liveClaim.getOwner());
                     if (ownerRef != null) {
                         LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(ownerRef);
                         EventTitleUtil.showEventTitleToPlayer((PlayerRef)ownerRef, Message.raw(Text.DeityLandProtectionDestroyTitlePrimary(lang, (int)secondsRemaining)), Message.raw(Text.DeityLandProtectionDestroyTitleSecondary(lang)), true, null, 1.1f, 0.0f, 0.2f);
@@ -329,18 +329,18 @@ extends DelayedSystem<ChunkStore> {
         if (container == null || state == null || outputItemId == null || outputItemId.isEmpty()) {
             return false;
         }
-        short outputSlot = DeityLandProtectionUpkeepTickingSystem.getOutputSlot(container);
+        short outputSlot = UpkeepTickingSystem.getOutputSlot(container);
         if (outputSlot < 0) {
             return false;
         }
-        int currentOutputQuantity = DeityLandProtectionUpkeepTickingSystem.getOutputQuantity(container, outputSlot, outputItemId);
+        int currentOutputQuantity = UpkeepTickingSystem.getOutputQuantity(container, outputSlot, outputItemId);
         int observedOutputQuantity = state.getObservedOutputQuantity();
         boolean changed = false;
         if (observedOutputQuantity < 0) {
             state.setObservedOutputQuantity(currentOutputQuantity);
             return true;
         }
-        if (currentOutputQuantity > observedOutputQuantity && DeityLandProtectionUpkeepTickingSystem.applyProcessedEssenceCredits(state, currentOutputQuantity - observedOutputQuantity, processedRequiredPerHour, now)) {
+        if (currentOutputQuantity > observedOutputQuantity && UpkeepTickingSystem.applyProcessedEssenceCredits(state, currentOutputQuantity - observedOutputQuantity, processedRequiredPerHour, now)) {
             changed = true;
         }
         if (currentOutputQuantity != observedOutputQuantity) {
@@ -362,7 +362,7 @@ extends DelayedSystem<ChunkStore> {
         }
         this.plugin.getClaimStore().removeClaimAt(claim.getCenterX(), claim.getCenterZ());
         this.plugin.clearBorderForClaim(claim.getCenterX(), claim.getCenterZ());
-        if (!DeityLandProtectionUpkeepTickingSystem.tryRemoveDeityLandProtectionBlock(world, claim.getCenterX(), claim.getCenterY(), claim.getCenterZ())) {
+        if (!UpkeepTickingSystem.tryRemoveDeityLandProtectionBlock(world, claim.getCenterX(), claim.getCenterY(), claim.getCenterZ())) {
             st.setPendingRemoveBlock(true);
         }
         upkeep.remove(claim.getCenterX(), claim.getCenterZ());

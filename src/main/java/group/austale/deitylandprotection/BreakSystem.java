@@ -16,11 +16,11 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.UUID;
 
-public final class DeityLandProtectionBreakSystem
+public final class BreakSystem
 extends EntityEventSystem<EntityStore, BreakBlockEvent> {
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionBreakSystem(DeityLandProtectionPlugin plugin) {
+    public BreakSystem(DeityLandProtectionPlugin plugin) {
         super(BreakBlockEvent.class);
         this.plugin = plugin;
     }

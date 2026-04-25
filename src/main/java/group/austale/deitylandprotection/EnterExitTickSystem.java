@@ -16,13 +16,13 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class DeityLandProtectionEnterExitTickSystem
+public final class EnterExitTickSystem
 extends EntityTickingSystem<EntityStore> {
     private static final long CHECK_COOLDOWN_MS = 250L;
     private final DeityLandProtectionPlugin plugin;
     private final ConcurrentHashMap<UUID, Long> lastCheckMsByPlayer = new ConcurrentHashMap();
 
-    public DeityLandProtectionEnterExitTickSystem(DeityLandProtectionPlugin plugin) {
+    public EnterExitTickSystem(DeityLandProtectionPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -88,17 +88,17 @@ extends EntityTickingSystem<EntityStore> {
         }
         this.plugin.setLastZoneKey(uuid, now);
         if (prev != null && now == null) {
-            Claim prevClaim = DeityLandProtectionEnterExitTickSystem.resolveClaim(this.plugin, prev);
-            String owner = DeityLandProtectionEnterExitTickSystem.resolveOwnerName(this.plugin, prevClaim);
+            Claim prevClaim = EnterExitTickSystem.resolveClaim(this.plugin, prev);
+            String owner = EnterExitTickSystem.resolveOwnerName(this.plugin, prevClaim);
             this.plugin.sendPlayerMessage(player, Text.leftArea(lang, owner));
             return;
         }
         if (prev == null && now != null) {
-            String owner = DeityLandProtectionEnterExitTickSystem.resolveOwnerName(this.plugin, claim);
+            String owner = EnterExitTickSystem.resolveOwnerName(this.plugin, claim);
             this.plugin.sendPlayerMessage(player, Text.enteredArea(lang, owner));
             return;
         }
-        String owner = DeityLandProtectionEnterExitTickSystem.resolveOwnerName(this.plugin, claim);
+        String owner = EnterExitTickSystem.resolveOwnerName(this.plugin, claim);
         this.plugin.sendPlayerMessage(player, Text.enteredArea(lang, owner));
     }
 

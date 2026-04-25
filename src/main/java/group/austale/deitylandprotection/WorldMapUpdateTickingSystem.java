@@ -11,12 +11,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class DeityLandProtectionWorldMapUpdateTickingSystem
+public final class WorldMapUpdateTickingSystem
 extends DelayedSystem<ChunkStore> {
     private final DeityLandProtectionPlugin plugin;
     private final ConcurrentHashMap<String, Boolean> lastVisualStateByWorld = new ConcurrentHashMap<String, Boolean>();
 
-    public DeityLandProtectionWorldMapUpdateTickingSystem(DeityLandProtectionPlugin plugin) {
+    public WorldMapUpdateTickingSystem(DeityLandProtectionPlugin plugin) {
         super(3.0f);
         this.plugin = plugin;
     }

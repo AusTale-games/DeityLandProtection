@@ -22,13 +22,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-public final class DeityLandProtectionPvpSystem
+public final class PvpSystem
 extends DamageEventSystem {
     private final DeityLandProtectionPlugin plugin;
     private static final long LOG_COOLDOWN_MS = 1500L;
     private static final ConcurrentHashMap<UUID, Long> LAST_LOG_MS = new ConcurrentHashMap();
 
-    public DeityLandProtectionPvpSystem(DeityLandProtectionPlugin plugin) {
+    public PvpSystem(DeityLandProtectionPlugin plugin) {
         this.plugin = plugin;
     }
 

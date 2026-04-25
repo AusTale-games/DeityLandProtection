@@ -9,13 +9,13 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 
-public final class DeityLandProtectionBorderSurfaceRefreshSystem
+public final class BorderSurfaceRefreshSystem
 extends DelayedSystem<ChunkStore> {
     private static final int STEP = 1;
     private static final int DEFAULT_BASE_Y_SEED = 100;
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionBorderSurfaceRefreshSystem(DeityLandProtectionPlugin plugin) {
+    public BorderSurfaceRefreshSystem(DeityLandProtectionPlugin plugin) {
         super(1.0f);
         this.plugin = plugin;
     }

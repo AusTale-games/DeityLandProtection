@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Tracks the per-world set of chunk indices whose world-map tile needs to be
  * regenerated because a claim was placed, removed, or resized inside it.
  *
- * <p>{@link DeityLandProtectionWorldMapUpdateTickingSystem} drains the queue
+ * <p>{@link WorldMapUpdateTickingSystem} drains the queue
  * one world at a time on its own schedule.</p>
  */
 final class DeityLandProtectionMapUpdateQueue {

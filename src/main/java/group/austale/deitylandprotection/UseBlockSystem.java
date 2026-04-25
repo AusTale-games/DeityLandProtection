@@ -31,11 +31,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public final class DeityLandProtectionUseBlockSystem
+public final class UseBlockSystem
 extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionUseBlockSystem(DeityLandProtectionPlugin plugin) {
+    public UseBlockSystem(DeityLandProtectionPlugin plugin) {
         super(UseBlockEvent.Pre.class);
         this.plugin = plugin;
     }
@@ -71,7 +71,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
         MovementStatesComponent msComponent = (MovementStatesComponent)chunk.getComponent(entityIndex, MovementStatesComponent.getComponentType());
         boolean crouching = msComponent != null && msComponent.getMovementStates() != null && msComponent.getMovementStates().crouching;
         if (crouching && !bypass && !claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 2)) {
-            if (DeityLandProtectionUseBlockSystem.isContainerOrBenchBlock(((EntityStore)store.getExternalData()).getWorld(), x, y, z)) {
+            if (UseBlockSystem.isContainerOrBenchBlock(((EntityStore)store.getExternalData()).getWorld(), x, y, z)) {
                 event.setCancelled(true);
                 this.plugin.sendPlayerMessage(player, Text.cannotBreakInside(lang));
                 return;

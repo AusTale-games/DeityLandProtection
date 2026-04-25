@@ -18,11 +18,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public final class DeityLandProtectionPlaceSystem
+public final class PlaceSystem
 extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionPlaceSystem(DeityLandProtectionPlugin plugin) {
+    public PlaceSystem(DeityLandProtectionPlugin plugin) {
         super(PlaceBlockEvent.class);
         this.plugin = plugin;
     }
