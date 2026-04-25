@@ -1,7 +1,9 @@
 package group.austale.deitylandprotection;
 
+import group.austale.deitylandprotection.AdminPage;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
+import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -10,24 +12,33 @@ import com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 
-public final class DeityLandProtectionPlayerClaimOpenInteraction
+public final class AdminLangToggleInteraction
 extends ChoiceInteraction {
     private final DeityLandProtectionPlugin plugin;
-    private final int centerX;
-    private final int centerZ;
 
-    public DeityLandProtectionPlayerClaimOpenInteraction(DeityLandProtectionPlugin plugin, int centerX, int centerZ) {
+    public AdminLangToggleInteraction(DeityLandProtectionPlugin plugin) {
         this.plugin = plugin;
-        this.centerX = centerX;
-        this.centerZ = centerZ;
     }
 
     public void run(@Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef) {
         if (this.plugin == null) {
             return;
         }
+        UUID actor = playerRef.getUuid();
+        if (actor == null) {
+            return;
+        }
+        LangPreferenceManager mgr = this.plugin.getLangPreferenceManager();
+        if (mgr == null) {
+            return;
+        }
+        LangPreferenceManager.Language current = mgr.getEffectiveLanguage(actor);
+        LangPreferenceManager.Language next = current == LangPreferenceManager.Language.ES ? LangPreferenceManager.Language.EN : LangPreferenceManager.Language.ES;
+        mgr.setOverride(actor, next);
+        this.plugin.sendPlayerMessageImmediate(playerRef, Text.langUpdated(next, next));
         Player playerEntity = (Player)store.getComponent(ref, Player.getComponentType());
         if (playerEntity == null) {
             return;
@@ -36,7 +47,7 @@ extends ChoiceInteraction {
         if (pages == null) {
             return;
         }
-        pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+        pages.openCustomPage(ref, store, (CustomUIPage)new AdminPage(this.plugin, playerRef));
     }
 }
 

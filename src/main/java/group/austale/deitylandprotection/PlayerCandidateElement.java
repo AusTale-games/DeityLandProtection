@@ -1,31 +1,41 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionBorderToggleInteraction;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
+import group.austale.deitylandprotection.TrustAddInteraction;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import java.util.UUID;
 
-public final class DeityLandProtectionBorderToggleElement
+public final class PlayerCandidateElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
     private final DeityLandProtectionPlugin plugin;
-    private final int centerX;
-    private final int centerZ;
+    private final UUID target;
+    private final String username;
 
-    public DeityLandProtectionBorderToggleElement(DeityLandProtectionPlugin plugin, int centerX, int centerZ) {
+    public PlayerCandidateElement(DeityLandProtectionPlugin plugin, int centerX, int centerZ, UUID target, String username) {
+        ChoiceInteraction[] choiceInteractionArray;
         this.plugin = plugin;
-        this.centerX = centerX;
-        this.centerZ = centerZ;
-        this.interactions = new ChoiceInteraction[]{new DeityLandProtectionBorderToggleInteraction(plugin, centerX, centerZ)};
+        this.target = target;
+        this.username = username;
+        if (target == null) {
+            choiceInteractionArray = new ChoiceInteraction[]{};
+        } else {
+            ChoiceInteraction[] choiceInteractionArray2 = new ChoiceInteraction[1];
+            choiceInteractionArray = choiceInteractionArray2;
+            choiceInteractionArray2[0] = new TrustAddInteraction(plugin, centerX, centerZ, target, username);
+        }
+        this.interactions = choiceInteractionArray;
     }
 
     public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {
+        String who;
         String iconId;
         if (commands == null || selector == null) {
             return;
@@ -34,14 +44,12 @@ extends ChoiceElement {
         if (this.plugin != null && (iconId = this.plugin.getDeityLandProtectionItemId()) != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
-        boolean on = false;
-        if (this.plugin != null && playerRef != null && playerRef.getUuid() != null) {
-            long key = DeityLandProtectionPlugin.centerKey(this.centerX, this.centerZ);
-            on = this.plugin.isBorderEnabled(playerRef.getUuid(), key);
+        if ((who = this.username) == null || who.isEmpty()) {
+            who = this.target == null ? "<unknown>" : this.target.toString();
         }
         LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
-        commands.set(selector + " #Name.TextSpans", Message.raw(Text.uiShowBorder(lang)));
-        commands.set(selector + " #Durability.Text", on ? Text.borderOnShort(lang) : Text.borderOffShort(lang));
+        commands.set(selector + " #Name.TextSpans", Message.raw(who));
+        commands.set(selector + " #Durability.Text", Text.uiClickAddAll(lang));
     }
 }
 

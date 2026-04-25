@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
+import group.austale.deitylandprotection.TrustListPage;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.builtin.crafting.window.ProcessingBenchWindow;
@@ -28,13 +28,13 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.Map;
 import java.util.UUID;
 
-public final class DeityLandProtectionOpenUpkeepInteraction
+public final class OpenUpkeepInteraction
 extends ChoiceInteraction {
     private final DeityLandProtectionPlugin plugin;
     private final int centerX;
     private final int centerZ;
 
-    public DeityLandProtectionOpenUpkeepInteraction(DeityLandProtectionPlugin plugin, int centerX, int centerZ) {
+    public OpenUpkeepInteraction(DeityLandProtectionPlugin plugin, int centerX, int centerZ) {
         this.plugin = plugin;
         this.centerX = centerX;
         this.centerZ = centerZ;
@@ -61,7 +61,7 @@ extends ChoiceInteraction {
             return;
         }
         if (!this.plugin.isUpkeepEnabled()) {
-            pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+            pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
             return;
         }
         World world = ((EntityStore)store.getExternalData()).getWorld();
@@ -72,35 +72,35 @@ extends ChoiceInteraction {
             ChunkStore chunkStore = world.getChunkStore();
             Ref chunkRef = chunkStore.getChunkReference(ChunkUtil.indexChunkFromBlock(x, z));
             if (chunkRef == null || !chunkRef.isValid()) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             Store chunkStoreStore = chunkStore.getStore();
             BlockComponentChunk bcc = (BlockComponentChunk)chunkStoreStore.getComponent(chunkRef, BlockComponentChunk.getComponentType());
             if (bcc == null) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             Ref entityRef = bcc.getEntityReference(ChunkUtil.indexBlockInColumn(x, y, z));
             if (entityRef == null || !entityRef.isValid()) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             ProcessingBenchBlock processingBenchBlock = (ProcessingBenchBlock)chunkStoreStore.getComponent(entityRef, ProcessingBenchBlock.getComponentType());
             if (processingBenchBlock == null) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             BenchBlock benchBlock = (BenchBlock)chunkStoreStore.getComponent(entityRef, BenchBlock.getComponentType());
             if (benchBlock == null) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             BlockModule.BlockStateInfo blockStateInfo = (BlockModule.BlockStateInfo)chunkStoreStore.getComponent(entityRef, BlockModule.BlockStateInfo.getComponentType());
             BlockType blockType = world.getBlockType(x, y, z);
             BlockAccessor blockAccessor = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock(x, z));
             if (blockAccessor == null) {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 return;
             }
             int rotationIndex = blockAccessor.getRotationIndex(x, y, z);
@@ -135,7 +135,7 @@ extends ChoiceInteraction {
                     window.registerCloseEvent(ev -> {
                         windows.remove(uuid, window);
                         try {
-                            pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                            pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                         }
                         catch (Throwable ignored) {
             // best-effort: swallowing a non-fatal failure
@@ -143,13 +143,13 @@ extends ChoiceInteraction {
                     });
                 } else {
                     windows.remove(uuid, window);
-                    pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                    pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                 }
             }
         }
         catch (Throwable ignored) {
             try {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
             }
             catch (Throwable ignoredFallback) {
                 // best-effort: swallowing a non-fatal failure

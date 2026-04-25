@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionOpenUpkeepInteraction;
+import group.austale.deitylandprotection.OpenUpkeepInteraction;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.server.core.Message;
@@ -11,16 +11,16 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
-public final class DeityLandProtectionOpenUpkeepElement
+public final class OpenUpkeepElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/DeityLandProtectionUpkeepButtonElement.ui";
     private final DeityLandProtectionPlugin plugin;
     private final Claim claim;
 
-    public DeityLandProtectionOpenUpkeepElement(DeityLandProtectionPlugin plugin, Claim claim, int centerX, int centerZ) {
+    public OpenUpkeepElement(DeityLandProtectionPlugin plugin, Claim claim, int centerX, int centerZ) {
         this.plugin = plugin;
         this.claim = claim;
-        this.interactions = new ChoiceInteraction[]{new DeityLandProtectionOpenUpkeepInteraction(plugin, centerX, centerZ)};
+        this.interactions = new ChoiceInteraction[]{new OpenUpkeepInteraction(plugin, centerX, centerZ)};
     }
 
     public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {

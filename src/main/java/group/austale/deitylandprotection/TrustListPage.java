@@ -1,16 +1,16 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionBorderToggleElement;
-import group.austale.deitylandprotection.DeityLandProtectionHeaderElement;
+import group.austale.deitylandprotection.BorderToggleElement;
+import group.austale.deitylandprotection.HeaderElement;
 import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionOpenUpkeepElement;
-import group.austale.deitylandprotection.DeityLandProtectionPlayerCandidateElement;
+import group.austale.deitylandprotection.OpenUpkeepElement;
+import group.austale.deitylandprotection.PlayerCandidateElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
-import group.austale.deitylandprotection.DeityLandProtectionTrustElement;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepSlotHintElement;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStatusElement;
+import group.austale.deitylandprotection.TrustElement;
+import group.austale.deitylandprotection.UpkeepSlotHintElement;
+import group.austale.deitylandprotection.UpkeepStatusElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceBasePage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.UUID;
 
-public final class DeityLandProtectionTrustListPage
+public final class TrustListPage
 extends ChoiceBasePage {
     private static final String PAGE_LAYOUT_ES = "Pages/DeityLandProtectionZoneConfigPage.ui";
     private static final String PAGE_LAYOUT_EN = "Pages/DeityLandProtectionZoneConfigPage_en.ui";
@@ -28,8 +28,8 @@ extends ChoiceBasePage {
     private final int centerX;
     private final int centerZ;
 
-    public DeityLandProtectionTrustListPage(DeityLandProtectionPlugin plugin, PlayerRef playerRef, int centerX, int centerZ) {
-        super(playerRef, DeityLandProtectionTrustListPage.buildElements(plugin, centerX, centerZ, DeityLandProtectionTrustListPage.resolveLang(plugin, playerRef)), DeityLandProtectionTrustListPage.resolveLayout(DeityLandProtectionTrustListPage.resolveLang(plugin, playerRef)));
+    public TrustListPage(DeityLandProtectionPlugin plugin, PlayerRef playerRef, int centerX, int centerZ) {
+        super(playerRef, TrustListPage.buildElements(plugin, centerX, centerZ, TrustListPage.resolveLang(plugin, playerRef)), TrustListPage.resolveLayout(TrustListPage.resolveLang(plugin, playerRef)));
         this.plugin = plugin;
         this.centerX = centerX;
         this.centerZ = centerZ;
@@ -54,17 +54,17 @@ extends ChoiceBasePage {
         Map<UUID, Integer> trusted = claim.getTrusted();
         ArrayList<ChoiceElement> els = new ArrayList<ChoiceElement>();
         if (plugin.isUpkeepEnabled()) {
-            els.add(new DeityLandProtectionOpenUpkeepElement(plugin, claim, centerX, centerZ));
-            els.add(new DeityLandProtectionUpkeepSlotHintElement(plugin, claim));
-            els.add(new DeityLandProtectionUpkeepStatusElement(plugin, centerX, centerZ));
+            els.add(new OpenUpkeepElement(plugin, claim, centerX, centerZ));
+            els.add(new UpkeepSlotHintElement(plugin, claim));
+            els.add(new UpkeepStatusElement(plugin, centerX, centerZ));
             UpkeepStore upkeepStore = plugin.getUpkeepStore();
             UpkeepState st = upkeepStore == null ? null : upkeepStore.get(centerX, centerZ);
             if (st != null && st.getGraceUntilMs() > System.currentTimeMillis()) {
-                els.add(new DeityLandProtectionUpkeepGraceElement(plugin, centerX, centerZ));
+                els.add(new UpkeepGraceElement(plugin, centerX, centerZ));
             }
         }
-        els.add(new DeityLandProtectionBorderToggleElement(plugin, centerX, centerZ));
-        els.add(new DeityLandProtectionTrustElement(plugin, centerX, centerZ, null, 0, true));
+        els.add(new BorderToggleElement(plugin, centerX, centerZ));
+        els.add(new TrustElement(plugin, centerX, centerZ, null, 0, true));
         if (!trusted.isEmpty()) {
             ArrayList<Map.Entry<UUID, Integer>> entries = new ArrayList<Map.Entry<UUID, Integer>>(trusted.entrySet());
             Collections.sort(entries, Comparator.comparing(e -> ((UUID)e.getKey()).toString()));
@@ -72,13 +72,13 @@ extends ChoiceBasePage {
                 UUID uUID = (UUID)entry.getKey();
                 Integer value = (Integer)entry.getValue();
                 int perms = value == null ? 0 : value;
-                els.add(new DeityLandProtectionTrustElement(plugin, centerX, centerZ, uUID, perms, false));
+                els.add(new TrustElement(plugin, centerX, centerZ, uUID, perms, false));
             }
         }
-        els.add(new DeityLandProtectionHeaderElement(Text.uiTitlePlayersInArea(lang), Text.uiSubtitleAddFriendAll(lang)));
+        els.add(new HeaderElement(Text.uiTitlePlayersInArea(lang), Text.uiSubtitleAddFriendAll(lang)));
         Map<UUID, String> inClaim = plugin.getPlayersInClaim(centerX, centerZ);
         if (inClaim.isEmpty()) {
-            els.add(new DeityLandProtectionHeaderElement(Text.uiNone(lang), ""));
+            els.add(new HeaderElement(Text.uiNone(lang), ""));
         } else {
             ArrayList<Map.Entry<UUID, String>> entries = new ArrayList<Map.Entry<UUID, String>>(inClaim.entrySet());
             Collections.sort(entries, Comparator.comparing(e -> e.getValue() == null ? "" : ((String)e.getValue()).toLowerCase()));
@@ -86,7 +86,7 @@ extends ChoiceBasePage {
                 UUID u = (UUID)entry.getKey();
                 if (u == null || u.equals(claim.getOwner()) || trusted.containsKey(u)) continue;
                 String name = (String)entry.getValue();
-                els.add(new DeityLandProtectionPlayerCandidateElement(plugin, centerX, centerZ, u, name));
+                els.add(new PlayerCandidateElement(plugin, centerX, centerZ, u, name));
             }
         }
         return (ChoiceElement[])els.toArray(ChoiceElement[]::new);

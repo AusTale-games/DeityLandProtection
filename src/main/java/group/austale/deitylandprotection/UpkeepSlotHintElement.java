@@ -10,13 +10,13 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
-public final class DeityLandProtectionUpkeepSlotHintElement
+public final class UpkeepSlotHintElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
     private final DeityLandProtectionPlugin plugin;
     private final Claim claim;
 
-    public DeityLandProtectionUpkeepSlotHintElement(DeityLandProtectionPlugin plugin, Claim claim) {
+    public UpkeepSlotHintElement(DeityLandProtectionPlugin plugin, Claim claim) {
         this.plugin = plugin;
         this.claim = claim;
         this.interactions = new ChoiceInteraction[0];

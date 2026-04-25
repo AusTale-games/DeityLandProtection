@@ -7,13 +7,13 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
-public final class DeityLandProtectionHeaderElement
+public final class HeaderElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
     private final String title;
     private final String subtitle;
 
-    public DeityLandProtectionHeaderElement(String title, String subtitle) {
+    public HeaderElement(String title, String subtitle) {
         this.title = title;
         this.subtitle = subtitle;
         this.interactions = new ChoiceInteraction[0];

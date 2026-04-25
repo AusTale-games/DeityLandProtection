@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionPlayerClaimOpenInteraction;
+import group.austale.deitylandprotection.PlayerClaimOpenInteraction;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.UpkeepState;
 import group.austale.deitylandprotection.UpkeepStore;
@@ -13,16 +13,16 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
-public final class DeityLandProtectionPlayerClaimElement
+public final class PlayerClaimElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
     private final DeityLandProtectionPlugin plugin;
     private final Claim claim;
 
-    public DeityLandProtectionPlayerClaimElement(DeityLandProtectionPlugin plugin, Claim claim) {
+    public PlayerClaimElement(DeityLandProtectionPlugin plugin, Claim claim) {
         this.plugin = plugin;
         this.claim = claim;
-        this.interactions = plugin != null && claim != null ? new ChoiceInteraction[]{new DeityLandProtectionPlayerClaimOpenInteraction(plugin, claim.getCenterX(), claim.getCenterZ())} : new ChoiceInteraction[0];
+        this.interactions = plugin != null && claim != null ? new ChoiceInteraction[]{new PlayerClaimOpenInteraction(plugin, claim.getCenterX(), claim.getCenterZ())} : new ChoiceInteraction[0];
     }
 
     public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {
@@ -69,9 +69,9 @@ extends ChoiceElement {
         long until = st == null ? 0L : st.getProtectionUntilMs();
         long totalFeedMs = st == null ? 0L : st.getTotalFeedDurationMs();
         long graceUntil = st == null ? 0L : st.getGraceUntilMs();
-        String time = until > now ? DeityLandProtectionPlayerClaimElement.formatDuration(until - now) : "0m";
-        String grace = graceUntil > now ? DeityLandProtectionPlayerClaimElement.formatDuration(graceUntil - now) : null;
-        String feed = DeityLandProtectionPlayerClaimElement.formatFeedDuration(totalFeedMs);
+        String time = until > now ? PlayerClaimElement.formatDuration(until - now) : "0m";
+        String grace = graceUntil > now ? PlayerClaimElement.formatDuration(graceUntil - now) : null;
+        String feed = PlayerClaimElement.formatFeedDuration(totalFeedMs);
         StringBuilder sb = new StringBuilder();
         if (lang == LangPreferenceManager.Language.ES) {
             sb.append("Radio: ").append(radius);
@@ -101,7 +101,7 @@ extends ChoiceElement {
         if (ms <= 0L) {
             return "0m";
         }
-        return DeityLandProtectionPlayerClaimElement.formatDuration(ms);
+        return PlayerClaimElement.formatDuration(ms);
     }
 
     private static String formatDuration(long ms) {

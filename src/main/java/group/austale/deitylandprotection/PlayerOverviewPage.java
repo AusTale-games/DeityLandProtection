@@ -2,10 +2,10 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.DeityLandProtectionAdminActionElement;
-import group.austale.deitylandprotection.DeityLandProtectionHeaderElement;
+import group.austale.deitylandprotection.AdminActionElement;
+import group.austale.deitylandprotection.HeaderElement;
 import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionPlayerClaimElement;
+import group.austale.deitylandprotection.PlayerClaimElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceBasePage;
@@ -16,14 +16,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-public final class DeityLandProtectionPlayerOverviewPage
+public final class PlayerOverviewPage
 extends ChoiceBasePage {
-    private static final String PAGE_LAYOUT_ES = "Pages/DeityLandProtectionPlayerOverviewPage.ui";
+    private static final String PAGE_LAYOUT_ES = "Pages/PlayerOverviewPage.ui";
     private static final String PAGE_LAYOUT_EN = "Pages/DeityLandProtectionPlayerOverviewPage_en.ui";
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionPlayerOverviewPage(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
-        super(playerRef, DeityLandProtectionPlayerOverviewPage.buildElements(plugin, playerRef), DeityLandProtectionPlayerOverviewPage.resolveLayout(DeityLandProtectionPlayerOverviewPage.resolveLang(plugin, playerRef)));
+    public PlayerOverviewPage(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
+        super(playerRef, PlayerOverviewPage.buildElements(plugin, playerRef), PlayerOverviewPage.resolveLayout(PlayerOverviewPage.resolveLang(plugin, playerRef)));
         this.plugin = plugin;
     }
 
@@ -43,9 +43,9 @@ extends ChoiceBasePage {
         if (playerId == null) {
             return new ChoiceElement[0];
         }
-        LangPreferenceManager.Language lang = DeityLandProtectionPlayerOverviewPage.resolveLang(plugin, playerRef);
+        LangPreferenceManager.Language lang = PlayerOverviewPage.resolveLang(plugin, playerRef);
         ArrayList<ChoiceElement> els = new ArrayList<ChoiceElement>();
-        els.add(new DeityLandProtectionHeaderElement(Text.uiMyClaimsTitle(lang), Text.uiMyClaimsSubtitle(lang)));
+        els.add(new HeaderElement(Text.uiMyClaimsTitle(lang), Text.uiMyClaimsSubtitle(lang)));
         ClaimStore store = plugin.getClaimStore();
         List<Claim> claims = store == null ? null : store.getClaims();
         ArrayList<Claim> mine = new ArrayList<Claim>();
@@ -57,11 +57,11 @@ extends ChoiceBasePage {
         }
         mine.sort(Comparator.comparingInt(Claim::getCenterX).thenComparingInt(Claim::getCenterZ));
         if (mine.isEmpty()) {
-            els.add(new DeityLandProtectionAdminActionElement(plugin, Text.uiMyClaimsNone(lang), "", null));
+            els.add(new AdminActionElement(plugin, Text.uiMyClaimsNone(lang), "", null));
             return (ChoiceElement[])els.toArray(ChoiceElement[]::new);
         }
         for (Claim c : mine) {
-            els.add(new DeityLandProtectionPlayerClaimElement(plugin, c));
+            els.add(new PlayerClaimElement(plugin, c));
         }
         return (ChoiceElement[])els.toArray(ChoiceElement[]::new);
     }

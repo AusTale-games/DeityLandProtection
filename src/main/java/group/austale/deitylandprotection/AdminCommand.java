@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionAdminPage;
+import group.austale.deitylandprotection.AdminPage;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -37,7 +37,7 @@ extends AbstractPlayerCommand {
         if (playerComponent == null) {
             return;
         }
-        playerComponent.getPageManager().openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionAdminPage(this.plugin, playerRef));
+        playerComponent.getPageManager().openCustomPage(ref, store, (CustomUIPage)new AdminPage(this.plugin, playerRef));
     }
 }
 

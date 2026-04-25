@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.DeityLandProtectionAdminPage;
+import group.austale.deitylandprotection.AdminPage;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
@@ -19,17 +19,17 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.UUID;
 
-public final class DeityLandProtectionAdminActionInteraction
+public final class AdminActionInteraction
 extends ChoiceInteraction {
     private final DeityLandProtectionPlugin plugin;
     private final Action action;
     private final int delta;
 
-    public DeityLandProtectionAdminActionInteraction(DeityLandProtectionPlugin plugin, Action action) {
+    public AdminActionInteraction(DeityLandProtectionPlugin plugin, Action action) {
         this(plugin, action, 0);
     }
 
-    public DeityLandProtectionAdminActionInteraction(DeityLandProtectionPlugin plugin, Action action, int delta) {
+    public AdminActionInteraction(DeityLandProtectionPlugin plugin, Action action, int delta) {
         this.plugin = plugin;
         this.action = action;
         this.delta = delta;
@@ -148,7 +148,7 @@ extends ChoiceInteraction {
         if (pages == null) {
             return;
         }
-        pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionAdminPage(this.plugin, playerRef));
+        pages.openCustomPage(ref, store, (CustomUIPage)new AdminPage(this.plugin, playerRef));
     }
 
     public static enum Action {

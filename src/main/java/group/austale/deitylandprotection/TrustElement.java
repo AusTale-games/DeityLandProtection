@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
-import group.austale.deitylandprotection.DeityLandProtectionTrustCycleInteraction;
+import group.austale.deitylandprotection.TrustCycleInteraction;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
@@ -13,7 +13,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import java.util.Map;
 import java.util.UUID;
 
-public final class DeityLandProtectionTrustElement
+public final class TrustElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
     private final DeityLandProtectionPlugin plugin;
@@ -23,14 +23,14 @@ extends ChoiceElement {
     private final int perms;
     private final boolean header;
 
-    public DeityLandProtectionTrustElement(DeityLandProtectionPlugin plugin, int centerX, int centerZ, UUID target, int perms, boolean header) {
+    public TrustElement(DeityLandProtectionPlugin plugin, int centerX, int centerZ, UUID target, int perms, boolean header) {
         this.plugin = plugin;
         this.centerX = centerX;
         this.centerZ = centerZ;
         this.target = target;
         this.perms = perms;
         this.header = header;
-        this.interactions = header || target == null ? new ChoiceInteraction[0] : new ChoiceInteraction[]{new DeityLandProtectionTrustCycleInteraction(plugin, centerX, centerZ, target)};
+        this.interactions = header || target == null ? new ChoiceInteraction[0] : new ChoiceInteraction[]{new TrustCycleInteraction(plugin, centerX, centerZ, target)};
     }
 
     public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {
@@ -55,7 +55,7 @@ extends ChoiceElement {
             who = resolveDisplayName(this.target);
         }
         commands.set(selector + " #Name.TextSpans", Message.raw(who));
-        commands.set(selector + " #Durability.Text", DeityLandProtectionTrustElement.permsToText(this.perms));
+        commands.set(selector + " #Durability.Text", TrustElement.permsToText(this.perms));
     }
 
     private String resolveDisplayName(UUID targetId) {

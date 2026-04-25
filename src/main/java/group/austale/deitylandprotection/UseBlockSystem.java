@@ -5,7 +5,7 @@ import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.Text;
-import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
+import group.austale.deitylandprotection.TrustListPage;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -108,7 +108,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
             }
             PageManager pages = playerEntity.getPageManager();
             try {
-                pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, player, claim.getCenterX(), claim.getCenterZ()));
+                pages.openCustomPage(ref, store, (CustomUIPage)new TrustListPage(this.plugin, player, claim.getCenterX(), claim.getCenterZ()));
             }
             catch (Throwable ignored) {
             // best-effort: swallowing a non-fatal failure

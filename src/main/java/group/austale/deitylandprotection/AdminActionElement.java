@@ -8,14 +8,14 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
-public final class DeityLandProtectionAdminActionElement
+public final class AdminActionElement
 extends ChoiceElement {
     private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
     private final DeityLandProtectionPlugin plugin;
     private final String title;
     private final String value;
 
-    public DeityLandProtectionAdminActionElement(DeityLandProtectionPlugin plugin, String title, String value, ChoiceInteraction interaction) {
+    public AdminActionElement(DeityLandProtectionPlugin plugin, String title, String value, ChoiceInteraction interaction) {
         ChoiceInteraction[] choiceInteractionArray;
         this.plugin = plugin;
         this.title = title;

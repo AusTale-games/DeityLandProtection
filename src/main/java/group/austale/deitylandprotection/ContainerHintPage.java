@@ -8,15 +8,15 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import javax.annotation.Nonnull;
 
-public final class DeityLandProtectionContainerHintPage
+public final class ContainerHintPage
 extends BasicCustomUIPage {
-    private static final String PAGE_LAYOUT_ES = "Pages/DeityLandProtectionContainerHintPage.ui";
+    private static final String PAGE_LAYOUT_ES = "Pages/ContainerHintPage.ui";
     private static final String PAGE_LAYOUT_EN = "Pages/DeityLandProtectionContainerHintPage_en.ui";
     private static final String ESSENCE_ITEM_ID = "Ingredient_Life_Essence";
     private final DeityLandProtectionPlugin plugin;
     private final LangPreferenceManager.Language lang;
 
-    public DeityLandProtectionContainerHintPage(@Nonnull PlayerRef playerRef, DeityLandProtectionPlugin plugin) {
+    public ContainerHintPage(@Nonnull PlayerRef playerRef, DeityLandProtectionPlugin plugin) {
         super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
         this.plugin = plugin;
         this.lang = plugin == null ? LangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
