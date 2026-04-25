@@ -32,15 +32,12 @@ import com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.Wor
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,7 +47,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 
 public class DeityLandProtectionPlugin
 extends JavaPlugin {
@@ -129,16 +125,18 @@ extends JavaPlugin {
     private final ConcurrentHashMap<String, Integer> borderSurfaceScanBaseYByWorldCenter = new ConcurrentHashMap();
     private DeityLandProtectionMapUpdateQueue mapUpdateQueue;
     private final DeityLandProtectionRecipeOverrider recipeOverrider = new DeityLandProtectionRecipeOverrider(this);
+    private DeityLandProtectionAssetInstaller assetInstaller;
 
     public DeityLandProtectionPlugin(JavaPluginInit init) {
         super(init);
         try {
             Path dataDir = this.getDataDirectory();
             this.absDataDir = dataDir.toAbsolutePath().normalize();
-            this.ensureAssetPackManifest(this.absDataDir);
-            this.removeDuplicateCustomUiFromDataPack(this.absDataDir);
+            this.assetInstaller = new DeityLandProtectionAssetInstaller(this.getLogger(), this.recipeOverrider);
+            this.assetInstaller.ensureAssetPackManifest(this.absDataDir);
+            this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
             this.loadRecipeCostConfig(this.absDataDir);
-            this.ensureCustomDeityLandProtectionItem(this.absDataDir);
+            this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
         }
         catch (Exception e) {
             ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed during plugin construction; setup() will retry");
@@ -404,10 +402,13 @@ extends JavaPlugin {
         instance = this;
         Path dataDir = this.getDataDirectory();
         this.absDataDir = dataDir.toAbsolutePath().normalize();
-        this.ensureAssetPackManifest(this.absDataDir);
-        this.removeDuplicateCustomUiFromDataPack(this.absDataDir);
+        if (this.assetInstaller == null) {
+            this.assetInstaller = new DeityLandProtectionAssetInstaller(this.getLogger(), this.recipeOverrider);
+        }
+        this.assetInstaller.ensureAssetPackManifest(this.absDataDir);
+        this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
         this.loadRecipeCostConfig(this.absDataDir);
-        this.ensureCustomDeityLandProtectionItem(this.absDataDir);
+        this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
         DeityLandProtectionLocalizationCatalog.writeGeneratedLanguageFiles(this.absDataDir);
         this.langPreferenceManager = new DeityLandProtectionLangPreferenceManager(this.getDataDirectory());
         this.localizer = new DeityLandProtectionLocalizer();
@@ -751,7 +752,9 @@ extends JavaPlugin {
             return;
         }
         this.loadRecipeCostConfig(this.absDataDir);
-        this.ensureCustomDeityLandProtectionItem(this.absDataDir);
+        if (this.assetInstaller != null) {
+            this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
+        }
         this.DeityLandProtectionItemId = this.loadDeityLandProtectionItemId(this.absDataDir);
         this.outlanderDeityItemId = this.loadOutlanderDeityItemId(this.absDataDir);
         this.claimRadius = this.loadClaimRadius(this.absDataDir);
@@ -1057,121 +1060,6 @@ extends JavaPlugin {
         return itemLower.endsWith(":" + configLower);
     }
 
-    private void ensureAssetPackManifest(Path dataDir) {
-        try {
-            Files.createDirectories(dataDir, new FileAttribute[0]);
-            Path manifest = dataDir.resolve("manifest.json");
-            String desired = "{\"Group\":\"games.Austale\",\"Name\":\"DeityLandProtectionData\",\"Version\":\"1.2.1\",\"ServerVersion\":\"2026.03.26-89796e57b\"}";
-            if (Files.exists(manifest, new LinkOption[0])) {
-                try {
-                    String existing = Files.readString(manifest, StandardCharsets.UTF_8);
-                    if (existing != null && existing.equals(desired)) {
-                        return;
-                    }
-                }
-                catch (IOException ignored) {
-                    // Manifest is unreadable; fall through and overwrite it.
-                }
-            }
-            Files.writeString(manifest, desired, StandardCharsets.UTF_8, new OpenOption[0]);
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write asset pack manifest");
-        }
-    }
-
-    private void ensureModsAssetPack() {
-    }
-
-    private void removeDuplicateCustomUiFromDataPack(Path dataDir) {
-        if (dataDir == null) {
-            return;
-        }
-        String[] roots = new String[]{"Common/UI/Custom", "Assets/Common/UI/Custom"};
-        try {
-            boolean removed = false;
-            for (String rel : roots) {
-                Path root = dataDir.resolve(rel);
-                if (!Files.isDirectory(root)) {
-                    continue;
-                }
-                removed = true;
-                try (Stream<Path> walk = Files.walk(root)) {
-                    walk.sorted(Comparator.reverseOrder()).forEach(path -> {
-                        try {
-                            Files.deleteIfExists(path);
-                        }
-                        catch (IOException ignored) {
-                        }
-                    });
-                }
-            }
-            if (removed) {
-                ((HytaleLogger.Api)this.getLogger().at(Level.INFO)).log("DeityLandProtection removed duplicate Custom UI from plugin data folder (UI stays in the main asset pack only).");
-            }
-        }
-        catch (Exception e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to strip duplicate UI from data pack");
-        }
-    }
-
-    private void writeResourceIfMissingOrDifferent(Path dest, String resourcePath) throws IOException {
-        if (dest == null || resourcePath == null) {
-            return;
-        }
-        Files.createDirectories(dest.getParent(), new FileAttribute[0]);
-        ClassLoader classLoader = DeityLandProtectionPlugin.class.getClassLoader();
-        if (classLoader == null) {
-            return;
-        }
-        try (InputStream in = classLoader.getResourceAsStream(resourcePath)) {
-            if (in == null) {
-                return;
-            }
-            String content = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-            if (Files.exists(dest, new LinkOption[0])) {
-                try {
-                    String existing = Files.readString(dest, StandardCharsets.UTF_8);
-                    if (existing.equals(content)) {
-                        return;
-                    }
-                } catch (Exception ignored) {
-                    // Fall through and overwrite if the file cannot be read cleanly.
-                }
-            }
-            Files.writeString(dest, content, StandardCharsets.UTF_8, new OpenOption[0]);
-        }
-    }
-
-    private void writeCustomDeityItemResource(Path dest, String resourcePath) throws IOException {
-        if (dest == null || resourcePath == null) {
-            return;
-        }
-        Files.createDirectories(dest.getParent(), new FileAttribute[0]);
-        ClassLoader classLoader = DeityLandProtectionPlugin.class.getClassLoader();
-        if (classLoader == null) {
-            return;
-        }
-        try (InputStream in = classLoader.getResourceAsStream(resourcePath)) {
-            if (in == null) {
-                return;
-            }
-            String content = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-            String overridden = this.recipeOverrider.applyOverrides(resourcePath, content);
-            if (Files.exists(dest, new LinkOption[0])) {
-                try {
-                    String existing = Files.readString(dest, StandardCharsets.UTF_8);
-                    if (existing.equals(overridden)) {
-                        return;
-                    }
-                }
-                catch (Exception ignored) {
-                    // Fall through and overwrite if the file cannot be read cleanly.
-                }
-            }
-            Files.writeString(dest, overridden, StandardCharsets.UTF_8, new OpenOption[0]);
-        }
-    }
 
     int getSlumberingRecipeCobbleCost() {
         return Math.max(0, this.slumberingRecipeCobbleCost);
@@ -1187,18 +1075,6 @@ extends JavaPlugin {
 
     int getOutlanderRecipeEssenceCost() {
         return Math.max(0, this.outlanderRecipeEssenceCost);
-    }
-
-    private void ensureCustomDeityLandProtectionItem(Path dataDir) {
-        try {
-            this.writeCustomDeityItemResource(dataDir.resolve("Server/Item/Items/DeityLandProtection/SlumberingDeity_Block.json"), "Server/Item/Items/DeityLandProtection/SlumberingDeity_Block.json");
-            this.writeCustomDeityItemResource(dataDir.resolve("Assets/Server/Item/Items/DeityLandProtection/SlumberingDeity_Block.json"), "Assets/Server/Item/Items/DeityLandProtection/SlumberingDeity_Block.json");
-            this.writeCustomDeityItemResource(dataDir.resolve("Server/Item/Items/DeityLandProtection/OutlanderDeity_Block.json"), "Server/Item/Items/DeityLandProtection/OutlanderDeity_Block.json");
-            this.writeCustomDeityItemResource(dataDir.resolve("Assets/Server/Item/Items/DeityLandProtection/OutlanderDeity_Block.json"), "Assets/Server/Item/Items/DeityLandProtection/OutlanderDeity_Block.json");
-        }
-        catch (Exception e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write custom item asset");
-        }
     }
 
 }
