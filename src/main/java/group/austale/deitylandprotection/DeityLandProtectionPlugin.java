@@ -49,8 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -130,6 +128,7 @@ extends JavaPlugin {
     private final DeityLandProtectionBorderSurfaceCache borderSurfaceCache = new DeityLandProtectionBorderSurfaceCache();
     private final ConcurrentHashMap<String, Integer> borderSurfaceScanBaseYByWorldCenter = new ConcurrentHashMap();
     private DeityLandProtectionMapUpdateQueue mapUpdateQueue;
+    private final DeityLandProtectionRecipeOverrider recipeOverrider = new DeityLandProtectionRecipeOverrider(this);
 
     public DeityLandProtectionPlugin(JavaPluginInit init) {
         super(init);
@@ -1158,7 +1157,7 @@ extends JavaPlugin {
                 return;
             }
             String content = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-            String overridden = this.applyRecipeCostOverrides(resourcePath, content);
+            String overridden = this.recipeOverrider.applyOverrides(resourcePath, content);
             if (Files.exists(dest, new LinkOption[0])) {
                 try {
                     String existing = Files.readString(dest, StandardCharsets.UTF_8);
@@ -1174,102 +1173,20 @@ extends JavaPlugin {
         }
     }
 
-    private String applyRecipeCostOverrides(String resourcePath, String content) {
-        if (content == null || content.isEmpty() || resourcePath == null) {
-            return content;
-        }
-        String adjusted = content;
-        boolean isSlumberingDeity = resourcePath.endsWith("SlumberingDeity_Block.json");
-        boolean isOutlanderDeity = resourcePath.endsWith("OutlanderDeity_Block.json");
-        if (!isSlumberingDeity && !isOutlanderDeity) {
-            return adjusted;
-        }
-        if (isSlumberingDeity) {
-            adjusted = DeityLandProtectionPlugin.replaceRecipeQuantity(adjusted, "Rock_Stone_Cobble", this.slumberingRecipeCobbleCost);
-            adjusted = DeityLandProtectionPlugin.replaceRecipeQuantity(adjusted, "Ingredient_Life_Essence", this.slumberingRecipeEssenceCost);
-        }
-        if (isOutlanderDeity) {
-            adjusted = DeityLandProtectionPlugin.replaceRecipeQuantity(adjusted, "Rock_Slate_Cobble", this.outlanderRecipeCobbleCost);
-            adjusted = DeityLandProtectionPlugin.replaceRecipeQuantity(adjusted, "Ingredient_Void_Essence", this.outlanderRecipeEssenceCost);
-        }
-        adjusted = this.applyUpgradeRequirementOverrides(adjusted);
-        return adjusted;
+    int getSlumberingRecipeCobbleCost() {
+        return Math.max(0, this.slumberingRecipeCobbleCost);
     }
 
-    private static String replaceRecipeQuantity(String content, String itemId, int quantity) {
-        if (content == null || content.isEmpty() || itemId == null || itemId.isEmpty()) {
-            return content;
-        }
-        int safeQuantity = Math.max(0, quantity);
-        Pattern pattern = Pattern.compile("(\\\"ItemId\\\"\\s*:\\s*\\\"" + Pattern.quote(itemId) + "\\\"\\s*,\\s*\\\"Quantity\\\"\\s*:\\s*)\\d+");
-        Matcher matcher = pattern.matcher(content);
-        StringBuffer sb = new StringBuffer();
-        boolean replaced = false;
-        while (matcher.find()) {
-            replaced = true;
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(1) + safeQuantity));
-        }
-        if (!replaced) {
-            return content;
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
+    int getSlumberingRecipeEssenceCost() {
+        return Math.max(0, this.slumberingRecipeEssenceCost);
     }
 
-    private String applyUpgradeRequirementOverrides(String content) {
-        if (content == null || content.isEmpty()) {
-            return content;
-        }
-        String adjusted = content;
-        String tier2Materials = DeityLandProtectionPlugin.buildUpgradeMaterialsJson(this.getUpgradeTier2ItemId(), this.getUpgradeTier2ItemQuantity(), null, 0);
-        String tier3Materials = DeityLandProtectionPlugin.buildUpgradeMaterialsJson(this.getUpgradeTier3ItemId(), this.getUpgradeTier3ItemQuantity(), null, 0);
-        String tier4Materials = DeityLandProtectionPlugin.buildUpgradeMaterialsJson(this.getUpgradeTier4PrimaryItemId(), this.getUpgradeTier4PrimaryItemQuantity(), this.getUpgradeTier4SecondaryItemId(), this.getUpgradeTier4SecondaryItemQuantity());
-        adjusted = DeityLandProtectionPlugin.replaceUpgradeRequirementMaterials(adjusted, 1, tier2Materials);
-        adjusted = DeityLandProtectionPlugin.replaceUpgradeRequirementMaterials(adjusted, 2, tier3Materials);
-        adjusted = DeityLandProtectionPlugin.replaceUpgradeRequirementMaterials(adjusted, 3, tier4Materials);
-        return adjusted;
+    int getOutlanderRecipeCobbleCost() {
+        return Math.max(0, this.outlanderRecipeCobbleCost);
     }
 
-    private static String buildUpgradeMaterialsJson(String firstItemId, int firstQuantity, String secondItemId, int secondQuantity) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n              {\n                \"ItemId\": \"").append(DeityLandProtectionPlugin.escapeJson(firstItemId)).append("\",\n                \"Quantity\": ").append(Math.max(0, firstQuantity)).append("\n              }");
-        if (secondItemId != null && !secondItemId.trim().isEmpty()) {
-            sb.append(",\n              {\n                \"ItemId\": \"").append(DeityLandProtectionPlugin.escapeJson(secondItemId)).append("\",\n                \"Quantity\": ").append(Math.max(0, secondQuantity)).append("\n              }");
-        }
-        sb.append("\n            ");
-        return sb.toString();
-    }
-
-    private static String replaceUpgradeRequirementMaterials(String content, int requirementIndex, String replacementMaterialsJson) {
-        if (content == null || content.isEmpty() || requirementIndex < 1 || replacementMaterialsJson == null) {
-            return content;
-        }
-        Pattern pattern = Pattern.compile("(\\\"UpgradeRequirement\\\"\\s*:\\s*\\{\\s*\\\"Material\\\"\\s*:\\s*\\[)(.*?)(\\]\\s*,\\s*\\\"TimeSeconds\\\"\\s*:\\s*\\d+\\s*\\})", 32);
-        Matcher matcher = pattern.matcher(content);
-        StringBuffer sb = new StringBuffer();
-        int index = 0;
-        boolean replaced = false;
-        while (matcher.find()) {
-            ++index;
-            if (index == requirementIndex) {
-                replaced = true;
-                matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(1) + replacementMaterialsJson + matcher.group(3)));
-                continue;
-            }
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(0)));
-        }
-        if (!replaced) {
-            return content;
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
-
-    private static String escapeJson(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.replace("\\", "\\\\").replace("\"", "\\\"");
+    int getOutlanderRecipeEssenceCost() {
+        return Math.max(0, this.outlanderRecipeEssenceCost);
     }
 
     private void ensureCustomDeityLandProtectionItem(Path dataDir) {
