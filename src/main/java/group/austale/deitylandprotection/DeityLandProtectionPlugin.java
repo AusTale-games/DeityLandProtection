@@ -31,14 +31,7 @@ import com.hypixel.hytale.server.core.universe.world.worldmap.provider.IWorldMap
 import com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.WorldGenWorldMapProvider;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -50,73 +43,14 @@ import java.util.logging.Level;
 
 public class DeityLandProtectionPlugin
 extends JavaPlugin {
-    private static final int DEFAULT_RADIUS = 16;
-    private static final String DEFAULT_DeityLandProtection_ITEM_ID = "SlumberingDeity_Block";
-    private static final String CONFIG_DEITY_ITEM_ID_KEY = "DeityLandProtectionItemId";
-    private static final String CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY = "OutlanderDeityItemId";
-    private static final String OUTLANDER_DEITY_ITEM_ID = "OutlanderDeity_Block";
-    private static final String OUTLANDER_DEITY_BLOCK_ITEM_ID = "Furniture_Temple_Dark_Statue_Gaia";
-    private static final String ESSENCE_OF_LIFE_ITEM_ID = "Ingredient_Life_Essence";
-    private static final String ESSENCE_OF_VOID_ITEM_ID = "Ingredient_Void_Essence";
-    private static final int DEFAULT_MAX_CLAIMS_PER_PLAYER = 1;
-    private static final int MAX_CLAIMS_PER_PLAYER_CAP = 5;
-    private static final boolean DEFAULT_ALLOW_CRAFTING = true;
-    private static final boolean DEFAULT_MAP_CLAIM_VISUAL_ENABLED = true;
-    private static final int DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR = 1;
-    private static final int DEFAULT_UPKEEP_GRACE_MINUTES = 30;
-    private static final int DEFAULT_SLUMBERING_RECIPE_COBBLE_COST = 20;
-    private static final int DEFAULT_SLUMBERING_RECIPE_ESSENCE_COST = 10;
-    private static final int DEFAULT_OUTLANDER_RECIPE_COBBLE_COST = 20;
-    private static final int DEFAULT_OUTLANDER_RECIPE_ESSENCE_COST = 10;
-    private static final String DEFAULT_UPGRADE_TIER_2_ITEM_ID = "Ingredient_Bar_Adamantite";
-    private static final int DEFAULT_UPGRADE_TIER_2_ITEM_QUANTITY = 25;
-    private static final String DEFAULT_UPGRADE_TIER_3_ITEM_ID = "Wood_Crystal_Trunk";
-    private static final int DEFAULT_UPGRADE_TIER_3_ITEM_QUANTITY = 100;
-    private static final String DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID = "Rock_Gem_Ruby";
-    private static final int DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY = 1;
-    private static final String DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID = "Rock_Gem_Sapphire";
-    private static final int DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY = 1;
-    private static final String CONFIG_SLUMBERING_RECIPE_COBBLE_COST_KEY = "slumberingRecipeCobbleCost";
-    private static final String CONFIG_SLUMBERING_RECIPE_ESSENCE_COST_KEY = "slumberingRecipeEssenceCost";
-    private static final String CONFIG_OUTLANDER_RECIPE_COBBLE_COST_KEY = "outlanderRecipeCobbleCost";
-    private static final String CONFIG_OUTLANDER_RECIPE_ESSENCE_COST_KEY = "outlanderRecipeEssenceCost";
-    private static final String CONFIG_UPGRADE_TIER_2_ITEM_ID_KEY = "upgradeTier2ItemId";
-    private static final String CONFIG_UPGRADE_TIER_2_ITEM_QUANTITY_KEY = "upgradeTier2ItemQuantity";
-    private static final String CONFIG_UPGRADE_TIER_3_ITEM_ID_KEY = "upgradeTier3ItemId";
-    private static final String CONFIG_UPGRADE_TIER_3_ITEM_QUANTITY_KEY = "upgradeTier3ItemQuantity";
-    private static final String CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_ID_KEY = "upgradeTier4PrimaryItemId";
-    private static final String CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY_KEY = "upgradeTier4PrimaryItemQuantity";
-    private static final String CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_ID_KEY = "upgradeTier4SecondaryItemId";
-    private static final String CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY = "upgradeTier4SecondaryItemQuantity";
-    private static final int[] ALLOWED_RADII = new int[]{16, 32, 64, 128};
     private static final long FLUSH_PERIOD_SECONDS = 10L;
     private static final long RECENT_PLACEMENT_IGNORE_BREAK_MS = 2000L;
     private static final long PLAYER_MESSAGE_COOLDOWN_MS = 1200L;
     private static volatile DeityLandProtectionPlugin instance;
     private ClaimStore claimStore;
-    private String DeityLandProtectionItemId;
-    private String outlanderDeityItemId;
-    private int claimRadius;
-    private int maxClaimsPerPlayer;
-    private boolean allowCrafting;
-    private boolean mapClaimVisualEnabled;
+    private DeityLandProtectionConfig config;
     private ScheduledExecutorService flushExecutor;
     private DeityLandProtectionUpkeepStore upkeepStore;
-    private boolean upkeepEnabled;
-    private int upkeepGraceMinutes;
-    private int upkeepEssenceCostPerHour;
-    private int slumberingRecipeCobbleCost;
-    private int slumberingRecipeEssenceCost;
-    private int outlanderRecipeCobbleCost;
-    private int outlanderRecipeEssenceCost;
-    private String upgradeTier2ItemId;
-    private int upgradeTier2ItemQuantity;
-    private String upgradeTier3ItemId;
-    private int upgradeTier3ItemQuantity;
-    private String upgradeTier4PrimaryItemId;
-    private int upgradeTier4PrimaryItemQuantity;
-    private String upgradeTier4SecondaryItemId;
-    private int upgradeTier4SecondaryItemQuantity;
     private Path absDataDir;
     private DeityLandProtectionLangPreferenceManager langPreferenceManager;
     private DeityLandProtectionLocalizer localizer;
@@ -132,10 +66,11 @@ extends JavaPlugin {
         try {
             Path dataDir = this.getDataDirectory();
             this.absDataDir = dataDir.toAbsolutePath().normalize();
+            this.config = new DeityLandProtectionConfig(this.getLogger());
             this.assetInstaller = new DeityLandProtectionAssetInstaller(this.getLogger(), this.recipeOverrider);
             this.assetInstaller.ensureAssetPackManifest(this.absDataDir);
             this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
-            this.loadRecipeCostConfig(this.absDataDir);
+            this.config.load(this.absDataDir);
             this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
         }
         catch (Exception e) {
@@ -147,280 +82,23 @@ extends JavaPlugin {
         return instance;
     }
 
-    private Path resolveConfigPath(Path dataDir) {
-        Path baseDir = dataDir;
-        if (baseDir == null) {
-            try {
-                baseDir = this.getDataDirectory();
-            }
-            catch (Exception ignored) {
-                baseDir = null;
-            }
-        }
-        if (baseDir == null) {
-            baseDir = Path.of(".");
-        }
-        Path serverRoot = this.resolveServerRoot(baseDir);
-        Path configDir = serverRoot.resolve("config").resolve("DeityLandProtection");
-        try {
-            Files.createDirectories(configDir, new FileAttribute[0]);
-        }
-        catch (Exception ignored) {
-            // best-effort: swallowing a non-fatal failure
-        }
-        return configDir.resolve("config.json");
-    }
-
-    private Path resolveServerRoot(Path dataDir) {
-        if (dataDir == null) {
-            return Path.of(".");
-        }
-        Path current = dataDir.toAbsolutePath().normalize();
-        while (current != null) {
-            Path name = current.getFileName();
-            if (name != null && name.toString().equalsIgnoreCase("mods")) {
-                Path parent = current.getParent();
-                return parent == null ? current : parent;
-            }
-            current = current.getParent();
-        }
-        return dataDir.toAbsolutePath().normalize();
-    }
-
-    private int loadClaimRadius(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return DEFAULT_RADIUS;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer r = JsonReader.readInt(json, "claimRadius");
-            int normalized = DeityLandProtectionPlugin.normalizeRadius(r == null ? DEFAULT_RADIUS : r);
-            return normalized > 0 ? normalized : DEFAULT_RADIUS;
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return DEFAULT_RADIUS;
-        }
-    }
-
-    private int loadMaxClaimsPerPlayer(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return 1;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer v = JsonReader.readInt(json, "maxClaimsPerPlayer");
-            int requested = v == null ? 1 : v;
-            return DeityLandProtectionPlugin.clampMaxClaimsPerPlayer(requested);
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return 1;
-        }
-    }
-
-    private boolean loadAllowCrafting(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return true;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Boolean v = JsonReader.readBoolean(json, "allowCrafting");
-            return v == null ? true : v;
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return true;
-        }
-    }
-
-    private boolean loadMapClaimVisualEnabled(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return DEFAULT_MAP_CLAIM_VISUAL_ENABLED;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Boolean v = JsonReader.readBoolean(json, "mapClaimVisualEnabled");
-            return v == null ? DEFAULT_MAP_CLAIM_VISUAL_ENABLED : v;
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return DEFAULT_MAP_CLAIM_VISUAL_ENABLED;
-        }
-    }
-
-    private void persistConfig() {
-        if (this.absDataDir == null) {
-            return;
-        }
-        Path cfg = this.resolveConfigPath(this.absDataDir);
-        try {
-            Path cfgDir = cfg.getParent();
-            if (cfgDir != null) {
-                Files.createDirectories(cfgDir, new FileAttribute[0]);
-            }
-            String content = "{\"" + CONFIG_DEITY_ITEM_ID_KEY + "\":\"" + (this.DeityLandProtectionItemId == null ? DEFAULT_DeityLandProtection_ITEM_ID : this.DeityLandProtectionItemId) + "\",\"" + CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY + "\":\"" + (this.outlanderDeityItemId == null ? OUTLANDER_DEITY_ITEM_ID : this.outlanderDeityItemId) + "\",\"claimRadius\":" + this.getDefaultRadius() + ",\"maxClaimsPerPlayer\":" + this.getMaxClaimsPerPlayer() + ",\"allowCrafting\":" + this.isAllowCrafting() + ",\"mapClaimVisualEnabled\":" + this.isMapClaimVisualEnabled() + ",\"upkeepEnabled\":" + this.isUpkeepEnabled() + ",\"upkeepGraceMinutes\":" + this.getUpkeepGraceMinutes() + ",\"upkeepEssenceCostPerHour\":" + this.getUpkeepEssenceCostPerHour() + ",\"" + CONFIG_SLUMBERING_RECIPE_COBBLE_COST_KEY + "\":" + Math.max(0, this.slumberingRecipeCobbleCost) + ",\"" + CONFIG_SLUMBERING_RECIPE_ESSENCE_COST_KEY + "\":" + Math.max(0, this.slumberingRecipeEssenceCost) + ",\"" + CONFIG_OUTLANDER_RECIPE_COBBLE_COST_KEY + "\":" + Math.max(0, this.outlanderRecipeCobbleCost) + ",\"" + CONFIG_OUTLANDER_RECIPE_ESSENCE_COST_KEY + "\":" + Math.max(0, this.outlanderRecipeEssenceCost) + ",\"" + CONFIG_UPGRADE_TIER_2_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier2ItemId() + "\",\"" + CONFIG_UPGRADE_TIER_2_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier2ItemQuantity() + ",\"" + CONFIG_UPGRADE_TIER_3_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier3ItemId() + "\",\"" + CONFIG_UPGRADE_TIER_3_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier3ItemQuantity() + ",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier4PrimaryItemId() + "\",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier4PrimaryItemQuantity() + ",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier4SecondaryItemId() + "\",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier4SecondaryItemQuantity() + "}";
-            Files.writeString(cfg, content, StandardCharsets.UTF_8, new OpenOption[0]);
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write config.json");
-        }
-    }
-
-    private boolean loadUpkeepEnabled(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return true;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Boolean v = JsonReader.readBoolean(json, "upkeepEnabled");
-            return v == null ? true : v;
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return true;
-        }
-    }
-
-    private int loadUpkeepGraceMinutes(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return DEFAULT_UPKEEP_GRACE_MINUTES;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer v = JsonReader.readInt(json, "upkeepGraceMinutes");
-            return v == null ? DEFAULT_UPKEEP_GRACE_MINUTES : Math.max(0, v);
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return DEFAULT_UPKEEP_GRACE_MINUTES;
-        }
-    }
-
-    private int loadUpkeepEssenceCostPerHour(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer v = JsonReader.readInt(json, "upkeepEssenceCostPerHour");
-            return v == null ? DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR : Math.max(1, v);
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR;
-        }
-    }
-
-    private void loadRecipeCostConfig(Path dataDir) {
-        this.slumberingRecipeCobbleCost = DEFAULT_SLUMBERING_RECIPE_COBBLE_COST;
-        this.slumberingRecipeEssenceCost = DEFAULT_SLUMBERING_RECIPE_ESSENCE_COST;
-        this.outlanderRecipeCobbleCost = DEFAULT_OUTLANDER_RECIPE_COBBLE_COST;
-        this.outlanderRecipeEssenceCost = DEFAULT_OUTLANDER_RECIPE_ESSENCE_COST;
-        this.upgradeTier2ItemId = DEFAULT_UPGRADE_TIER_2_ITEM_ID;
-        this.upgradeTier2ItemQuantity = DEFAULT_UPGRADE_TIER_2_ITEM_QUANTITY;
-        this.upgradeTier3ItemId = DEFAULT_UPGRADE_TIER_3_ITEM_ID;
-        this.upgradeTier3ItemQuantity = DEFAULT_UPGRADE_TIER_3_ITEM_QUANTITY;
-        this.upgradeTier4PrimaryItemId = DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID;
-        this.upgradeTier4PrimaryItemQuantity = DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY;
-        this.upgradeTier4SecondaryItemId = DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID;
-        this.upgradeTier4SecondaryItemQuantity = DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY;
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            this.slumberingRecipeCobbleCost = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_SLUMBERING_RECIPE_COBBLE_COST_KEY, DEFAULT_SLUMBERING_RECIPE_COBBLE_COST);
-            this.slumberingRecipeEssenceCost = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_SLUMBERING_RECIPE_ESSENCE_COST_KEY, DEFAULT_SLUMBERING_RECIPE_ESSENCE_COST);
-            this.outlanderRecipeCobbleCost = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_OUTLANDER_RECIPE_COBBLE_COST_KEY, DEFAULT_OUTLANDER_RECIPE_COBBLE_COST);
-            this.outlanderRecipeEssenceCost = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_OUTLANDER_RECIPE_ESSENCE_COST_KEY, DEFAULT_OUTLANDER_RECIPE_ESSENCE_COST);
-            this.upgradeTier2ItemId = DeityLandProtectionPlugin.readConfiguredItemId(json, CONFIG_UPGRADE_TIER_2_ITEM_ID_KEY, DEFAULT_UPGRADE_TIER_2_ITEM_ID);
-            this.upgradeTier2ItemQuantity = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_UPGRADE_TIER_2_ITEM_QUANTITY_KEY, DEFAULT_UPGRADE_TIER_2_ITEM_QUANTITY);
-            this.upgradeTier3ItemId = DeityLandProtectionPlugin.readConfiguredItemId(json, CONFIG_UPGRADE_TIER_3_ITEM_ID_KEY, DEFAULT_UPGRADE_TIER_3_ITEM_ID);
-            this.upgradeTier3ItemQuantity = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_UPGRADE_TIER_3_ITEM_QUANTITY_KEY, DEFAULT_UPGRADE_TIER_3_ITEM_QUANTITY);
-            this.upgradeTier4PrimaryItemId = DeityLandProtectionPlugin.readConfiguredItemId(json, CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_ID_KEY, DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID);
-            this.upgradeTier4PrimaryItemQuantity = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY_KEY, DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY);
-            this.upgradeTier4SecondaryItemId = DeityLandProtectionPlugin.readConfiguredItemId(json, CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_ID_KEY, DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID);
-            this.upgradeTier4SecondaryItemQuantity = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY, DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY);
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-        }
-    }
-
-    private static int readConfiguredRecipeCost(String json, String key, int defaultValue) {
-        Integer value = JsonReader.readInt(json, key);
-        if (value == null) {
-            return defaultValue;
-        }
-        return Math.max(0, value);
-    }
-
-    private static String readConfiguredItemId(String json, String key, String defaultValue) {
-        String value = JsonReader.readString(json, key);
-        if (value == null) {
-            return defaultValue;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? defaultValue : trimmed;
-    }
-
-    private static int clampMaxClaimsPerPlayer(int value) {
-        int v = value;
-        if (v < 1) {
-            v = 1;
-        }
-        if (v > 5) {
-            v = 5;
-        }
-        return v;
-    }
-
-    private static int normalizeRadius(int radius) {
-        int[] nArray = ALLOWED_RADII;
-        int n = ALLOWED_RADII.length;
-        int n2 = 0;
-        while (n2 < n) {
-            int r = nArray[n2];
-            if (r == radius) {
-                return r;
-            }
-            ++n2;
-        }
-        return -1;
-    }
-
     protected void setup() {
         instance = this;
         Path dataDir = this.getDataDirectory();
         this.absDataDir = dataDir.toAbsolutePath().normalize();
+        if (this.config == null) {
+            this.config = new DeityLandProtectionConfig(this.getLogger());
+        }
         if (this.assetInstaller == null) {
             this.assetInstaller = new DeityLandProtectionAssetInstaller(this.getLogger(), this.recipeOverrider);
         }
         this.assetInstaller.ensureAssetPackManifest(this.absDataDir);
         this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
-        this.loadRecipeCostConfig(this.absDataDir);
+        this.config.load(this.absDataDir);
         this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
         DeityLandProtectionLocalizationCatalog.writeGeneratedLanguageFiles(this.absDataDir);
         this.langPreferenceManager = new DeityLandProtectionLangPreferenceManager(this.getDataDirectory());
         this.localizer = new DeityLandProtectionLocalizer();
-        this.DeityLandProtectionItemId = this.loadDeityLandProtectionItemId(this.absDataDir);
-        this.outlanderDeityItemId = this.loadOutlanderDeityItemId(this.absDataDir);
-        this.claimRadius = this.loadClaimRadius(this.absDataDir);
-        this.maxClaimsPerPlayer = this.loadMaxClaimsPerPlayer(this.absDataDir);
-        this.allowCrafting = this.loadAllowCrafting(this.absDataDir);
-        this.mapClaimVisualEnabled = this.loadMapClaimVisualEnabled(this.absDataDir);
-        this.upkeepEnabled = this.loadUpkeepEnabled(this.absDataDir);
-        this.upkeepGraceMinutes = this.loadUpkeepGraceMinutes(this.absDataDir);
-        this.upkeepEssenceCostPerHour = this.loadUpkeepEssenceCostPerHour(this.absDataDir);
         this.claimStore = new ClaimStore(this.absDataDir.resolve("claims.json"), this.getLogger());
         this.claimStore.load();
         this.upkeepStore = new DeityLandProtectionUpkeepStore(this.absDataDir.resolve("upkeep.json"), this.getLogger());
@@ -466,7 +144,7 @@ extends JavaPlugin {
                 }
             }
         }, 10L, 10L, TimeUnit.SECONDS);
-        this.getLogger().at(Level.INFO).log("DeityLandProtection dataDir=" + String.valueOf(this.absDataDir) + ", DeityLandProtectionItemId=" + this.DeityLandProtectionItemId + ", OutlanderDeityItemId=" + this.outlanderDeityItemId + ", claimRadius=" + this.claimRadius + ", maxClaimsPerPlayer=" + this.maxClaimsPerPlayer + ", allowCrafting=" + this.allowCrafting + ", claimsLoaded=" + this.claimStore.getClaims().size());
+        this.getLogger().at(Level.INFO).log("DeityLandProtection dataDir=" + String.valueOf(this.absDataDir) + ", DeityLandProtectionItemId=" + this.config.deityItemId + ", OutlanderDeityItemId=" + this.config.outlanderDeityItemId + ", claimRadius=" + this.config.claimRadius + ", maxClaimsPerPlayer=" + this.config.maxClaimsPerPlayer + ", allowCrafting=" + this.config.allowCrafting + ", claimsLoaded=" + this.claimStore.getClaims().size());
         this.getLogger().at(Level.INFO).log("DeityLandProtectionPlugin setup");
     }
 
@@ -531,7 +209,7 @@ extends JavaPlugin {
     }
 
     public int getDefaultRadius() {
-        return this.claimRadius > 0 ? this.claimRadius : 16;
+        return this.config.claimRadius > 0 ? this.config.claimRadius : DeityLandProtectionConfig.DEFAULT_RADIUS;
     }
 
     public int getClaimRadius() {
@@ -539,62 +217,66 @@ extends JavaPlugin {
     }
 
     public boolean setClaimRadius(int radius) {
-        int normalized = DeityLandProtectionPlugin.normalizeRadius(radius);
+        int normalized = DeityLandProtectionConfig.normalizeRadius(radius);
         if (normalized <= 0) {
             return false;
         }
-        this.claimRadius = normalized;
-        this.persistConfig();
+        this.config.claimRadius = normalized;
+        this.config.save(this.absDataDir);
         return true;
     }
 
     public int getMaxClaimsPerPlayer() {
-        return DeityLandProtectionPlugin.clampMaxClaimsPerPlayer(this.maxClaimsPerPlayer <= 0 ? 1 : this.maxClaimsPerPlayer);
+        return DeityLandProtectionConfig.clampMaxClaimsPerPlayer(this.config.maxClaimsPerPlayer <= 0 ? 1 : this.config.maxClaimsPerPlayer);
     }
 
     public boolean setMaxClaimsPerPlayer(int maxClaimsPerPlayer) {
-        this.maxClaimsPerPlayer = DeityLandProtectionPlugin.clampMaxClaimsPerPlayer(maxClaimsPerPlayer);
-        this.persistConfig();
+        this.config.maxClaimsPerPlayer = DeityLandProtectionConfig.clampMaxClaimsPerPlayer(maxClaimsPerPlayer);
+        this.config.save(this.absDataDir);
         return true;
     }
 
     public boolean isAllowCrafting() {
-        return this.allowCrafting;
+        return this.config.allowCrafting;
     }
 
     public boolean setAllowCrafting(boolean allowCrafting) {
-        this.allowCrafting = allowCrafting;
-        this.persistConfig();
+        this.config.allowCrafting = allowCrafting;
+        this.config.save(this.absDataDir);
         return true;
     }
 
     public boolean isMapClaimVisualEnabled() {
-        return this.mapClaimVisualEnabled;
+        return this.config.mapClaimVisualEnabled;
     }
 
     public boolean setMapClaimVisualEnabled(boolean enabled) {
-        this.mapClaimVisualEnabled = enabled;
-        this.persistConfig();
+        this.config.mapClaimVisualEnabled = enabled;
+        this.config.save(this.absDataDir);
         return true;
     }
 
     public String getDeityLandProtectionItemId() {
-        return this.DeityLandProtectionItemId;
+        return this.config.deityItemId;
     }
 
     public boolean isClaimItemId(String itemId) {
-        return DeityLandProtectionPlugin.itemIdMatches(itemId, this.DeityLandProtectionItemId) || DeityLandProtectionPlugin.itemIdMatches(itemId, DEFAULT_DeityLandProtection_ITEM_ID) || this.isOutlanderClaimItemId(itemId);
+        return DeityLandProtectionConfig.itemIdMatches(itemId, this.config.deityItemId)
+                || DeityLandProtectionConfig.itemIdMatches(itemId, DeityLandProtectionConfig.DEFAULT_DEITY_ITEM_ID)
+                || this.isOutlanderClaimItemId(itemId);
     }
 
     public boolean isOutlanderClaimItemId(String itemId) {
-        return DeityLandProtectionPlugin.itemIdMatches(itemId, this.outlanderDeityItemId) || DeityLandProtectionPlugin.itemIdMatches(itemId, OUTLANDER_DEITY_ITEM_ID) || DeityLandProtectionPlugin.itemIdMatches(itemId, OUTLANDER_DEITY_BLOCK_ITEM_ID);
+        return DeityLandProtectionConfig.itemIdMatches(itemId, this.config.outlanderDeityItemId)
+                || DeityLandProtectionConfig.itemIdMatches(itemId, DeityLandProtectionConfig.OUTLANDER_DEITY_ITEM_ID)
+                || DeityLandProtectionConfig.itemIdMatches(itemId, DeityLandProtectionConfig.OUTLANDER_DEITY_BLOCK_ITEM_ID);
     }
 
     public String getUpkeepEssenceItemIdForClaim(Claim claim) {
         if (claim != null && this.isOutlanderClaimItemId(claim.getDeityItemId())) {
-            return ESSENCE_OF_VOID_ITEM_ID;
+            return DeityLandProtectionConfig.ESSENCE_OF_VOID_ITEM_ID;
         }
-        return ESSENCE_OF_LIFE_ITEM_ID;
+        return DeityLandProtectionConfig.ESSENCE_OF_LIFE_ITEM_ID;
     }
 
     public int getUpkeepTierForClaim(Claim claim) {
@@ -638,75 +320,63 @@ extends JavaPlugin {
     }
 
     public String getUpgradeTier2ItemId() {
-        String value = this.upgradeTier2ItemId;
-        if (value == null) {
-            return DEFAULT_UPGRADE_TIER_2_ITEM_ID;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? DEFAULT_UPGRADE_TIER_2_ITEM_ID : trimmed;
+        return resolvedItemId(this.config.upgradeTier2ItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_2_ITEM_ID);
     }
 
     public int getUpgradeTier2ItemQuantity() {
-        return Math.max(0, this.upgradeTier2ItemQuantity);
+        return Math.max(0, this.config.upgradeTier2ItemQuantity);
     }
 
     public String getUpgradeTier3ItemId() {
-        String value = this.upgradeTier3ItemId;
-        if (value == null) {
-            return DEFAULT_UPGRADE_TIER_3_ITEM_ID;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? DEFAULT_UPGRADE_TIER_3_ITEM_ID : trimmed;
+        return resolvedItemId(this.config.upgradeTier3ItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_3_ITEM_ID);
     }
 
     public int getUpgradeTier3ItemQuantity() {
-        return Math.max(0, this.upgradeTier3ItemQuantity);
+        return Math.max(0, this.config.upgradeTier3ItemQuantity);
     }
 
     public String getUpgradeTier4PrimaryItemId() {
-        String value = this.upgradeTier4PrimaryItemId;
-        if (value == null) {
-            return DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID : trimmed;
+        return resolvedItemId(this.config.upgradeTier4PrimaryItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID);
     }
 
     public int getUpgradeTier4PrimaryItemQuantity() {
-        return Math.max(0, this.upgradeTier4PrimaryItemQuantity);
+        return Math.max(0, this.config.upgradeTier4PrimaryItemQuantity);
     }
 
     public String getUpgradeTier4SecondaryItemId() {
-        String value = this.upgradeTier4SecondaryItemId;
-        if (value == null) {
-            return DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID : trimmed;
+        return resolvedItemId(this.config.upgradeTier4SecondaryItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID);
     }
 
     public int getUpgradeTier4SecondaryItemQuantity() {
-        return Math.max(0, this.upgradeTier4SecondaryItemQuantity);
+        return Math.max(0, this.config.upgradeTier4SecondaryItemQuantity);
+    }
+
+    private static String resolvedItemId(String value, String defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? defaultValue : trimmed;
     }
 
     public boolean isTier2UpgradeItemId(String itemId) {
-        return DeityLandProtectionPlugin.itemIdEqualsConfigured(itemId, this.getUpgradeTier2ItemId());
+        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier2ItemId());
     }
 
     public boolean isTier3UpgradeItemId(String itemId) {
-        return DeityLandProtectionPlugin.itemIdEqualsConfigured(itemId, this.getUpgradeTier3ItemId());
+        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier3ItemId());
     }
 
     public boolean isTier4PrimaryUpgradeItemId(String itemId) {
-        return DeityLandProtectionPlugin.itemIdEqualsConfigured(itemId, this.getUpgradeTier4PrimaryItemId());
+        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier4PrimaryItemId());
     }
 
     public boolean isTier4SecondaryUpgradeItemId(String itemId) {
-        return DeityLandProtectionPlugin.itemIdEqualsConfigured(itemId, this.getUpgradeTier4SecondaryItemId());
+        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier4SecondaryItemId());
     }
 
     public boolean areTier4UpgradeItemsSameItem() {
-        return DeityLandProtectionPlugin.itemIdEqualsConfigured(this.getUpgradeTier4PrimaryItemId(), this.getUpgradeTier4SecondaryItemId());
+        return DeityLandProtectionConfig.itemIdEqualsConfigured(this.getUpgradeTier4PrimaryItemId(), this.getUpgradeTier4SecondaryItemId());
     }
 
     public String getUpkeepEssenceTitleForClaim(Claim claim, DeityLandProtectionLangPreferenceManager.Language lang) {
@@ -751,19 +421,10 @@ extends JavaPlugin {
         if (this.absDataDir == null) {
             return;
         }
-        this.loadRecipeCostConfig(this.absDataDir);
+        this.config.load(this.absDataDir);
         if (this.assetInstaller != null) {
             this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
         }
-        this.DeityLandProtectionItemId = this.loadDeityLandProtectionItemId(this.absDataDir);
-        this.outlanderDeityItemId = this.loadOutlanderDeityItemId(this.absDataDir);
-        this.claimRadius = this.loadClaimRadius(this.absDataDir);
-        this.maxClaimsPerPlayer = this.loadMaxClaimsPerPlayer(this.absDataDir);
-        this.allowCrafting = this.loadAllowCrafting(this.absDataDir);
-        this.mapClaimVisualEnabled = this.loadMapClaimVisualEnabled(this.absDataDir);
-        this.upkeepEnabled = this.loadUpkeepEnabled(this.absDataDir);
-        this.upkeepGraceMinutes = this.loadUpkeepGraceMinutes(this.absDataDir);
-        this.upkeepEssenceCostPerHour = this.loadUpkeepEssenceCostPerHour(this.absDataDir);
         if (this.claimStore != null) {
             this.claimStore.load();
         }
@@ -777,21 +438,21 @@ extends JavaPlugin {
     }
 
     public boolean isUpkeepEnabled() {
-        return this.upkeepEnabled;
+        return this.config.upkeepEnabled;
     }
 
     public void setUpkeepEnabled(boolean enabled) {
-        this.upkeepEnabled = enabled;
-        this.persistConfig();
+        this.config.upkeepEnabled = enabled;
+        this.config.save(this.absDataDir);
     }
 
     public int getUpkeepGraceMinutes() {
-        return Math.max(0, this.upkeepGraceMinutes);
+        return Math.max(0, this.config.upkeepGraceMinutes);
     }
 
     public void setUpkeepGraceMinutes(int minutes) {
-        this.upkeepGraceMinutes = Math.max(0, minutes);
-        this.persistConfig();
+        this.config.upkeepGraceMinutes = Math.max(0, minutes);
+        this.config.save(this.absDataDir);
     }
 
     public long getUpkeepGraceMs() {
@@ -799,12 +460,12 @@ extends JavaPlugin {
     }
 
     public int getUpkeepEssenceCostPerHour() {
-        return Math.max(1, this.upkeepEssenceCostPerHour);
+        return Math.max(1, this.config.upkeepEssenceCostPerHour);
     }
 
     public void setUpkeepEssenceCostPerHour(int cost) {
-        this.upkeepEssenceCostPerHour = Math.max(1, cost);
-        this.persistConfig();
+        this.config.upkeepEssenceCostPerHour = Math.max(1, cost);
+        this.config.save(this.absDataDir);
     }
 
     public void cycleUpkeepEssenceCostPerHour() {
@@ -822,63 +483,6 @@ extends JavaPlugin {
             next = 1;
         }
         this.setUpkeepEssenceCostPerHour(next);
-    }
-
-    private String loadDeityLandProtectionItemId(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            try {
-                Path cfgDir = cfg.getParent();
-                if (cfgDir != null) {
-                    Files.createDirectories(cfgDir, new FileAttribute[0]);
-                }
-                String content = "{\"" + CONFIG_DEITY_ITEM_ID_KEY + "\":\"" + DEFAULT_DeityLandProtection_ITEM_ID + "\",\"" + CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY + "\":\"" + OUTLANDER_DEITY_ITEM_ID + "\",\"claimRadius\":16,\"maxClaimsPerPlayer\":1,\"allowCrafting\":true,\"mapClaimVisualEnabled\":true,\"upkeepEnabled\":true,\"upkeepGraceMinutes\":30,\"upkeepEssenceCostPerHour\":1,\"" + CONFIG_SLUMBERING_RECIPE_COBBLE_COST_KEY + "\":" + DEFAULT_SLUMBERING_RECIPE_COBBLE_COST + ",\"" + CONFIG_SLUMBERING_RECIPE_ESSENCE_COST_KEY + "\":" + DEFAULT_SLUMBERING_RECIPE_ESSENCE_COST + ",\"" + CONFIG_OUTLANDER_RECIPE_COBBLE_COST_KEY + "\":" + DEFAULT_OUTLANDER_RECIPE_COBBLE_COST + ",\"" + CONFIG_OUTLANDER_RECIPE_ESSENCE_COST_KEY + "\":" + DEFAULT_OUTLANDER_RECIPE_ESSENCE_COST + ",\"" + CONFIG_UPGRADE_TIER_2_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_2_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_2_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_2_ITEM_QUANTITY + ",\"" + CONFIG_UPGRADE_TIER_3_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_3_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_3_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_3_ITEM_QUANTITY + ",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY + ",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY + "}";
-                Files.writeString(cfg, content, StandardCharsets.UTF_8, new OpenOption[0]);
-            }
-            catch (IOException e) {
-                ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write config.json");
-            }
-            return DEFAULT_DeityLandProtection_ITEM_ID;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            String value = JsonReader.readString(json, CONFIG_DEITY_ITEM_ID_KEY);
-            if (value == null) {
-                return DEFAULT_DeityLandProtection_ITEM_ID;
-            }
-            String trimmed = value.trim();
-            if (trimmed.isEmpty()) {
-                return DEFAULT_DeityLandProtection_ITEM_ID;
-            }
-            if (DeityLandProtectionPlugin.itemIdMatches(trimmed, "DeityLandProtection_Block")) {
-                return DEFAULT_DeityLandProtection_ITEM_ID;
-            }
-            return trimmed;
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return DEFAULT_DeityLandProtection_ITEM_ID;
-        }
-    }
-
-    private String loadOutlanderDeityItemId(Path dataDir) {
-        Path cfg = this.resolveConfigPath(dataDir);
-        if (!Files.exists(cfg, new LinkOption[0])) {
-            return OUTLANDER_DEITY_ITEM_ID;
-        }
-        try {
-            String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            String value = JsonReader.readString(json, CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY);
-            if (value == null) {
-                return OUTLANDER_DEITY_ITEM_ID;
-            }
-            String trimmed = value.trim();
-            return trimmed.isEmpty() ? OUTLANDER_DEITY_ITEM_ID : trimmed;
-        }
-        catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return OUTLANDER_DEITY_ITEM_ID;
-        }
     }
 
     public boolean isOpBypass(UUID playerUuid) {
@@ -1027,54 +631,20 @@ extends JavaPlugin {
         return ChunkKeys.pack(x, z);
     }
 
-    private static boolean itemIdMatches(String itemId, String configuredItemId) {
-        if (itemId == null || configuredItemId == null) {
-            return false;
-        }
-        String itemLower = itemId.trim().toLowerCase(Locale.ROOT);
-        String configLower = configuredItemId.trim().toLowerCase(Locale.ROOT);
-        if (itemLower.isEmpty() || configLower.isEmpty()) {
-            return false;
-        }
-        if (itemLower.equals(configLower)) {
-            return true;
-        }
-        if (itemLower.endsWith(":" + configLower)) {
-            return true;
-        }
-        return itemLower.contains(configLower);
-    }
-
-    private static boolean itemIdEqualsConfigured(String itemId, String configuredItemId) {
-        if (itemId == null || configuredItemId == null) {
-            return false;
-        }
-        String itemLower = itemId.trim().toLowerCase(Locale.ROOT);
-        String configLower = configuredItemId.trim().toLowerCase(Locale.ROOT);
-        if (itemLower.isEmpty() || configLower.isEmpty()) {
-            return false;
-        }
-        if (itemLower.equals(configLower)) {
-            return true;
-        }
-        return itemLower.endsWith(":" + configLower);
-    }
-
-
     int getSlumberingRecipeCobbleCost() {
-        return Math.max(0, this.slumberingRecipeCobbleCost);
+        return Math.max(0, this.config.slumberingRecipeCobbleCost);
     }
 
     int getSlumberingRecipeEssenceCost() {
-        return Math.max(0, this.slumberingRecipeEssenceCost);
+        return Math.max(0, this.config.slumberingRecipeEssenceCost);
     }
 
     int getOutlanderRecipeCobbleCost() {
-        return Math.max(0, this.outlanderRecipeCobbleCost);
+        return Math.max(0, this.config.outlanderRecipeCobbleCost);
     }
 
     int getOutlanderRecipeEssenceCost() {
-        return Math.max(0, this.outlanderRecipeEssenceCost);
+        return Math.max(0, this.config.outlanderRecipeEssenceCost);
     }
 
 }
