@@ -425,7 +425,7 @@ public final class ClaimStore {
         if (claimChunkRadius > this.maxChunkRadius) {
             this.maxChunkRadius = claimChunkRadius;
         }
-        String encodedRows = readJsonString(rawObject, TERRITORY_ROWS_KEY);
+        String encodedRows = JsonReader.readString(rawObject, TERRITORY_ROWS_KEY);
         if (encodedRows != null && !encodedRows.isEmpty()) {
             this.decodeTerritoryRows(claimKey, claim, encodedRows);
         } else {
@@ -448,76 +448,23 @@ public final class ClaimStore {
 
     private Claim parseClaim(String obj) {
         try {
-            String ownerStr = readJsonString(obj, "owner");
-            Integer x = readJsonInt(obj, "x");
-            Integer z = readJsonInt(obj, "z");
-            Integer r = readJsonInt(obj, "r");
+            String ownerStr = JsonReader.readString(obj, "owner");
+            Integer x = JsonReader.readInt(obj, "x");
+            Integer z = JsonReader.readInt(obj, "z");
+            Integer r = JsonReader.readInt(obj, "r");
             if (ownerStr == null || x == null || z == null || r == null) {
                 return null;
             }
-            String ownerName = readJsonString(obj, "ownerName");
-            Integer y = readJsonInt(obj, "y");
-            Boolean pvp = readJsonBoolean(obj, "pvp");
-            String itemId = readJsonString(obj, "itemId");
+            String ownerName = JsonReader.readString(obj, "ownerName");
+            Integer y = JsonReader.readInt(obj, "y");
+            Boolean pvp = JsonReader.readBoolean(obj, "pvp");
+            String itemId = JsonReader.readString(obj, "itemId");
             UUID owner = UUID.fromString(ownerStr);
             Map<UUID, Integer> trusted = readTrusted(obj);
             int cy = y == null ? Integer.MIN_VALUE : y;
             boolean pvpEnabled = Boolean.TRUE.equals(pvp);
             return new Claim(owner, ownerName, x, cy, z, r, trusted, pvpEnabled, itemId);
         } catch (Exception ignored) {
-            return null;
-        }
-    }
-
-    private static int findColonAfter(String obj, String key) {
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return -1;
-        }
-        return obj.indexOf(':', k + pattern.length());
-    }
-
-    private static int skipWhitespace(String s, int from) {
-        int i = from;
-        while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
-            i++;
-        }
-        return i;
-    }
-
-    private static Boolean readJsonBoolean(String obj, String key) {
-        int colon = findColonAfter(obj, key);
-        if (colon < 0) return null;
-        int i = skipWhitespace(obj, colon + 1);
-        if (i >= obj.length()) return null;
-        if (obj.startsWith("true", i)) return Boolean.TRUE;
-        if (obj.startsWith("false", i)) return Boolean.FALSE;
-        return null;
-    }
-
-    private static String readJsonString(String obj, String key) {
-        int colon = findColonAfter(obj, key);
-        if (colon < 0) return null;
-        int firstQuote = obj.indexOf('"', colon + 1);
-        if (firstQuote < 0) return null;
-        int secondQuote = obj.indexOf('"', firstQuote + 1);
-        if (secondQuote < 0) return null;
-        return obj.substring(firstQuote + 1, secondQuote);
-    }
-
-    private static Integer readJsonInt(String obj, String key) {
-        int colon = findColonAfter(obj, key);
-        if (colon < 0) return null;
-        int i = skipWhitespace(obj, colon + 1);
-        int j = i;
-        while (j < obj.length() && (obj.charAt(j) == '-' || Character.isDigit(obj.charAt(j)))) {
-            j++;
-        }
-        if (j == i) return null;
-        try {
-            return Integer.parseInt(obj.substring(i, j));
-        } catch (NumberFormatException ignored) {
             return null;
         }
     }
@@ -544,7 +491,7 @@ public final class ClaimStore {
             String uuidStr = body.substring(q1 + 1, q2);
             int c = body.indexOf(':', q2 + 1);
             if (c < 0) break;
-            int i = skipWhitespace(body, c + 1);
+            int i = JsonReader.skipWhitespace(body, c + 1);
             int j = i;
             while (j < body.length() && (body.charAt(j) == '-' || Character.isDigit(body.charAt(j)))) {
                 j++;
@@ -629,23 +576,23 @@ public final class ClaimStore {
     }
 
     private static long centerKey(int x, int z) {
-        return (long) x << 32 ^ (long) z & 0xFFFFFFFFL;
+        return ChunkKeys.pack(x, z);
     }
 
     private static long cellKey(int x, int z) {
-        return (long) x << 32 ^ (long) z & 0xFFFFFFFFL;
+        return ChunkKeys.pack(x, z);
     }
 
     private static int xOfCellKey(long key) {
-        return (int) (key >> 32);
+        return ChunkKeys.xOf(key);
     }
 
     private static int zOfCellKey(long key) {
-        return (int) key;
+        return ChunkKeys.zOf(key);
     }
 
     private static long chunkKey(int chunkX, int chunkZ) {
-        return (long) chunkX << 32 ^ (long) chunkZ & 0xFFFFFFFFL;
+        return ChunkKeys.pack(chunkX, chunkZ);
     }
 
     private static long bucketKey(Claim claim) {

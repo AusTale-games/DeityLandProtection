@@ -71,6 +71,7 @@ extends JavaPlugin {
     private static final boolean DEFAULT_ALLOW_CRAFTING = true;
     private static final boolean DEFAULT_MAP_CLAIM_VISUAL_ENABLED = true;
     private static final int DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR = 1;
+    private static final int DEFAULT_UPKEEP_GRACE_MINUTES = 30;
     private static final int DEFAULT_SLUMBERING_RECIPE_COBBLE_COST = 20;
     private static final int DEFAULT_SLUMBERING_RECIPE_ESSENCE_COST = 10;
     private static final int DEFAULT_OUTLANDER_RECIPE_COBBLE_COST = 20;
@@ -202,17 +203,17 @@ extends JavaPlugin {
     private int loadClaimRadius(Path dataDir) {
         Path cfg = this.resolveConfigPath(dataDir);
         if (!Files.exists(cfg, new LinkOption[0])) {
-            return 16;
+            return DEFAULT_RADIUS;
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer r = DeityLandProtectionPlugin.readJsonInt(json, "claimRadius");
-            int normalized = DeityLandProtectionPlugin.normalizeRadius(r == null ? 16 : r);
-            return normalized > 0 ? normalized : 16;
+            Integer r = JsonReader.readInt(json, "claimRadius");
+            int normalized = DeityLandProtectionPlugin.normalizeRadius(r == null ? DEFAULT_RADIUS : r);
+            return normalized > 0 ? normalized : DEFAULT_RADIUS;
         }
         catch (IOException e) {
             ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return 16;
+            return DEFAULT_RADIUS;
         }
     }
 
@@ -223,7 +224,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer v = DeityLandProtectionPlugin.readJsonInt(json, "maxClaimsPerPlayer");
+            Integer v = JsonReader.readInt(json, "maxClaimsPerPlayer");
             int requested = v == null ? 1 : v;
             return DeityLandProtectionPlugin.clampMaxClaimsPerPlayer(requested);
         }
@@ -240,7 +241,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Boolean v = DeityLandProtectionPlugin.readJsonBoolean(json, "allowCrafting");
+            Boolean v = JsonReader.readBoolean(json, "allowCrafting");
             return v == null ? true : v;
         }
         catch (IOException e) {
@@ -256,7 +257,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Boolean v = DeityLandProtectionPlugin.readJsonBoolean(json, "mapClaimVisualEnabled");
+            Boolean v = JsonReader.readBoolean(json, "mapClaimVisualEnabled");
             return v == null ? DEFAULT_MAP_CLAIM_VISUAL_ENABLED : v;
         }
         catch (IOException e) {
@@ -290,7 +291,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Boolean v = DeityLandProtectionPlugin.readJsonBoolean(json, "upkeepEnabled");
+            Boolean v = JsonReader.readBoolean(json, "upkeepEnabled");
             return v == null ? true : v;
         }
         catch (IOException e) {
@@ -302,16 +303,16 @@ extends JavaPlugin {
     private int loadUpkeepGraceMinutes(Path dataDir) {
         Path cfg = this.resolveConfigPath(dataDir);
         if (!Files.exists(cfg, new LinkOption[0])) {
-            return 30;
+            return DEFAULT_UPKEEP_GRACE_MINUTES;
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer v = DeityLandProtectionPlugin.readJsonInt(json, "upkeepGraceMinutes");
-            return v == null ? 30 : Math.max(0, v);
+            Integer v = JsonReader.readInt(json, "upkeepGraceMinutes");
+            return v == null ? DEFAULT_UPKEEP_GRACE_MINUTES : Math.max(0, v);
         }
         catch (IOException e) {
             ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
-            return 30;
+            return DEFAULT_UPKEEP_GRACE_MINUTES;
         }
     }
 
@@ -322,7 +323,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            Integer v = DeityLandProtectionPlugin.readJsonInt(json, "upkeepEssenceCostPerHour");
+            Integer v = JsonReader.readInt(json, "upkeepEssenceCostPerHour");
             return v == null ? DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR : Math.max(1, v);
         }
         catch (IOException e) {
@@ -369,7 +370,7 @@ extends JavaPlugin {
     }
 
     private static int readConfiguredRecipeCost(String json, String key, int defaultValue) {
-        Integer value = DeityLandProtectionPlugin.readJsonInt(json, key);
+        Integer value = JsonReader.readInt(json, key);
         if (value == null) {
             return defaultValue;
         }
@@ -377,88 +378,12 @@ extends JavaPlugin {
     }
 
     private static String readConfiguredItemId(String json, String key, String defaultValue) {
-        String value = DeityLandProtectionPlugin.readJsonString(json, key);
+        String value = JsonReader.readString(json, key);
         if (value == null) {
             return defaultValue;
         }
         String trimmed = value.trim();
         return trimmed.isEmpty() ? defaultValue : trimmed;
-    }
-
-    private static Integer readJsonInt(String obj, String key) {
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return null;
-        }
-        int colon = obj.indexOf(58, k + pattern.length());
-        if (colon < 0) {
-            return null;
-        }
-        int i = colon + 1;
-        while (i < obj.length() && Character.isWhitespace(obj.charAt(i))) {
-            ++i;
-        }
-        int j = i;
-        while (j < obj.length() && (obj.charAt(j) == '-' || Character.isDigit(obj.charAt(j)))) {
-            ++j;
-        }
-        if (j == i) {
-            return null;
-        }
-        try {
-            return Integer.parseInt(obj, i, j, 10);
-        }
-        catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
-
-    private static Boolean readJsonBoolean(String obj, String key) {
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return null;
-        }
-        int colon = obj.indexOf(58, k + pattern.length());
-        if (colon < 0) {
-            return null;
-        }
-        int i = colon + 1;
-        while (i < obj.length() && Character.isWhitespace(obj.charAt(i))) {
-            ++i;
-        }
-        if (i >= obj.length()) {
-            return null;
-        }
-        if (obj.startsWith("true", i)) {
-            return Boolean.TRUE;
-        }
-        if (obj.startsWith("false", i)) {
-            return Boolean.FALSE;
-        }
-        return null;
-    }
-
-    private static String readJsonString(String obj, String key) {
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return null;
-        }
-        int colon = obj.indexOf(58, k + pattern.length());
-        if (colon < 0) {
-            return null;
-        }
-        int q1 = obj.indexOf(34, colon + 1);
-        if (q1 < 0) {
-            return null;
-        }
-        int q2 = obj.indexOf(34, q1 + 1);
-        if (q2 < 0) {
-            return null;
-        }
-        return obj.substring(q1 + 1, q2);
     }
 
     private static int clampMaxClaimsPerPlayer(int value) {
@@ -973,7 +898,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            String value = DeityLandProtectionPlugin.readJsonString(json, CONFIG_DEITY_ITEM_ID_KEY);
+            String value = JsonReader.readString(json, CONFIG_DEITY_ITEM_ID_KEY);
             if (value == null) {
                 return DEFAULT_DeityLandProtection_ITEM_ID;
             }
@@ -999,7 +924,7 @@ extends JavaPlugin {
         }
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
-            String value = DeityLandProtectionPlugin.readJsonString(json, CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY);
+            String value = JsonReader.readString(json, CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY);
             if (value == null) {
                 return OUTLANDER_DEITY_ITEM_ID;
             }
@@ -1162,7 +1087,7 @@ extends JavaPlugin {
             return false;
         }
         long age = System.currentTimeMillis() - ts;
-        if (age >= 0L && age < 2000L) {
+        if (age >= 0L && age < RECENT_PLACEMENT_IGNORE_BREAK_MS) {
             return true;
         }
         this.recentClaimPlacements.remove(key, ts);
@@ -1176,7 +1101,7 @@ extends JavaPlugin {
         UUID uuid = player.getUuid();
         long now = System.currentTimeMillis();
         Long last = this.lastPlayerMessageMs.get(uuid);
-        if (last != null && now - last < 1200L) {
+        if (last != null && now - last < PLAYER_MESSAGE_COOLDOWN_MS) {
             return;
         }
         this.lastPlayerMessageMs.put(uuid, now);
@@ -1281,7 +1206,7 @@ extends JavaPlugin {
     }
 
     public static long centerKey(int x, int z) {
-        return (long)x << 32 ^ (long)z & 0xFFFFFFFFL;
+        return ChunkKeys.pack(x, z);
     }
 
     private static boolean itemIdMatches(String itemId, String configuredItemId) {

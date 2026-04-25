@@ -110,35 +110,35 @@ public final class DeityLandProtectionUpkeepStore {
 
     private DeityLandProtectionUpkeepState parseState(String obj) {
         try {
-            Integer x = DeityLandProtectionUpkeepStore.readJsonInt(obj, "x");
-            Integer z = DeityLandProtectionUpkeepStore.readJsonInt(obj, "z");
+            Integer x = JsonReader.readInt(obj, "x");
+            Integer z = JsonReader.readInt(obj, "z");
             if (x == null || z == null) {
                 return null;
             }
             DeityLandProtectionUpkeepState st = new DeityLandProtectionUpkeepState(x, z);
-            st.setProtectionUntilMs(DeityLandProtectionUpkeepStore.readJsonLong(obj, "until"));
+            st.setProtectionUntilMs(JsonReader.readLong(obj, "until"));
             // Backward compatibility: old files wrote this value as "expansionUntil".
-            long feedDurationMs = DeityLandProtectionUpkeepStore.readJsonLong(obj, "feedDuration");
+            long feedDurationMs = JsonReader.readLong(obj, "feedDuration");
             if (feedDurationMs == 0L) {
-                feedDurationMs = DeityLandProtectionUpkeepStore.readJsonLong(obj, "expansionUntil");
+                feedDurationMs = JsonReader.readLong(obj, "expansionUntil");
             }
             st.setTotalFeedDurationMs(feedDurationMs);
-            st.setProcessEndsAtMs(DeityLandProtectionUpkeepStore.readJsonLong(obj, "processingUntil"));
-            Integer processCarry = DeityLandProtectionUpkeepStore.readJsonInt(obj, "processCarry");
+            st.setProcessEndsAtMs(JsonReader.readLong(obj, "processingUntil"));
+            Integer processCarry = JsonReader.readInt(obj, "processCarry");
             if (processCarry != null) {
                 st.setProcessedEssenceCarryCount(processCarry);
             }
-            Integer observedOutputQty = DeityLandProtectionUpkeepStore.readJsonInt(obj, "observedOutputQty");
+            Integer observedOutputQty = JsonReader.readInt(obj, "observedOutputQty");
             if (observedOutputQty != null) {
                 st.setObservedOutputQuantity(observedOutputQty);
             }
-            Integer tier = DeityLandProtectionUpkeepStore.readJsonInt(obj, "tier");
+            Integer tier = JsonReader.readInt(obj, "tier");
             if (tier != null) {
                 st.setUpgradeTier(tier);
             }
-            st.setGraceUntilMs(DeityLandProtectionUpkeepStore.readJsonLong(obj, "graceUntil"));
-            st.setGraceCountdownLastSecond(DeityLandProtectionUpkeepStore.readJsonLong(obj, "graceCountdown"));
-            st.setPendingRemoveBlock(Boolean.TRUE.equals(DeityLandProtectionUpkeepStore.readJsonBoolean(obj, "removeBlock")));
+            st.setGraceUntilMs(JsonReader.readLong(obj, "graceUntil"));
+            st.setGraceCountdownLastSecond(JsonReader.readLong(obj, "graceCountdown"));
+            st.setPendingRemoveBlock(Boolean.TRUE.equals(JsonReader.readBoolean(obj, "removeBlock")));
             return st;
         }
         catch (Exception ignored) {
@@ -207,83 +207,7 @@ public final class DeityLandProtectionUpkeepStore {
     }
 
     private static long centerKey(int x, int z) {
-        return (long)x << 32 ^ (long)z & 0xFFFFFFFFL;
-    }
-
-    private static Boolean readJsonBoolean(String obj, String key) {
-        int i;
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return null;
-        }
-        int colon = obj.indexOf(58, k + pattern.length());
-        if (colon < 0) {
-            return null;
-        }
-        for (i = colon + 1; i < obj.length() && Character.isWhitespace(obj.charAt(i)); ++i) {
-        }
-        if (obj.startsWith("true", i)) {
-            return Boolean.TRUE;
-        }
-        if (obj.startsWith("false", i)) {
-            return Boolean.FALSE;
-        }
-        return null;
-    }
-
-    private static Integer readJsonInt(String obj, String key) {
-        int j;
-        int i;
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return null;
-        }
-        int colon = obj.indexOf(58, k + pattern.length());
-        if (colon < 0) {
-            return null;
-        }
-        for (i = colon + 1; i < obj.length() && Character.isWhitespace(obj.charAt(i)); ++i) {
-        }
-        for (j = i; j < obj.length() && (obj.charAt(j) == '-' || Character.isDigit(obj.charAt(j))); ++j) {
-        }
-        if (j == i) {
-            return null;
-        }
-        try {
-            return Integer.parseInt(obj, i, j, 10);
-        }
-        catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
-
-    private static long readJsonLong(String obj, String key) {
-        int j;
-        int i;
-        String pattern = "\"" + key + "\"";
-        int k = obj.indexOf(pattern);
-        if (k < 0) {
-            return 0L;
-        }
-        int colon = obj.indexOf(58, k + pattern.length());
-        if (colon < 0) {
-            return 0L;
-        }
-        for (i = colon + 1; i < obj.length() && Character.isWhitespace(obj.charAt(i)); ++i) {
-        }
-        for (j = i; j < obj.length() && (obj.charAt(j) == '-' || Character.isDigit(obj.charAt(j))); ++j) {
-        }
-        if (j == i) {
-            return 0L;
-        }
-        try {
-            return Long.parseLong(obj, i, j, 10);
-        }
-        catch (NumberFormatException ignored) {
-            return 0L;
-        }
+        return ChunkKeys.pack(x, z);
     }
 }
 
