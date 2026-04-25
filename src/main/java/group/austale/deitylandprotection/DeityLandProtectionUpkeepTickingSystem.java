@@ -4,9 +4,9 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.Text;
+import group.austale.deitylandprotection.UpkeepState;
+import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.Ref;
@@ -56,7 +56,7 @@ extends DelayedSystem<ChunkStore> {
             return;
         }
         ClaimStore claims = this.plugin.getClaimStore();
-        DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
+        UpkeepStore upkeep = this.plugin.getUpkeepStore();
         if (claims == null || upkeep == null) {
             return;
         }
@@ -89,7 +89,7 @@ extends DelayedSystem<ChunkStore> {
             if (centerY == Integer.MIN_VALUE) {
                 continue;
             }
-            DeityLandProtectionUpkeepState st = upkeep.getOrCreate(centerX, centerZ);
+            UpkeepState st = upkeep.getOrCreate(centerX, centerZ);
             if (!upkeepEnabled) {
                 boolean changed = false;
                 if (st.isPendingRemoveBlock()) {
@@ -257,7 +257,7 @@ extends DelayedSystem<ChunkStore> {
                     PlayerRef ownerRef = DeityLandProtectionUpkeepTickingSystem.findPlayer(world, liveClaim.getOwner());
                     if (ownerRef != null) {
                         LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(ownerRef);
-                        EventTitleUtil.showEventTitleToPlayer((PlayerRef)ownerRef, Message.raw(DeityLandProtectionText.DeityLandProtectionDestroyTitlePrimary(lang, (int)secondsRemaining)), Message.raw(DeityLandProtectionText.DeityLandProtectionDestroyTitleSecondary(lang)), true, null, 1.1f, 0.0f, 0.2f);
+                        EventTitleUtil.showEventTitleToPlayer((PlayerRef)ownerRef, Message.raw(Text.DeityLandProtectionDestroyTitlePrimary(lang, (int)secondsRemaining)), Message.raw(Text.DeityLandProtectionDestroyTitleSecondary(lang)), true, null, 1.1f, 0.0f, 0.2f);
                     }
                 }
                 if (changed) {
@@ -306,7 +306,7 @@ extends DelayedSystem<ChunkStore> {
         return Math.max(0, stack.getQuantity());
     }
 
-    private static boolean applyProcessedEssenceCredits(DeityLandProtectionUpkeepState state, int processedDelta, int processedRequiredPerHour, long now) {
+    private static boolean applyProcessedEssenceCredits(UpkeepState state, int processedDelta, int processedRequiredPerHour, long now) {
         if (state == null || processedDelta <= 0) {
             return false;
         }
@@ -325,7 +325,7 @@ extends DelayedSystem<ChunkStore> {
         return true;
     }
 
-    private static boolean trackNativeProcessedOutput(ItemContainer container, DeityLandProtectionUpkeepState state, String outputItemId, int processedRequiredPerHour, long now) {
+    private static boolean trackNativeProcessedOutput(ItemContainer container, UpkeepState state, String outputItemId, int processedRequiredPerHour, long now) {
         if (container == null || state == null || outputItemId == null || outputItemId.isEmpty()) {
             return false;
         }
@@ -350,7 +350,7 @@ extends DelayedSystem<ChunkStore> {
         return changed;
     }
 
-    private void expireClaim(World world, Claim claim, DeityLandProtectionUpkeepState st, DeityLandProtectionUpkeepStore upkeep) {
+    private void expireClaim(World world, Claim claim, UpkeepState st, UpkeepStore upkeep) {
         if (world == null || claim == null || st == null || upkeep == null) {
             return;
         }

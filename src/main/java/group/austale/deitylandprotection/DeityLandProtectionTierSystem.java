@@ -14,11 +14,11 @@ public final class DeityLandProtectionTierSystem {
     private DeityLandProtectionTierSystem() {
     }
 
-    public static int getUpkeepTierForClaim(DeityLandProtectionUpkeepStore upkeepStore, Claim claim) {
+    public static int getUpkeepTierForClaim(UpkeepStore upkeepStore, Claim claim) {
         if (upkeepStore == null || claim == null) {
             return MIN_TIER;
         }
-        DeityLandProtectionUpkeepState st = upkeepStore.get(claim.getCenterX(), claim.getCenterZ());
+        UpkeepState st = upkeepStore.get(claim.getCenterX(), claim.getCenterZ());
         return st == null ? MIN_TIER : clampTier(st.getUpgradeTier());
     }
 
@@ -45,7 +45,7 @@ public final class DeityLandProtectionTierSystem {
         return (int)cost;
     }
 
-    public static boolean tryUpgradeClaimTier(DeityLandProtectionPlugin plugin, ClaimStore claims, World world, Claim claim, ItemContainer container, DeityLandProtectionUpkeepState state) {
+    public static boolean tryUpgradeClaimTier(DeityLandProtectionPlugin plugin, ClaimStore claims, World world, Claim claim, ItemContainer container, UpkeepState state) {
         if (plugin == null || claims == null || world == null || claim == null || container == null || state == null) {
             return false;
         }
@@ -68,7 +68,7 @@ public final class DeityLandProtectionTierSystem {
         if (ownerRef != null) {
             LangPreferenceManager.Language lang = plugin.getEffectiveLanguage(ownerRef);
             int upkeepCost = getUpkeepEssenceCostPerHourForTier(plugin.getUpkeepEssenceCostPerHour(), nextTier);
-            String msg = DeityLandProtectionText.tierUpgraded(lang, nextTier, nextRadius, upkeepCost);
+            String msg = Text.tierUpgraded(lang, nextTier, nextRadius, upkeepCost);
             plugin.sendPlayerMessageImmediate(ownerRef, msg);
         }
         return true;
@@ -186,7 +186,7 @@ public final class DeityLandProtectionTierSystem {
             return;
         }
         LangPreferenceManager.Language lang = plugin.getEffectiveLanguage(ownerRef);
-        String msg = DeityLandProtectionText.tierNoUnclaimedTerritory(lang);
+        String msg = Text.tierNoUnclaimedTerritory(lang);
         plugin.sendPlayerMessageImmediate(ownerRef, msg);
     }
 

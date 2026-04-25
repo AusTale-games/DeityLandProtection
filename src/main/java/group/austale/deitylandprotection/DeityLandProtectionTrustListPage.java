@@ -7,7 +7,7 @@ import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionOpenUpkeepElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlayerCandidateElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import group.austale.deitylandprotection.DeityLandProtectionTrustElement;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepSlotHintElement;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepStatusElement;
@@ -57,8 +57,8 @@ extends ChoiceBasePage {
             els.add(new DeityLandProtectionOpenUpkeepElement(plugin, claim, centerX, centerZ));
             els.add(new DeityLandProtectionUpkeepSlotHintElement(plugin, claim));
             els.add(new DeityLandProtectionUpkeepStatusElement(plugin, centerX, centerZ));
-            DeityLandProtectionUpkeepStore upkeepStore = plugin.getUpkeepStore();
-            DeityLandProtectionUpkeepState st = upkeepStore == null ? null : upkeepStore.get(centerX, centerZ);
+            UpkeepStore upkeepStore = plugin.getUpkeepStore();
+            UpkeepState st = upkeepStore == null ? null : upkeepStore.get(centerX, centerZ);
             if (st != null && st.getGraceUntilMs() > System.currentTimeMillis()) {
                 els.add(new DeityLandProtectionUpkeepGraceElement(plugin, centerX, centerZ));
             }
@@ -75,10 +75,10 @@ extends ChoiceBasePage {
                 els.add(new DeityLandProtectionTrustElement(plugin, centerX, centerZ, uUID, perms, false));
             }
         }
-        els.add(new DeityLandProtectionHeaderElement(DeityLandProtectionText.uiTitlePlayersInArea(lang), DeityLandProtectionText.uiSubtitleAddFriendAll(lang)));
+        els.add(new DeityLandProtectionHeaderElement(Text.uiTitlePlayersInArea(lang), Text.uiSubtitleAddFriendAll(lang)));
         Map<UUID, String> inClaim = plugin.getPlayersInClaim(centerX, centerZ);
         if (inClaim.isEmpty()) {
-            els.add(new DeityLandProtectionHeaderElement(DeityLandProtectionText.uiNone(lang), ""));
+            els.add(new DeityLandProtectionHeaderElement(Text.uiNone(lang), ""));
         } else {
             ArrayList<Map.Entry<UUID, String>> entries = new ArrayList<Map.Entry<UUID, String>>(inClaim.entrySet());
             Collections.sort(entries, Comparator.comparing(e -> e.getValue() == null ? "" : ((String)e.getValue()).toLowerCase()));

@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -44,10 +44,10 @@ extends ChoiceInteraction {
         boolean currentlyOn = this.plugin.isBorderEnabled(actor, key);
         if (currentlyOn) {
             this.plugin.disableBorder(actor);
-            this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.borderOff(lang));
+            this.plugin.sendPlayerMessageImmediate(playerRef, Text.borderOff(lang));
         } else {
             this.plugin.enableBorder(actor, this.centerX, this.centerZ);
-            this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.borderOn(lang));
+            this.plugin.sendPlayerMessageImmediate(playerRef, Text.borderOn(lang));
         }
         Player playerEntity = (Player)store.getComponent(ref, Player.getComponentType());
         if (playerEntity == null) {

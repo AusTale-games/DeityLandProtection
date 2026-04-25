@@ -3,13 +3,13 @@ package group.austale.deitylandprotection;
 import java.text.MessageFormat;
 import java.util.Map;
 
-public final class DeityLandProtectionLocalizer {
+public final class Localizer {
     public String tr(LangPreferenceManager.Language language, String key, Object... args) {
         LangPreferenceManager.Language safeLanguage = language == null ? LangPreferenceManager.Language.EN : language;
-        Map<String, String> bundle = DeityLandProtectionLocalizationCatalog.getBundle(safeLanguage);
+        Map<String, String> bundle = LocalizationCatalog.getBundle(safeLanguage);
         String template = bundle.get(key);
         if (template == null) {
-            template = DeityLandProtectionLocalizationCatalog.getDefaultEnglish(key);
+            template = LocalizationCatalog.getDefaultEnglish(key);
         }
         if (template == null) {
             template = key;

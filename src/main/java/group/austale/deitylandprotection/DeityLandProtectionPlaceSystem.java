@@ -4,8 +4,8 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.Text;
+import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -49,19 +49,19 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
                 int owned = claims.countClaimsForOwner(uuid);
                 if (owned >= this.plugin.getMaxClaimsPerPlayer()) {
                     event.setCancelled(true);
-                    this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotPlaceClaimLimit(lang, owned, this.plugin.getMaxClaimsPerPlayer()));
+                    this.plugin.sendPlayerMessage(player, Text.cannotPlaceClaimLimit(lang, owned, this.plugin.getMaxClaimsPerPlayer()));
                     return;
                 }
                 Claim existing = claims.findClaimAt(x, z);
                 if (existing != null && !existing.getOwner().equals(uuid)) {
                     event.setCancelled(true);
-                    this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotPlaceAreaProtected(lang));
+                    this.plugin.sendPlayerMessage(player, Text.cannotPlaceAreaProtected(lang));
                     return;
                 }
             }
             if (claims.intersectsAny(x, z, this.plugin.getClaimRadius())) {
                 event.setCancelled(true);
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotPlaceOverlap(lang));
+                this.plugin.sendPlayerMessage(player, Text.cannotPlaceOverlap(lang));
                 return;
             }
             String ownerName = null;
@@ -74,7 +74,7 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
             Claim newClaim = new Claim(uuid, ownerName, x, y, z, this.plugin.getClaimRadius(), inHand.getItemId());
             boolean added = claims.addClaim(newClaim);
             if (added) {
-                DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
+                UpkeepStore upkeep = this.plugin.getUpkeepStore();
                 if (upkeep != null) {
                     upkeep.getOrCreate(x, z);
                     upkeep.markDirty();
@@ -86,10 +86,10 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
                 catch (Exception ignored) {
             // best-effort: swallowing a non-fatal failure
         }
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.protectionCreated(lang, this.plugin.getClaimRadius()));
+                this.plugin.sendPlayerMessage(player, Text.protectionCreated(lang, this.plugin.getClaimRadius()));
                 this.plugin.getLogger().at(Level.INFO).log("DeityLandProtection claim created owner=" + String.valueOf(uuid) + " center=" + x + "," + z + " radius=" + this.plugin.getClaimRadius() + " itemId=" + inHand.getItemId());
             } else {
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotPlaceHere(lang));
+                this.plugin.sendPlayerMessage(player, Text.cannotPlaceHere(lang));
             }
             return;
         }
@@ -102,7 +102,7 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
         }
         if (!claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 1)) {
             event.setCancelled(true);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotPlaceInside(lang));
+            this.plugin.sendPlayerMessage(player, Text.cannotPlaceInside(lang));
         }
     }
 }

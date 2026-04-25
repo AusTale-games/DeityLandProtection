@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
+import group.austale.deitylandprotection.UpkeepState;
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,39 +14,39 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public final class DeityLandProtectionUpkeepStore {
+public final class UpkeepStore {
     private final Path file;
     private final HytaleLogger logger;
-    private final Map<Long, DeityLandProtectionUpkeepState> statesByCenter = new HashMap<Long, DeityLandProtectionUpkeepState>();
+    private final Map<Long, UpkeepState> statesByCenter = new HashMap<Long, UpkeepState>();
     private boolean dirty;
 
-    public DeityLandProtectionUpkeepStore(Path file, HytaleLogger logger) {
+    public UpkeepStore(Path file, HytaleLogger logger) {
         this.file = file;
         this.logger = logger;
     }
 
-    public synchronized Map<Long, DeityLandProtectionUpkeepState> getStates() {
-        return Collections.unmodifiableMap(new HashMap<Long, DeityLandProtectionUpkeepState>(this.statesByCenter));
+    public synchronized Map<Long, UpkeepState> getStates() {
+        return Collections.unmodifiableMap(new HashMap<Long, UpkeepState>(this.statesByCenter));
     }
 
-    public synchronized DeityLandProtectionUpkeepState getOrCreate(int centerX, int centerZ) {
-        long key = DeityLandProtectionUpkeepStore.centerKey(centerX, centerZ);
-        DeityLandProtectionUpkeepState s = this.statesByCenter.get(key);
+    public synchronized UpkeepState getOrCreate(int centerX, int centerZ) {
+        long key = UpkeepStore.centerKey(centerX, centerZ);
+        UpkeepState s = this.statesByCenter.get(key);
         if (s != null) {
             return s;
         }
-        DeityLandProtectionUpkeepState created = new DeityLandProtectionUpkeepState(centerX, centerZ);
+        UpkeepState created = new UpkeepState(centerX, centerZ);
         this.statesByCenter.put(key, created);
         this.dirty = true;
         return created;
     }
 
-    public synchronized DeityLandProtectionUpkeepState get(int centerX, int centerZ) {
-        return this.statesByCenter.get(DeityLandProtectionUpkeepStore.centerKey(centerX, centerZ));
+    public synchronized UpkeepState get(int centerX, int centerZ) {
+        return this.statesByCenter.get(UpkeepStore.centerKey(centerX, centerZ));
     }
 
     public synchronized boolean remove(int centerX, int centerZ) {
-        DeityLandProtectionUpkeepState removed = this.statesByCenter.remove(DeityLandProtectionUpkeepStore.centerKey(centerX, centerZ));
+        UpkeepState removed = this.statesByCenter.remove(UpkeepStore.centerKey(centerX, centerZ));
         if (removed != null) {
             this.dirty = true;
             return true;
@@ -99,23 +99,23 @@ public final class DeityLandProtectionUpkeepStore {
             }
             if (end < 0) break;
             String obj = s.substring(start, end + 1);
-            DeityLandProtectionUpkeepState parsed = this.parseState(obj);
+            UpkeepState parsed = this.parseState(obj);
             if (parsed != null) {
-                this.statesByCenter.put(DeityLandProtectionUpkeepStore.centerKey(parsed.getCenterX(), parsed.getCenterZ()), parsed);
+                this.statesByCenter.put(UpkeepStore.centerKey(parsed.getCenterX(), parsed.getCenterZ()), parsed);
             }
             idx = end + 1;
         }
         this.dirty = false;
     }
 
-    private DeityLandProtectionUpkeepState parseState(String obj) {
+    private UpkeepState parseState(String obj) {
         try {
             Integer x = JsonReader.readInt(obj, "x");
             Integer z = JsonReader.readInt(obj, "z");
             if (x == null || z == null) {
                 return null;
             }
-            DeityLandProtectionUpkeepState st = new DeityLandProtectionUpkeepState(x, z);
+            UpkeepState st = new UpkeepState(x, z);
             st.setProtectionUntilMs(JsonReader.readLong(obj, "until"));
             // Backward compatibility: old files wrote this value as "expansionUntil".
             long feedDurationMs = JsonReader.readLong(obj, "feedDuration");
@@ -159,7 +159,7 @@ public final class DeityLandProtectionUpkeepStore {
             StringBuilder sb = new StringBuilder();
             sb.append('[');
             int i = 0;
-            for (DeityLandProtectionUpkeepState st : this.statesByCenter.values()) {
+            for (UpkeepState st : this.statesByCenter.values()) {
                 if (st == null) continue;
                 if (i > 0) {
                     sb.append(',');

@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -156,7 +156,7 @@ extends DamageEventSystem {
         }
         if (attackerRefComponent != null) {
             LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(attackerRefComponent);
-            this.plugin.sendPlayerMessage(attackerRefComponent, DeityLandProtectionText.pvpDisabledInArea(lang));
+            this.plugin.sendPlayerMessage(attackerRefComponent, Text.pvpDisabledInArea(lang));
         }
     }
 }

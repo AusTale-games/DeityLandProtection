@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -90,16 +90,16 @@ extends EntityTickingSystem<EntityStore> {
         if (prev != null && now == null) {
             Claim prevClaim = DeityLandProtectionEnterExitTickSystem.resolveClaim(this.plugin, prev);
             String owner = DeityLandProtectionEnterExitTickSystem.resolveOwnerName(this.plugin, prevClaim);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.leftArea(lang, owner));
+            this.plugin.sendPlayerMessage(player, Text.leftArea(lang, owner));
             return;
         }
         if (prev == null && now != null) {
             String owner = DeityLandProtectionEnterExitTickSystem.resolveOwnerName(this.plugin, claim);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.enteredArea(lang, owner));
+            this.plugin.sendPlayerMessage(player, Text.enteredArea(lang, owner));
             return;
         }
         String owner = DeityLandProtectionEnterExitTickSystem.resolveOwnerName(this.plugin, claim);
-        this.plugin.sendPlayerMessage(player, DeityLandProtectionText.enteredArea(lang, owner));
+        this.plugin.sendPlayerMessage(player, Text.enteredArea(lang, owner));
     }
 
     private static String resolveOwnerName(DeityLandProtectionPlugin plugin, Claim claim) {

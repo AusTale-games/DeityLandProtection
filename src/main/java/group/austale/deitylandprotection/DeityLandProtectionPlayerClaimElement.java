@@ -4,8 +4,8 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlayerClaimOpenInteraction;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.UpkeepState;
+import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
@@ -62,9 +62,9 @@ extends ChoiceElement {
         catch (Exception ignored) {
             // Trusted map access can race during reload; treat as zero members.
         }
-        String pvp = this.claim.isPvpEnabled() ? DeityLandProtectionText.borderOnShort(lang) : DeityLandProtectionText.borderOffShort(lang);
-        DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
-        DeityLandProtectionUpkeepState st = upkeep == null ? null : upkeep.get(this.claim.getCenterX(), this.claim.getCenterZ());
+        String pvp = this.claim.isPvpEnabled() ? Text.borderOnShort(lang) : Text.borderOffShort(lang);
+        UpkeepStore upkeep = this.plugin.getUpkeepStore();
+        UpkeepState st = upkeep == null ? null : upkeep.get(this.claim.getCenterX(), this.claim.getCenterZ());
         long now = System.currentTimeMillis();
         long until = st == null ? 0L : st.getProtectionUntilMs();
         long totalFeedMs = st == null ? 0L : st.getTotalFeedDurationMs();

@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
@@ -38,7 +38,7 @@ extends ChoiceElement {
     }
 
     private String buildTitle(LangPreferenceManager.Language lang) {
-        String baseTitle = this.plugin == null ? DeityLandProtectionText.uiSlot0Title(lang) : this.plugin.getUpkeepEssenceTitleForClaim(this.claim, lang);
+        String baseTitle = this.plugin == null ? Text.uiSlot0Title(lang) : this.plugin.getUpkeepEssenceTitleForClaim(this.claim, lang);
         if (baseTitle.isEmpty()) {
             return "";
         }
@@ -47,7 +47,7 @@ extends ChoiceElement {
     }
 
     private String buildSubtitle(LangPreferenceManager.Language lang) {
-        return DeityLandProtectionText.uiSlot0Subtitle(lang);
+        return Text.uiSlot0Subtitle(lang);
     }
 }
 

@@ -4,7 +4,7 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -50,11 +50,11 @@ extends ChoiceInteraction {
             return;
         }
         if (!this.plugin.isOpBypass(actor) && !claim.getOwner().equals(actor)) {
-            this.plugin.sendPlayerMessage(playerRef, DeityLandProtectionText.onlyOwnerAddFriends(lang));
+            this.plugin.sendPlayerMessage(playerRef, Text.onlyOwnerAddFriends(lang));
             return;
         }
         if (this.target.equals(claim.getOwner())) {
-            this.plugin.sendPlayerMessage(playerRef, DeityLandProtectionText.ownerAlreadyFullAccess(lang));
+            this.plugin.sendPlayerMessage(playerRef, Text.ownerAlreadyFullAccess(lang));
             return;
         }
         if (this.username != null && !this.username.isEmpty()) {

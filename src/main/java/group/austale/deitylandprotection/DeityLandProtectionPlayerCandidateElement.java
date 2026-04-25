@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import group.austale.deitylandprotection.DeityLandProtectionTrustAddInteraction;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
@@ -49,7 +49,7 @@ extends ChoiceElement {
         }
         LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         commands.set(selector + " #Name.TextSpans", Message.raw(who));
-        commands.set(selector + " #Durability.Text", DeityLandProtectionText.uiClickAddAll(lang));
+        commands.set(selector + " #Durability.Text", Text.uiClickAddAll(lang));
     }
 }
 

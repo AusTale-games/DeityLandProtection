@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.DeityLandProtectionAdminPage;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -38,7 +38,7 @@ extends ChoiceInteraction {
         LangPreferenceManager.Language current = mgr.getEffectiveLanguage(actor);
         LangPreferenceManager.Language next = current == LangPreferenceManager.Language.ES ? LangPreferenceManager.Language.EN : LangPreferenceManager.Language.ES;
         mgr.setOverride(actor, next);
-        this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.langUpdated(next, next));
+        this.plugin.sendPlayerMessageImmediate(playerRef, Text.langUpdated(next, next));
         Player playerEntity = (Player)store.getComponent(ref, Player.getComponentType());
         if (playerEntity == null) {
             return;

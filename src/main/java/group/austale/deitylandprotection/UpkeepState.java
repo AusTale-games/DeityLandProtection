@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-public final class DeityLandProtectionUpkeepState {
+public final class UpkeepState {
     private static final int MIN_TIER = 1;
     private static final int MAX_TIER = 4;
     private final int centerX;
@@ -16,7 +16,7 @@ public final class DeityLandProtectionUpkeepState {
     private long graceCountdownLastSecond;
     private boolean pendingRemoveBlock;
 
-    public DeityLandProtectionUpkeepState(int centerX, int centerZ) {
+    public UpkeepState(int centerX, int centerZ) {
         this.centerX = centerX;
         this.centerZ = centerZ;
     }
@@ -30,11 +30,11 @@ public final class DeityLandProtectionUpkeepState {
     }
 
     public int getUpgradeTier() {
-        return DeityLandProtectionUpkeepState.clampTier(this.upgradeTier);
+        return UpkeepState.clampTier(this.upgradeTier);
     }
 
     public void setUpgradeTier(int upgradeTier) {
-        this.upgradeTier = DeityLandProtectionUpkeepState.clampTier(upgradeTier);
+        this.upgradeTier = UpkeepState.clampTier(upgradeTier);
     }
 
     public long getProtectionUntilMs() {

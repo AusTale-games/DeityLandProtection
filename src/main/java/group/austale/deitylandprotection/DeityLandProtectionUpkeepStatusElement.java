@@ -3,9 +3,9 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.Text;
+import group.austale.deitylandprotection.UpkeepState;
+import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction;
@@ -52,8 +52,8 @@ extends ChoiceElement {
         if (claim == null) {
             return "0d 0h 0m";
         }
-        DeityLandProtectionUpkeepStore store = this.plugin.getUpkeepStore();
-        DeityLandProtectionUpkeepState st = store == null ? null : store.get(this.centerX, this.centerZ);
+        UpkeepStore store = this.plugin.getUpkeepStore();
+        UpkeepState st = store == null ? null : store.get(this.centerX, this.centerZ);
         long now = System.currentTimeMillis();
         long until = st == null ? 0L : st.getProtectionUntilMs();
         long remainingMs = until > now ? until - now : 0L;

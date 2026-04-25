@@ -8,7 +8,7 @@ package group.austale.deitylandprotection;
  * <p>All readers return {@code null} (or {@code 0L} for {@link #readLong})
  * when the key is absent or unparseable, mirroring the original behaviour of
  * the duplicated copies in {@code DeityLandProtectionPlugin}, {@code
- * ClaimStore}, and {@code DeityLandProtectionUpkeepStore}.</p>
+ * ClaimStore}, and {@code UpkeepStore}.</p>
  */
 final class JsonReader {
 

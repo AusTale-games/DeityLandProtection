@@ -4,8 +4,8 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.Text;
+import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -57,20 +57,20 @@ extends EntityEventSystem<EntityStore, BreakBlockEvent> {
             // best-effort: swallowing a non-fatal failure
         }
                 claims.removeClaimAt(x, z);
-                DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
+                UpkeepStore upkeep = this.plugin.getUpkeepStore();
                 if (upkeep != null) {
                     upkeep.remove(x, z);
                     upkeep.markDirty();
                 }
                 this.plugin.clearBorderForClaim(x, z);
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.protectionRemoved(lang));
+                this.plugin.sendPlayerMessage(player, Text.protectionRemoved(lang));
             }
             return;
         }
         if (isCenter) {
             if (!claim.getOwner().equals(uuid)) {
                 event.setCancelled(true);
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotBreakProtection(lang));
+                this.plugin.sendPlayerMessage(player, Text.cannotBreakProtection(lang));
                 return;
             }
             try {
@@ -80,25 +80,25 @@ extends EntityEventSystem<EntityStore, BreakBlockEvent> {
             // best-effort: swallowing a non-fatal failure
         }
             claims.removeClaimAt(x, z);
-            DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
+            UpkeepStore upkeep = this.plugin.getUpkeepStore();
             if (upkeep != null) {
                 upkeep.remove(x, z);
                 upkeep.markDirty();
             }
             this.plugin.clearBorderForClaim(x, z);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.protectionRemoved(lang));
+            this.plugin.sendPlayerMessage(player, Text.protectionRemoved(lang));
             return;
         }
         if (event.getBlockType() != null && event.getBlockType().getFarming() != null) {
             if (!claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 2)) {
                 event.setCancelled(true);
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotDamageCrops(lang));
+                this.plugin.sendPlayerMessage(player, Text.cannotDamageCrops(lang));
             }
             return;
         }
         if (!claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 2)) {
             event.setCancelled(true);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotBreakInside(lang));
+            this.plugin.sendPlayerMessage(player, Text.cannotBreakInside(lang));
         }
     }
 }

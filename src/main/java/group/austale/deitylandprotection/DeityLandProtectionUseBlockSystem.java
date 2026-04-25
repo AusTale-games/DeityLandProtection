@@ -4,7 +4,7 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
@@ -65,7 +65,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
         }
         if (!bypass && event.getBlockType().getFarming() != null && !claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 4)) {
             event.setCancelled(true);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotDamageCrops(lang));
+            this.plugin.sendPlayerMessage(player, Text.cannotDamageCrops(lang));
             return;
         }
         MovementStatesComponent msComponent = (MovementStatesComponent)chunk.getComponent(entityIndex, MovementStatesComponent.getComponentType());
@@ -73,7 +73,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
         if (crouching && !bypass && !claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 2)) {
             if (DeityLandProtectionUseBlockSystem.isContainerOrBenchBlock(((EntityStore)store.getExternalData()).getWorld(), x, y, z)) {
                 event.setCancelled(true);
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotBreakInside(lang));
+                this.plugin.sendPlayerMessage(player, Text.cannotBreakInside(lang));
                 return;
             }
         }
@@ -103,7 +103,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
             }
             catch (Exception e) {
                 ((HytaleLogger.Api)this.plugin.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection UI: failed to get Player component");
-                this.plugin.sendPlayerMessage(player, DeityLandProtectionText.uiPlayerComponentError(lang));
+                this.plugin.sendPlayerMessage(player, Text.uiPlayerComponentError(lang));
                 return;
             }
             PageManager pages = playerEntity.getPageManager();
@@ -120,7 +120,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
         }
         if (!claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 4) && !claim.hasPermission(uuid, 2)) {
             event.setCancelled(true);
-            this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotUseInside(lang));
+            this.plugin.sendPlayerMessage(player, Text.cannotUseInside(lang));
         }
     }
 

@@ -9,10 +9,10 @@ import group.austale.deitylandprotection.DeityLandProtectionCraftSystem;
 import group.austale.deitylandprotection.DeityLandProtectionEnterExitTickSystem;
 import group.austale.deitylandprotection.LangCommand;
 import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionLocalizationCatalog;
-import group.austale.deitylandprotection.DeityLandProtectionLocalizer;
+import group.austale.deitylandprotection.LocalizationCatalog;
+import group.austale.deitylandprotection.Localizer;
 import group.austale.deitylandprotection.DeityLandProtectionPlaceSystem;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.UpkeepStore;
 import group.austale.deitylandprotection.DeityLandProtectionUseBlockSystem;
 import group.austale.deitylandprotection.DeityLandProtectionBorderSurfaceRefreshSystem;
 import group.austale.deitylandprotection.DeityLandProtectionWorldMapProvider;
@@ -50,10 +50,10 @@ extends JavaPlugin {
     private ClaimStore claimStore;
     private DeityLandProtectionConfig config;
     private ScheduledExecutorService flushExecutor;
-    private DeityLandProtectionUpkeepStore upkeepStore;
+    private UpkeepStore upkeepStore;
     private Path absDataDir;
     private LangPreferenceManager langPreferenceManager;
-    private DeityLandProtectionLocalizer localizer;
+    private Localizer localizer;
     private final DeityLandProtectionPlayerStateRegistry playerState = new DeityLandProtectionPlayerStateRegistry();
     private final DeityLandProtectionBorderSurfaceCache borderSurfaceCache = new DeityLandProtectionBorderSurfaceCache();
     private final ConcurrentHashMap<String, Integer> borderSurfaceScanBaseYByWorldCenter = new ConcurrentHashMap();
@@ -96,12 +96,12 @@ extends JavaPlugin {
         this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
         this.config.load(this.absDataDir);
         this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
-        DeityLandProtectionLocalizationCatalog.writeGeneratedLanguageFiles(this.absDataDir);
+        LocalizationCatalog.writeGeneratedLanguageFiles(this.absDataDir);
         this.langPreferenceManager = new LangPreferenceManager(this.getDataDirectory());
-        this.localizer = new DeityLandProtectionLocalizer();
+        this.localizer = new Localizer();
         this.claimStore = new ClaimStore(this.absDataDir.resolve("claims.json"), this.getLogger());
         this.claimStore.load();
-        this.upkeepStore = new DeityLandProtectionUpkeepStore(this.absDataDir.resolve("upkeep.json"), this.getLogger());
+        this.upkeepStore = new UpkeepStore(this.absDataDir.resolve("upkeep.json"), this.getLogger());
         this.upkeepStore.load();
         this.mapUpdateQueue = new DeityLandProtectionMapUpdateQueue(this.claimStore);
         this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionPlaceSystem(this));
@@ -369,9 +369,9 @@ extends JavaPlugin {
 
     public String getUpkeepEssenceTitleForClaim(Claim claim, LangPreferenceManager.Language lang) {
         if (claim != null && this.isOutlanderClaimItemId(claim.getDeityItemId())) {
-            return DeityLandProtectionText.uiSlot0VoidTitle(lang);
+            return Text.uiSlot0VoidTitle(lang);
         }
-        return DeityLandProtectionText.uiSlot0Title(lang);
+        return Text.uiSlot0Title(lang);
     }
 
     public Path getAbsDataDir() {
@@ -397,9 +397,9 @@ extends JavaPlugin {
     }
 
     public String tr(LangPreferenceManager.Language language, String key, Object ... args) {
-        DeityLandProtectionLocalizer l = this.localizer;
+        Localizer l = this.localizer;
         if (l == null) {
-            l = new DeityLandProtectionLocalizer();
+            l = new Localizer();
             this.localizer = l;
         }
         return l.tr(language, key, args);
@@ -421,7 +421,7 @@ extends JavaPlugin {
         }
     }
 
-    public DeityLandProtectionUpkeepStore getUpkeepStore() {
+    public UpkeepStore getUpkeepStore() {
         return this.upkeepStore;
     }
 

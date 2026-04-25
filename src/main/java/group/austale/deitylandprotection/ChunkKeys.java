@@ -6,7 +6,7 @@ package group.austale.deitylandprotection;
  *
  * <p>This single source of truth replaces the three identical (and identically
  * named) helpers that used to live on {@code DeityLandProtectionPlugin},
- * {@code ClaimStore}, and {@code DeityLandProtectionUpkeepStore}.</p>
+ * {@code ClaimStore}, and {@code UpkeepStore}.</p>
  */
 final class ChunkKeys {
 

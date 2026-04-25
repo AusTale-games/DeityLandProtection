@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import group.austale.deitylandprotection.DeityLandProtectionTrustCycleInteraction;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
@@ -46,8 +46,8 @@ extends ChoiceElement {
                 ? LangPreferenceManager.Language.EN
                 : this.plugin.getEffectiveLanguage(playerRef);
         if (this.header) {
-            commands.set(selector + " #Name.TextSpans", Message.raw(DeityLandProtectionText.uiFriendsTrust(lang)));
-            commands.set(selector + " #Durability.Text", DeityLandProtectionText.uiCyclePermsHint(lang));
+            commands.set(selector + " #Name.TextSpans", Message.raw(Text.uiFriendsTrust(lang)));
+            commands.set(selector + " #Durability.Text", Text.uiCyclePermsHint(lang));
             return;
         }
         String who = "<none>";

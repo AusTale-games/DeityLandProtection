@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
+import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
@@ -39,47 +39,47 @@ extends AbstractAsyncCommand {
                 ? this.langPreferenceManager.getEffectiveLanguage(senderId)
                 : defaultLang;
         if (sub.equals("help") || sub.equals("ayuda")) {
-            ctx.sendMessage(Message.raw(DeityLandProtectionText.helpLang(effective)));
+            ctx.sendMessage(Message.raw(Text.helpLang(effective)));
             return CompletableFuture.completedFuture(null);
         }
         if (sub.equals("status") || sub.equals("estado")) {
-            ctx.sendMessage(Message.raw(DeityLandProtectionText.langStatus(effective, effective, defaultLang, override)));
+            ctx.sendMessage(Message.raw(Text.langStatus(effective, effective, defaultLang, override)));
             return CompletableFuture.completedFuture(null);
         }
         if (sub.equals("clear") || sub.equals("reset")) {
             if (!ctx.isPlayer()) {
-                ctx.sendMessage(Message.raw(DeityLandProtectionText.helpLang(effective)));
+                ctx.sendMessage(Message.raw(Text.helpLang(effective)));
                 return CompletableFuture.completedFuture(null);
             }
             this.langPreferenceManager.clearOverride(senderId);
-            ctx.sendMessage(Message.raw(DeityLandProtectionText.langOverrideCleared(effective)));
+            ctx.sendMessage(Message.raw(Text.langOverrideCleared(effective)));
             return CompletableFuture.completedFuture(null);
         }
         if (sub.equals("default")) {
             if (parts.length < 3) {
-                ctx.sendMessage(Message.raw(DeityLandProtectionText.helpLang(effective)));
+                ctx.sendMessage(Message.raw(Text.helpLang(effective)));
                 return CompletableFuture.completedFuture(null);
             }
             if (!this.canChangeDefault(ctx)) {
-                ctx.sendMessage(Message.raw(DeityLandProtectionText.noPermission(effective)));
+                ctx.sendMessage(Message.raw(Text.noPermission(effective)));
                 return CompletableFuture.completedFuture(null);
             }
             LangPreferenceManager.Language newLang = LangPreferenceManager.Language.fromCode(parts[2]);
             this.langPreferenceManager.setDefaultLanguage(newLang);
-            ctx.sendMessage(Message.raw(DeityLandProtectionText.langDefaultUpdated(effective, newLang)));
+            ctx.sendMessage(Message.raw(Text.langDefaultUpdated(effective, newLang)));
             return CompletableFuture.completedFuture(null);
         }
         if (sub.equals("en") || sub.equals("es")) {
             if (!ctx.isPlayer()) {
-                ctx.sendMessage(Message.raw(DeityLandProtectionText.helpLang(effective)));
+                ctx.sendMessage(Message.raw(Text.helpLang(effective)));
                 return CompletableFuture.completedFuture(null);
             }
             LangPreferenceManager.Language newLang = LangPreferenceManager.Language.fromCode(sub);
             this.langPreferenceManager.setOverride(senderId, newLang);
-            ctx.sendMessage(Message.raw(DeityLandProtectionText.langUpdated(newLang, newLang)));
+            ctx.sendMessage(Message.raw(Text.langUpdated(newLang, newLang)));
             return CompletableFuture.completedFuture(null);
         }
-        ctx.sendMessage(Message.raw(DeityLandProtectionText.helpLang(effective)));
+        ctx.sendMessage(Message.raw(Text.helpLang(effective)));
         return CompletableFuture.completedFuture(null);
     }
 

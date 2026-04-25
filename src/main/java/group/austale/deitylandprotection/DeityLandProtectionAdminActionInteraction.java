@@ -5,8 +5,8 @@ import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.DeityLandProtectionAdminPage;
 import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.DeityLandProtectionText;
-import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
+import group.austale.deitylandprotection.Text;
+import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Transform;
@@ -42,7 +42,7 @@ extends ChoiceInteraction {
         LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(playerRef);
         UUID actor = playerRef.getUuid();
         if (actor == null || !this.plugin.isOpBypass(actor)) {
-            this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.noPermission(lang));
+            this.plugin.sendPlayerMessageImmediate(playerRef, Text.noPermission(lang));
             return;
         }
         String worldName = null;
@@ -112,7 +112,7 @@ extends ChoiceInteraction {
                     transform = null;
                 }
                 if (transform == null || transform.getPosition() == null) {
-                    this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.uiAdminRemoveClaimNone(lang));
+                    this.plugin.sendPlayerMessageImmediate(playerRef, Text.uiAdminRemoveClaimNone(lang));
                     break;
                 }
                 Vector3d pos = transform.getPosition();
@@ -121,7 +121,7 @@ extends ChoiceInteraction {
                 ClaimStore claims = this.plugin.getClaimStore();
                 Claim claim = claims == null ? null : claims.findClaimAt(x, z);
                 if (claim == null) {
-                    this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.uiAdminRemoveClaimNone(lang));
+                    this.plugin.sendPlayerMessageImmediate(playerRef, Text.uiAdminRemoveClaimNone(lang));
                     break;
                 }
                 if (worldName != null && !worldName.isEmpty()) {
@@ -130,13 +130,13 @@ extends ChoiceInteraction {
                 if (claims != null) {
                     claims.removeClaimAt(claim.getCenterX(), claim.getCenterZ());
                 }
-                DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
+                UpkeepStore upkeep = this.plugin.getUpkeepStore();
                 if (upkeep != null) {
                     upkeep.remove(claim.getCenterX(), claim.getCenterZ());
                     upkeep.markDirty();
                 }
                 this.plugin.clearBorderForClaim(claim.getCenterX(), claim.getCenterZ());
-                this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.protectionRemoved(lang));
+                this.plugin.sendPlayerMessageImmediate(playerRef, Text.protectionRemoved(lang));
                 break;
             }
         }

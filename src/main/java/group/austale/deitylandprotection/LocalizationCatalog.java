@@ -8,7 +8,7 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class DeityLandProtectionLocalizationCatalog {
+public final class LocalizationCatalog {
     private static final LinkedHashMap<String, String> EN = new LinkedHashMap<>();
     private static final LinkedHashMap<String, String> ES = new LinkedHashMap<>();
 
@@ -83,7 +83,7 @@ public final class DeityLandProtectionLocalizationCatalog {
         put("tier.no_unclaimed_territory", "No unclaimed territory to expand into", "No hay territorio sin reclamar para expandir");
     }
 
-    private DeityLandProtectionLocalizationCatalog() {
+    private LocalizationCatalog() {
     }
 
     private static void put(String key, String en, String es) {
