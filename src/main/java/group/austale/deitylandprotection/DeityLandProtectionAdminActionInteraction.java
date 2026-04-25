@@ -53,7 +53,7 @@ extends ChoiceInteraction {
             }
         }
         catch (Exception ignored) {
-            // empty catch block
+            // best-effort: swallowing a non-fatal failure
         }
         switch (this.action) {
             case TOGGLE_CRAFTING: {

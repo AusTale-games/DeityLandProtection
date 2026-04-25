@@ -53,9 +53,9 @@ extends EntityEventSystem<EntityStore, BreakBlockEvent> {
                 try {
                     this.plugin.queueMapUpdateForClaim(((EntityStore)store.getExternalData()).getWorld().getName(), claim);
                 }
-                catch (Exception exception) {
-                    // empty catch block
-                }
+                catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                 claims.removeClaimAt(x, z);
                 DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
                 if (upkeep != null) {
@@ -76,9 +76,9 @@ extends EntityEventSystem<EntityStore, BreakBlockEvent> {
             try {
                 this.plugin.queueMapUpdateForClaim(((EntityStore)store.getExternalData()).getWorld().getName(), claim);
             }
-            catch (Exception upkeep) {
-                // empty catch block
-            }
+            catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             claims.removeClaimAt(x, z);
             DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
             if (upkeep != null) {

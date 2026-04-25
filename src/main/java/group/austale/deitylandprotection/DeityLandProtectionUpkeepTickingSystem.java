@@ -82,9 +82,9 @@ extends DelayedSystem<ChunkStore> {
                 try {
                     this.plugin.queueMapUpdateForClaim(world.getName(), liveClaim);
                 }
-                catch (Exception exception) {
-                    // empty catch block
-                }
+                catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             }
             if (centerY == Integer.MIN_VALUE) {
                 continue;
@@ -126,16 +126,16 @@ extends DelayedSystem<ChunkStore> {
                     try {
                         this.plugin.queueMapUpdateForClaim(world.getName(), liveClaim);
                     }
-                    catch (Exception exception) {
-                        // empty catch block
-                    }
+                    catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                     if (claims.updateClaimRadius(centerX, centerZ, configuredBaseRadius) && (updated = claims.findClaimByCenter(centerX, centerZ)) != null) {
                         try {
                             this.plugin.queueMapUpdateForClaim(world.getName(), updated);
                         }
-                        catch (Exception exception) {
-                            // empty catch block
-                        }
+                        catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                     }
                 }
                 if (changed) {
@@ -177,9 +177,9 @@ extends DelayedSystem<ChunkStore> {
                     }
                 }
             }
-            catch (Throwable throwable) {
-                // empty catch block
-            }
+            catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             boolean changed = false;
             if (benchBlock != null) {
                 int benchTier = benchBlock.getTierLevel();
@@ -217,16 +217,16 @@ extends DelayedSystem<ChunkStore> {
                 try {
                     this.plugin.queueMapUpdateForClaim(world.getName(), liveClaim);
                 }
-                catch (Exception exception) {
-                    // empty catch block
-                }
+                catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                 if (claims.updateClaimRadius(centerX, centerZ, targetRadius) && (updated = claims.findClaimByCenter(centerX, centerZ)) != null) {
                     try {
                         this.plugin.queueMapUpdateForClaim(world.getName(), updated);
                     }
-                    catch (Exception exception) {
-                        // empty catch block
-                    }
+                    catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                     liveClaim = updated;
                 }
             }
@@ -357,8 +357,8 @@ extends DelayedSystem<ChunkStore> {
         try {
             this.plugin.queueMapUpdateForClaim(world.getName(), claim);
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         this.plugin.getClaimStore().removeClaimAt(claim.getCenterX(), claim.getCenterZ());
         this.plugin.clearBorderForClaim(claim.getCenterX(), claim.getCenterZ());
@@ -380,8 +380,8 @@ extends DelayedSystem<ChunkStore> {
                 return pr;
             }
         }
-        catch (Throwable throwable) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         return null;
     }

@@ -151,8 +151,8 @@ extends JavaPlugin {
             this.loadRecipeCostConfig(this.absDataDir);
             this.ensureCustomDeityLandProtectionItem(this.absDataDir);
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception e) {
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed during plugin construction; setup() will retry");
         }
     }
 
@@ -179,7 +179,7 @@ extends JavaPlugin {
             Files.createDirectories(configDir, new FileAttribute[0]);
         }
         catch (Exception ignored) {
-            // empty catch block
+            // best-effort: swallowing a non-fatal failure
         }
         return configDir.resolve("config.json");
     }
@@ -499,8 +499,8 @@ extends JavaPlugin {
             catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
             }
-            catch (Exception exception) {
-                // empty catch block
+            catch (Exception ignored) {
+                // best-effort: shutdown is on a path where logging is unavailable.
             }
             this.flushExecutor = null;
         }
@@ -1108,8 +1108,8 @@ extends JavaPlugin {
         try {
             player.sendMessage(Message.raw(text));
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
     }
 
@@ -1120,8 +1120,8 @@ extends JavaPlugin {
         try {
             player.sendMessage(Message.raw(text));
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
     }
 
@@ -1254,14 +1254,14 @@ extends JavaPlugin {
                         return;
                     }
                 }
-                catch (Exception exception) {
-                    // empty catch block
+                catch (IOException ignored) {
+                    // Manifest is unreadable; fall through and overwrite it.
                 }
             }
             Files.writeString(manifest, desired, StandardCharsets.UTF_8, new OpenOption[0]);
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (IOException e) {
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write asset pack manifest");
         }
     }
 

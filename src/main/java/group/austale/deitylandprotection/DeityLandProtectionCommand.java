@@ -360,8 +360,8 @@ extends AbstractAsyncCommand {
                 pos = (Vector3d)p;
             }
         }
-        catch (Throwable m) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         if (pos == null) {
             return null;

@@ -171,8 +171,8 @@ public final class DeityLandProtectionTierSystem {
                 return playerRef;
             }
         }
-        catch (Throwable throwable) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         return null;
     }

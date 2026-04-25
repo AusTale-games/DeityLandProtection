@@ -122,9 +122,9 @@ extends ChoiceInteraction {
                     }
                 }
             }
-            catch (Throwable innerIgnored) {
-                // empty catch block
-            }
+            catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             ProcessingBenchWindow window = new ProcessingBenchWindow(processingBenchBlock, benchBlock, blockStateInfo, x, y, z, rotationIndex, blockType);
             UUID uuid = playerRef.getUuid();
             Map windows = benchBlock.getWindows();
@@ -137,9 +137,9 @@ extends ChoiceInteraction {
                         try {
                             pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
                         }
-                        catch (Throwable throwable) {
-                            // empty catch block
-                        }
+                        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                     });
                 } else {
                     windows.remove(uuid, window);
@@ -151,8 +151,8 @@ extends ChoiceInteraction {
             try {
                 pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, playerRef, this.centerX, this.centerZ));
             }
-            catch (Throwable throwable) {
-                // empty catch block
+            catch (Throwable ignoredFallback) {
+                // best-effort: swallowing a non-fatal failure
             }
         }
     }

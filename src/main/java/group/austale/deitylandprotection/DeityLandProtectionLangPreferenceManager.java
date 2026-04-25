@@ -75,8 +75,8 @@ public final class DeityLandProtectionLangPreferenceManager {
         try {
             Files.createDirectories(this.filePath.getParent(), new FileAttribute[0]);
         }
-        catch (IOException iOException) {
-            // empty catch block
+        catch (IOException ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         if (!Files.exists(this.filePath, new LinkOption[0])) {
             return;
@@ -101,7 +101,9 @@ public final class DeityLandProtectionLangPreferenceManager {
                 Language lang = Language.fromCode(props.getProperty(key));
                 this.overrideByPlayer.put(id, lang);
             }
-            catch (RuntimeException runtimeException) {}
+            catch (RuntimeException ignored) {
+                // Skip malformed UUID/language entries; they will be rewritten on save.
+            }
         }
     }
 
@@ -109,8 +111,8 @@ public final class DeityLandProtectionLangPreferenceManager {
         try {
             Files.createDirectories(this.filePath.getParent(), new FileAttribute[0]);
         }
-        catch (IOException iOException) {
-            // empty catch block
+        catch (IOException ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         Properties props = new Properties();
         props.setProperty(KEY_DEFAULT, this.defaultLanguage.getCode());
@@ -123,8 +125,8 @@ public final class DeityLandProtectionLangPreferenceManager {
         try (OutputStream out = Files.newOutputStream(this.filePath, new OpenOption[0]);){
             props.store(out, "DeityLandProtection language preferences (default + per-player override)");
         }
-        catch (IOException iOException) {
-            // empty catch block
+        catch (IOException ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
     }
 

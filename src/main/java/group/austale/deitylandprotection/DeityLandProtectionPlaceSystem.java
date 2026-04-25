@@ -68,9 +68,9 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
             try {
                 ownerName = player.getUsername();
             }
-            catch (Exception existing) {
-                // empty catch block
-            }
+            catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             Claim newClaim = new Claim(uuid, ownerName, x, y, z, this.plugin.getClaimRadius(), inHand.getItemId());
             boolean added = claims.addClaim(newClaim);
             if (added) {
@@ -83,9 +83,9 @@ extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
                 try {
                     this.plugin.queueMapUpdateForClaim(((EntityStore)store.getExternalData()).getWorld().getName(), newClaim);
                 }
-                catch (Exception exception) {
-                    // empty catch block
-                }
+                catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
                 this.plugin.sendPlayerMessage(player, DeityLandProtectionText.protectionCreated(lang, this.plugin.getClaimRadius()));
                 this.plugin.getLogger().at(Level.INFO).log("DeityLandProtection claim created owner=" + String.valueOf(uuid) + " center=" + x + "," + z + " radius=" + this.plugin.getClaimRadius() + " itemId=" + inHand.getItemId());
             } else {

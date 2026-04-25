@@ -92,9 +92,9 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
             try {
                 ref = player.getReference();
             }
-            catch (Throwable throwable) {
-                // empty catch block
-            }
+            catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             if (ref == null) {
                 ref = chunk.getReferenceTo(entityIndex);
             }
@@ -110,9 +110,9 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
             try {
                 pages.openCustomPage(ref, store, (CustomUIPage)new DeityLandProtectionTrustListPage(this.plugin, player, claim.getCenterX(), claim.getCenterZ()));
             }
-            catch (Throwable throwable) {
-                // empty catch block
-            }
+            catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
+        }
             return;
         }
         if (bypass) {

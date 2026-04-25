@@ -63,8 +63,8 @@ extends EntityTickingSystem<EntityStore> {
         try {
             this.plugin.rememberUsername(uuid, player.getUsername());
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         int x = (int)Math.floor(pos.x);
         int z = (int)Math.floor(pos.z);

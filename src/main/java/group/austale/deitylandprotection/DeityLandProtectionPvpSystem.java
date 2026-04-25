@@ -90,8 +90,8 @@ extends DamageEventSystem {
         try {
             attackerPlayer = (Player)commandBuffer.getComponent(attackerRef, Player.getComponentType());
         }
-        catch (Throwable throwable) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         if (attackerPlayer == null) {
             return;
@@ -100,8 +100,8 @@ extends DamageEventSystem {
         try {
             attackerUuidComponent = (UUIDComponent)commandBuffer.getComponent(attackerRef, UUIDComponent.getComponentType());
         }
-        catch (Throwable throwable) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         if (attackerUuidComponent == null) {
             return;
@@ -130,8 +130,8 @@ extends DamageEventSystem {
                 }
             }
         }
-        catch (Throwable now) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         if (claim.isPvpEnabled()) {
             return;
@@ -141,8 +141,8 @@ extends DamageEventSystem {
                 this.plugin.getLogger().at(Level.INFO).log("DeityLandProtection PvP blocked attacker=" + String.valueOf(attackerUuid) + " victim=" + String.valueOf(victimUuid) + " pos=" + x + "," + z + " claimCenter=" + claim.getCenterX() + "," + claim.getCenterZ() + " source=" + source.getClass().getSimpleName());
             }
         }
-        catch (Throwable now) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         event.setCancelled(true);
         event.setAmount(0.0f);
@@ -151,8 +151,8 @@ extends DamageEventSystem {
         try {
             attackerRefComponent = (PlayerRef)commandBuffer.getComponent(attackerRef, PlayerRef.getComponentType());
         }
-        catch (Throwable throwable) {
-            // empty catch block
+        catch (Throwable ignored) {
+            // best-effort: swallowing a non-fatal failure
         }
         if (attackerRefComponent != null) {
             DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(attackerRefComponent);
