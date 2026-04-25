@@ -1,6 +1,3 @@
-/*
- * Per-world, per-claim packed XZ -> surface Y for border particles. Thread-safe.
- */
 package group.austale.deitylandprotection;
 
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;

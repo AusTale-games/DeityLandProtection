@@ -1,14 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
@@ -59,7 +48,7 @@ extends ChoiceElement {
             who = this.target == null ? "<unknown>" : this.target.toString();
         }
         DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
-        commands.set(selector + " #Name.TextSpans", Message.raw((String)who));
+        commands.set(selector + " #Name.TextSpans", Message.raw(who));
         commands.set(selector + " #Durability.Text", DeityLandProtectionText.uiClickAddAll(lang));
     }
 }

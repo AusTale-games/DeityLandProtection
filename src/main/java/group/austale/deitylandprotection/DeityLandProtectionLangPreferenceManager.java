@@ -1,10 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  javax.annotation.Nonnull
- *  javax.annotation.Nullable
- */
 package group.austale.deitylandprotection;
 
 import java.io.IOException;
@@ -31,7 +24,7 @@ public final class DeityLandProtectionLangPreferenceManager {
 
     public DeityLandProtectionLangPreferenceManager(Path dataDirectory) {
         if (dataDirectory == null) {
-            dataDirectory = Path.of(".", new String[0]);
+            dataDirectory = Path.of(".");
         }
         this.filePath = dataDirectory.resolve(FILE_NAME);
         this.load();
@@ -65,8 +58,7 @@ public final class DeityLandProtectionLangPreferenceManager {
     }
 
     public boolean clearOverride(@Nonnull UUID playerId) {
-        boolean removed;
-        boolean bl = removed = this.overrideByPlayer.remove(playerId) != null;
+        boolean removed = this.overrideByPlayer.remove(playerId) != null;
         if (removed) {
             this.save();
         }

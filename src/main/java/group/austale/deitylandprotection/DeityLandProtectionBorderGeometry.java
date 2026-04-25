@@ -1,6 +1,3 @@
-/*
- * Shared claim-edge detection for border visuals (entity tick + surface refresh).
- */
 package group.austale.deitylandprotection;
 
 public final class DeityLandProtectionBorderGeometry {

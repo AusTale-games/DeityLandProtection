@@ -1,13 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.BasicCustomUIPage
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  javax.annotation.Nonnull
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;

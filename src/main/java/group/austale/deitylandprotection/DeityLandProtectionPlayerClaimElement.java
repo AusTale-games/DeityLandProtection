@@ -1,14 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
@@ -48,25 +37,20 @@ extends ChoiceElement {
         DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         String title = this.buildTitle(lang);
         String subtitle = this.buildSubtitle(lang);
-        commands.set(selector + " #Name.TextSpans", Message.raw((String)title));
+        commands.set(selector + " #Name.TextSpans", Message.raw(title));
         commands.set(selector + " #Durability.Text", subtitle);
     }
 
     private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
-        String yStr;
         if (this.claim == null) {
             return "";
         }
         int y = this.claim.getCenterY();
-        String string = yStr = y == Integer.MIN_VALUE ? "?" : String.valueOf(y);
-        if (lang == DeityLandProtectionLangPreferenceManager.Language.ES) {
-            return "X:" + this.claim.getCenterX() + " Y:" + yStr + " Z:" + this.claim.getCenterZ();
-        }
+        String yStr = y == Integer.MIN_VALUE ? "?" : String.valueOf(y);
         return "X:" + this.claim.getCenterX() + " Y:" + yStr + " Z:" + this.claim.getCenterZ();
     }
 
     private String buildSubtitle(DeityLandProtectionLangPreferenceManager.Language lang) {
-        String grace;
         if (this.plugin == null || this.claim == null) {
             return "";
         }
@@ -75,8 +59,8 @@ extends ChoiceElement {
         try {
             members = this.claim.getTrusted().size();
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception ignored) {
+            // Trusted map access can race during reload; treat as zero members.
         }
         String pvp = this.claim.isPvpEnabled() ? DeityLandProtectionText.borderOnShort(lang) : DeityLandProtectionText.borderOffShort(lang);
         DeityLandProtectionUpkeepStore upkeep = this.plugin.getUpkeepStore();
@@ -86,7 +70,7 @@ extends ChoiceElement {
         long totalFeedMs = st == null ? 0L : st.getTotalFeedDurationMs();
         long graceUntil = st == null ? 0L : st.getGraceUntilMs();
         String time = until > now ? DeityLandProtectionPlayerClaimElement.formatDuration(until - now) : "0m";
-        String string = grace = graceUntil > now ? DeityLandProtectionPlayerClaimElement.formatDuration(graceUntil - now) : null;
+        String grace = graceUntil > now ? DeityLandProtectionPlayerClaimElement.formatDuration(graceUntil - now) : null;
         String feed = DeityLandProtectionPlayerClaimElement.formatFeedDuration(totalFeedMs);
         StringBuilder sb = new StringBuilder();
         if (lang == DeityLandProtectionLangPreferenceManager.Language.ES) {

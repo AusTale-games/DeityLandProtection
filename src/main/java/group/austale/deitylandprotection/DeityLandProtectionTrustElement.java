@@ -1,14 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
@@ -45,32 +34,44 @@ extends ChoiceElement {
     }
 
     public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {
-        DeityLandProtectionLangPreferenceManager.Language lang;
-        String iconId;
         if (commands == null || selector == null) {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        String string = iconId = this.plugin == null ? null : this.plugin.getDeityLandProtectionItemId();
+        String iconId = this.plugin == null ? null : this.plugin.getDeityLandProtectionItemId();
         if (iconId != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
-        DeityLandProtectionLangPreferenceManager.Language language = lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null
+                ? DeityLandProtectionLangPreferenceManager.Language.EN
+                : this.plugin.getEffectiveLanguage(playerRef);
         if (this.header) {
-            commands.set(selector + " #Name.TextSpans", Message.raw((String)DeityLandProtectionText.uiFriendsTrust(lang)));
+            commands.set(selector + " #Name.TextSpans", Message.raw(DeityLandProtectionText.uiFriendsTrust(lang)));
             commands.set(selector + " #Durability.Text", DeityLandProtectionText.uiCyclePermsHint(lang));
             return;
         }
         String who = "<none>";
         if (this.target != null) {
-            Map<UUID, String> inClaim;
-            String present;
-            String cached;
-            String string2 = cached = this.plugin == null ? null : this.plugin.getKnownUsername(this.target);
-            who = cached != null && !cached.isEmpty() ? cached : (this.plugin != null ? ((present = (inClaim = this.plugin.getPlayersInClaim(this.centerX, this.centerZ)).get(this.target)) != null && !present.isEmpty() ? present : this.target.toString()) : this.target.toString());
+            who = resolveDisplayName(this.target);
         }
-        commands.set(selector + " #Name.TextSpans", Message.raw((String)who));
+        commands.set(selector + " #Name.TextSpans", Message.raw(who));
         commands.set(selector + " #Durability.Text", DeityLandProtectionTrustElement.permsToText(this.perms));
+    }
+
+    private String resolveDisplayName(UUID targetId) {
+        if (this.plugin == null) {
+            return targetId.toString();
+        }
+        String cached = this.plugin.getKnownUsername(targetId);
+        if (cached != null && !cached.isEmpty()) {
+            return cached;
+        }
+        Map<UUID, String> inClaim = this.plugin.getPlayersInClaim(this.centerX, this.centerZ);
+        String present = inClaim.get(targetId);
+        if (present != null && !present.isEmpty()) {
+            return present;
+        }
+        return targetId.toString();
     }
 
     private static String permsToText(int perms) {

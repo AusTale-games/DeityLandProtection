@@ -1,16 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.ArchetypeChunk
- *  com.hypixel.hytale.component.CommandBuffer
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.query.Query
- *  com.hypixel.hytale.component.system.EntityEventSystem
- *  com.hypixel.hytale.server.core.event.events.ecs.DamageBlockEvent
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
@@ -44,7 +31,6 @@ extends EntityEventSystem<EntityStore, DamageBlockEvent> {
     }
 
     public void handle(int entityIndex, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store, CommandBuffer<EntityStore> commandBuffer, DamageBlockEvent event) {
-        long last;
         if (this.plugin == null || chunk == null || event == null) {
             return;
         }
@@ -74,7 +60,7 @@ extends EntityEventSystem<EntityStore, DamageBlockEvent> {
         event.setCancelled(true);
         long now = System.currentTimeMillis();
         Long lastObj = LAST_MSG_MS.get(uuid);
-        long l = last = lastObj == null ? 0L : lastObj;
+        long last = lastObj == null ? 0L : lastObj;
         if (lastObj == null || now - last >= 1500L) {
             LAST_MSG_MS.put(uuid, now);
             DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);

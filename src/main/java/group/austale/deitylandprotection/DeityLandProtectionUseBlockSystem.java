@@ -1,26 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.builtin.crafting.state.BenchState
- *  com.hypixel.hytale.component.ArchetypeChunk
- *  com.hypixel.hytale.component.CommandBuffer
- *  com.hypixel.hytale.component.Ref
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.query.Query
- *  com.hypixel.hytale.component.system.EntityEventSystem
- *  com.hypixel.hytale.logger.HytaleLogger$Api
- *  com.hypixel.hytale.protocol.InteractionType
- *  com.hypixel.hytale.server.core.entity.entities.Player
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager
- *  com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent
- *  com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent$Pre
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.meta.BlockState
- *  com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerBlockState
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
@@ -68,8 +45,6 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
     }
 
     public void handle(int entityIndex, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store, CommandBuffer<EntityStore> commandBuffer, UseBlockEvent.Pre event) {
-        boolean isCenter;
-        boolean crouching;
         PlayerRef player = (PlayerRef)chunk.getComponent(entityIndex, PlayerRef.getComponentType());
         if (player == null) {
             return;
@@ -94,7 +69,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
             return;
         }
         MovementStatesComponent msComponent = (MovementStatesComponent)chunk.getComponent(entityIndex, MovementStatesComponent.getComponentType());
-        boolean bl = crouching = msComponent != null && msComponent.getMovementStates() != null && msComponent.getMovementStates().crouching;
+        boolean crouching = msComponent != null && msComponent.getMovementStates() != null && msComponent.getMovementStates().crouching;
         if (crouching && !bypass && !claim.getOwner().equals(uuid) && !claim.hasPermission(uuid, 2)) {
             if (DeityLandProtectionUseBlockSystem.isContainerOrBenchBlock(((EntityStore)store.getExternalData()).getWorld(), x, y, z)) {
                 event.setCancelled(true);
@@ -109,7 +84,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
                 return;
             }
         }
-        boolean bl2 = isCenter = claim.getCenterX() == x && claim.getCenterZ() == z && claim.getCenterY() == y;
+        boolean isCenter = claim.getCenterX() == x && claim.getCenterZ() == z && claim.getCenterY() == y;
         if (event.getInteractionType() == InteractionType.Use && isCenter && (bypass || claim.getOwner().equals(uuid))) {
             Player playerEntity;
             event.setCancelled(true);
@@ -127,7 +102,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
                 playerEntity = (Player)store.getComponent(ref, Player.getComponentType());
             }
             catch (Exception e) {
-                ((HytaleLogger.Api)this.plugin.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection UI: failed to get Player component");
+                ((HytaleLogger.Api)this.plugin.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection UI: failed to get Player component");
                 this.plugin.sendPlayerMessage(player, DeityLandProtectionText.uiPlayerComponentError(lang));
                 return;
             }

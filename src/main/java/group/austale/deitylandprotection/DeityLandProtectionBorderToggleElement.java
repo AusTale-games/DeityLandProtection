@@ -1,14 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionBorderToggleInteraction;
@@ -51,7 +40,7 @@ extends ChoiceElement {
             on = this.plugin.isBorderEnabled(playerRef.getUuid(), key);
         }
         DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
-        commands.set(selector + " #Name.TextSpans", Message.raw((String)DeityLandProtectionText.uiShowBorder(lang)));
+        commands.set(selector + " #Name.TextSpans", Message.raw(DeityLandProtectionText.uiShowBorder(lang)));
         commands.set(selector + " #Durability.Text", on ? DeityLandProtectionText.borderOnShort(lang) : DeityLandProtectionText.borderOffShort(lang));
     }
 }

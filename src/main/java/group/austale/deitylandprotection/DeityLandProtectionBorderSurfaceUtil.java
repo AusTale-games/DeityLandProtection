@@ -1,7 +1,3 @@
-/*
- * Block column scan for claim border particle height. Used only from the
- * chunk/world refresh path (not entity tick).
- */
 package group.austale.deitylandprotection;
 
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;

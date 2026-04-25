@@ -1,14 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
@@ -42,16 +31,15 @@ extends ChoiceElement {
     }
 
     public void addButton(UICommandBuilder commands, UIEventBuilder events, String selector, PlayerRef playerRef) {
-        String iconId;
         if (commands == null || selector == null) {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        String string = iconId = this.plugin == null ? null : this.plugin.getDeityLandProtectionItemId();
+        String iconId = this.plugin == null ? null : this.plugin.getDeityLandProtectionItemId();
         if (iconId != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
-        commands.set(selector + " #Name.TextSpans", Message.raw((String)(this.title == null ? "" : this.title)));
+        commands.set(selector + " #Name.TextSpans", Message.raw((this.title == null ? "" : this.title)));
         commands.set(selector + " #Durability.Text", this.value == null ? "" : this.value);
     }
 }

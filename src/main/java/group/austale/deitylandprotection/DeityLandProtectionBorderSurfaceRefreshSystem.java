@@ -1,6 +1,3 @@
-/*
- * Rebuilds border surface Y cache on the world executor with chunk-loaded gating.
- */
 package group.austale.deitylandprotection;
 
 import com.hypixel.hytale.component.Store;

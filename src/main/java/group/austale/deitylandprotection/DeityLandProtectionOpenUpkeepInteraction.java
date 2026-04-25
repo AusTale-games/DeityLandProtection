@@ -1,33 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.Ref
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.event.EventPriority
- *  com.hypixel.hytale.math.util.ChunkUtil
- *  com.hypixel.hytale.math.vector.Vector3i
- *  com.hypixel.hytale.protocol.packets.interface_.Page
- *  com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType
- *  com.hypixel.hytale.server.core.entity.entities.Player
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.entity.entities.player.windows.ContainerBlockWindow
- *  com.hypixel.hytale.server.core.entity.entities.player.windows.Window
- *  com.hypixel.hytale.server.core.inventory.Inventory
- *  com.hypixel.hytale.server.core.inventory.ItemStack
- *  com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer
- *  com.hypixel.hytale.server.core.inventory.container.ItemContainer
- *  com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer
- *  com.hypixel.hytale.server.core.inventory.container.filter.FilterActionType
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.World
- *  com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk
- *  com.hypixel.hytale.server.core.universe.world.meta.BlockState
- *  com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;

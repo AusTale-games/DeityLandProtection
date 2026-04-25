@@ -1,14 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceInteraction
- *  com.hypixel.hytale.server.core.ui.builder.UICommandBuilder
- *  com.hypixel.hytale.server.core.ui.builder.UIEventBuilder
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- */
 package group.austale.deitylandprotection;
 
 import com.hypixel.hytale.server.core.Message;
@@ -35,7 +24,7 @@ extends ChoiceElement {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        commands.set(selector + " #Name.TextSpans", Message.raw((String)(this.title == null ? "" : this.title)));
+        commands.set(selector + " #Name.TextSpans", Message.raw((this.title == null ? "" : this.title)));
         commands.set(selector + " #Durability.Text", this.subtitle == null ? "" : this.subtitle);
     }
 }

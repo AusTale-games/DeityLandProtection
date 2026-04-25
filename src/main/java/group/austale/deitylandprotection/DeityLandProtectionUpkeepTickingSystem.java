@@ -1,22 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.system.DelayedSystem
- *  com.hypixel.hytale.math.util.ChunkUtil
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType
- *  com.hypixel.hytale.server.core.inventory.ItemStack
- *  com.hypixel.hytale.server.core.inventory.container.ItemContainer
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.World
- *  com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk
- *  com.hypixel.hytale.server.core.universe.world.meta.BlockState
- *  com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState
- *  com.hypixel.hytale.server.core.universe.world.storage.ChunkStore
- *  com.hypixel.hytale.server.core.util.EventTitleUtil
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
@@ -276,7 +257,7 @@ extends DelayedSystem<ChunkStore> {
                     PlayerRef ownerRef = DeityLandProtectionUpkeepTickingSystem.findPlayer(world, liveClaim.getOwner());
                     if (ownerRef != null) {
                         DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(ownerRef);
-                        EventTitleUtil.showEventTitleToPlayer((PlayerRef)ownerRef, (Message)Message.raw((String)DeityLandProtectionText.DeityLandProtectionDestroyTitlePrimary(lang, (int)secondsRemaining)), (Message)Message.raw((String)DeityLandProtectionText.DeityLandProtectionDestroyTitleSecondary(lang)), (boolean)true, null, (float)1.1f, (float)0.0f, (float)0.2f);
+                        EventTitleUtil.showEventTitleToPlayer((PlayerRef)ownerRef, Message.raw(DeityLandProtectionText.DeityLandProtectionDestroyTitlePrimary(lang, (int)secondsRemaining)), Message.raw(DeityLandProtectionText.DeityLandProtectionDestroyTitleSecondary(lang)), true, null, 1.1f, 0.0f, 0.2f);
                     }
                 }
                 if (changed) {

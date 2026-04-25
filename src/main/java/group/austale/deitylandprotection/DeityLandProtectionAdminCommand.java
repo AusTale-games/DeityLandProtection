@@ -1,19 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.Ref
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.command.system.CommandContext
- *  com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand
- *  com.hypixel.hytale.server.core.entity.entities.Player
- *  com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.World
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- *  javax.annotation.Nonnull
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionAdminPage;
@@ -46,7 +30,7 @@ extends AbstractPlayerCommand {
         }
         UUID actor = playerRef.getUuid();
         if (actor == null || !this.plugin.isOpBypass(actor)) {
-            context.sendMessage(Message.raw((String)"No permission"));
+            context.sendMessage(Message.raw("No permission"));
             return;
         }
         Player playerComponent = (Player)store.getComponent(ref, Player.getComponentType());

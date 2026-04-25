@@ -1,6 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package group.austale.deitylandprotection;
 
 public final class DeityLandProtectionUpkeepState {

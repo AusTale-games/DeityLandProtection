@@ -1,19 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.ArchetypeChunk
- *  com.hypixel.hytale.component.CommandBuffer
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.query.Query
- *  com.hypixel.hytale.component.system.EntityEventSystem
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.asset.type.item.config.CraftingRecipe
- *  com.hypixel.hytale.server.core.entity.entities.Player
- *  com.hypixel.hytale.server.core.event.events.ecs.CraftRecipeEvent$Pre
- *  com.hypixel.hytale.server.core.inventory.MaterialQuantity
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
@@ -82,7 +66,7 @@ extends EntityEventSystem<EntityStore, CraftRecipeEvent.Pre> {
         event.setCancelled(true);
         Player player = (Player)chunk.getComponent(entityIndex, Player.getComponentType());
         if (player != null) {
-            player.sendMessage(Message.raw((String)"Crafting DeityLandProtection is disabled on this server"));
+            player.sendMessage(Message.raw("Crafting DeityLandProtection is disabled on this server"));
         }
     }
 }

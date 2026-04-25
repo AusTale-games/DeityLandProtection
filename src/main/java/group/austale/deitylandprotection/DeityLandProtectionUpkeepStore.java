@@ -1,10 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.logger.HytaleLogger
- *  com.hypixel.hytale.logger.HytaleLogger$Api
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
@@ -77,7 +70,7 @@ public final class DeityLandProtectionUpkeepStore {
             json = Files.readString(this.file, StandardCharsets.UTF_8);
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.logger.at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read upkeep.json");
+            ((HytaleLogger.Api)this.logger.at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read upkeep.json");
             this.dirty = false;
             return;
         }
@@ -205,11 +198,11 @@ public final class DeityLandProtectionUpkeepStore {
                 ++i;
             }
             sb.append(']');
-            Files.writeString(this.file, (CharSequence)sb.toString(), StandardCharsets.UTF_8, new OpenOption[0]);
+            Files.writeString(this.file, sb.toString(), StandardCharsets.UTF_8, new OpenOption[0]);
             this.dirty = false;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.logger.at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to save upkeep.json");
+            ((HytaleLogger.Api)this.logger.at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to save upkeep.json");
         }
     }
 

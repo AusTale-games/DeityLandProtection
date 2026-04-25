@@ -1,16 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.Ref
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.system.DelayedSystem
- *  com.hypixel.hytale.server.core.entity.entities.Player
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.World
- *  com.hypixel.hytale.server.core.universe.world.storage.ChunkStore
- *  it.unimi.dsi.fastutil.longs.LongSet
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;

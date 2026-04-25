@@ -1,17 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.ArchetypeChunk
- *  com.hypixel.hytale.component.CommandBuffer
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.query.Query
- *  com.hypixel.hytale.component.system.tick.EntityTickingSystem
- *  com.hypixel.hytale.math.vector.Transform
- *  com.hypixel.hytale.math.vector.Vector3d
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;

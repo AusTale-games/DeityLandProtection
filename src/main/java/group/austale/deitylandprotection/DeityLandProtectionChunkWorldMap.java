@@ -1,19 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.math.util.ChunkUtil
- *  com.hypixel.hytale.protocol.packets.worldmap.MapImage
- *  com.hypixel.hytale.protocol.packets.worldmap.MapMarker
- *  com.hypixel.hytale.server.core.universe.world.World
- *  com.hypixel.hytale.server.core.universe.world.map.WorldMap
- *  com.hypixel.hytale.server.core.universe.world.worldmap.IWorldMap
- *  com.hypixel.hytale.server.core.universe.world.worldmap.WorldMapSettings
- *  com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.ChunkWorldMap
- *  it.unimi.dsi.fastutil.longs.LongIterator
- *  it.unimi.dsi.fastutil.longs.LongSet
- *  javax.annotation.Nonnull
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;

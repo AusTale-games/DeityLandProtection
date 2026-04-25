@@ -1,24 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.ArchetypeChunk
- *  com.hypixel.hytale.component.CommandBuffer
- *  com.hypixel.hytale.component.Ref
- *  com.hypixel.hytale.component.Store
- *  com.hypixel.hytale.component.SystemGroup
- *  com.hypixel.hytale.component.query.Query
- *  com.hypixel.hytale.server.core.entity.UUIDComponent
- *  com.hypixel.hytale.server.core.entity.entities.Player
- *  com.hypixel.hytale.server.core.modules.entity.component.TransformComponent
- *  com.hypixel.hytale.server.core.modules.entity.damage.Damage
- *  com.hypixel.hytale.server.core.modules.entity.damage.Damage$EntitySource
- *  com.hypixel.hytale.server.core.modules.entity.damage.Damage$Source
- *  com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem
- *  com.hypixel.hytale.server.core.modules.entity.damage.DamageModule
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.storage.EntityStore
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
@@ -141,10 +120,9 @@ extends DamageEventSystem {
             return;
         }
         try {
-            long last;
             long now = System.currentTimeMillis();
             Long lastObj = LAST_LOG_MS.get(attackerUuid);
-            long l = last = lastObj == null ? 0L : lastObj;
+            long last = lastObj == null ? 0L : lastObj;
             if (lastObj == null || now - last >= 1500L) {
                 LAST_LOG_MS.put(attackerUuid, now);
                 if (this.plugin != null) {

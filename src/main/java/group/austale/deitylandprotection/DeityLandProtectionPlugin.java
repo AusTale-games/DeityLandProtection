@@ -1,24 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  com.hypixel.hytale.component.system.ISystem
- *  com.hypixel.hytale.logger.HytaleLogger$Api
- *  com.hypixel.hytale.math.util.ChunkUtil
- *  com.hypixel.hytale.server.core.Message
- *  com.hypixel.hytale.server.core.command.system.AbstractCommand
- *  com.hypixel.hytale.server.core.command.system.CommandManager
- *  com.hypixel.hytale.server.core.permissions.PermissionsModule
- *  com.hypixel.hytale.server.core.plugin.JavaPlugin
- *  com.hypixel.hytale.server.core.plugin.JavaPluginInit
- *  com.hypixel.hytale.server.core.universe.PlayerRef
- *  com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent
- *  com.hypixel.hytale.server.core.universe.world.worldmap.provider.IWorldMapProvider
- *  com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.WorldGenWorldMapProvider
- *  it.unimi.dsi.fastutil.longs.LongIterator
- *  it.unimi.dsi.fastutil.longs.LongOpenHashSet
- *  it.unimi.dsi.fastutil.longs.LongSet
- */
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
@@ -64,7 +43,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -233,7 +211,7 @@ extends JavaPlugin {
             return normalized > 0 ? normalized : 16;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return 16;
         }
     }
@@ -250,7 +228,7 @@ extends JavaPlugin {
             return DeityLandProtectionPlugin.clampMaxClaimsPerPlayer(requested);
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return 1;
         }
     }
@@ -266,7 +244,7 @@ extends JavaPlugin {
             return v == null ? true : v;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return true;
         }
     }
@@ -282,7 +260,7 @@ extends JavaPlugin {
             return v == null ? DEFAULT_MAP_CLAIM_VISUAL_ENABLED : v;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return DEFAULT_MAP_CLAIM_VISUAL_ENABLED;
         }
     }
@@ -298,10 +276,10 @@ extends JavaPlugin {
                 Files.createDirectories(cfgDir, new FileAttribute[0]);
             }
             String content = "{\"" + CONFIG_DEITY_ITEM_ID_KEY + "\":\"" + (this.DeityLandProtectionItemId == null ? DEFAULT_DeityLandProtection_ITEM_ID : this.DeityLandProtectionItemId) + "\",\"" + CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY + "\":\"" + (this.outlanderDeityItemId == null ? OUTLANDER_DEITY_ITEM_ID : this.outlanderDeityItemId) + "\",\"claimRadius\":" + this.getDefaultRadius() + ",\"maxClaimsPerPlayer\":" + this.getMaxClaimsPerPlayer() + ",\"allowCrafting\":" + this.isAllowCrafting() + ",\"mapClaimVisualEnabled\":" + this.isMapClaimVisualEnabled() + ",\"upkeepEnabled\":" + this.isUpkeepEnabled() + ",\"upkeepGraceMinutes\":" + this.getUpkeepGraceMinutes() + ",\"upkeepEssenceCostPerHour\":" + this.getUpkeepEssenceCostPerHour() + ",\"" + CONFIG_SLUMBERING_RECIPE_COBBLE_COST_KEY + "\":" + Math.max(0, this.slumberingRecipeCobbleCost) + ",\"" + CONFIG_SLUMBERING_RECIPE_ESSENCE_COST_KEY + "\":" + Math.max(0, this.slumberingRecipeEssenceCost) + ",\"" + CONFIG_OUTLANDER_RECIPE_COBBLE_COST_KEY + "\":" + Math.max(0, this.outlanderRecipeCobbleCost) + ",\"" + CONFIG_OUTLANDER_RECIPE_ESSENCE_COST_KEY + "\":" + Math.max(0, this.outlanderRecipeEssenceCost) + ",\"" + CONFIG_UPGRADE_TIER_2_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier2ItemId() + "\",\"" + CONFIG_UPGRADE_TIER_2_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier2ItemQuantity() + ",\"" + CONFIG_UPGRADE_TIER_3_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier3ItemId() + "\",\"" + CONFIG_UPGRADE_TIER_3_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier3ItemQuantity() + ",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier4PrimaryItemId() + "\",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier4PrimaryItemQuantity() + ",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_ID_KEY + "\":\"" + this.getUpgradeTier4SecondaryItemId() + "\",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY + "\":" + this.getUpgradeTier4SecondaryItemQuantity() + "}";
-            Files.writeString(cfg, (CharSequence)content, StandardCharsets.UTF_8, new OpenOption[0]);
+            Files.writeString(cfg, content, StandardCharsets.UTF_8, new OpenOption[0]);
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to write config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write config.json");
         }
     }
 
@@ -316,7 +294,7 @@ extends JavaPlugin {
             return v == null ? true : v;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return true;
         }
     }
@@ -332,7 +310,7 @@ extends JavaPlugin {
             return v == null ? 30 : Math.max(0, v);
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return 30;
         }
     }
@@ -348,7 +326,7 @@ extends JavaPlugin {
             return v == null ? DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR : Math.max(1, v);
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return DEFAULT_UPKEEP_ESSENCE_COST_PER_HOUR;
         }
     }
@@ -386,7 +364,7 @@ extends JavaPlugin {
             this.upgradeTier4SecondaryItemQuantity = DeityLandProtectionPlugin.readConfiguredRecipeCost(json, CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY, DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY);
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
         }
     }
 
@@ -560,7 +538,7 @@ extends JavaPlugin {
                     this.claimStore.flushIfDirty();
                 }
                 catch (Exception e) {
-                    ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection claims flush failed");
+                    ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection claims flush failed");
                 }
             }
             if (this.upkeepStore != null) {
@@ -568,7 +546,7 @@ extends JavaPlugin {
                     this.upkeepStore.flushIfDirty();
                 }
                 catch (Exception e) {
-                    ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection upkeep flush failed");
+                    ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection upkeep flush failed");
                 }
             }
         }, 10L, 10L, TimeUnit.SECONDS);
@@ -582,7 +560,7 @@ extends JavaPlugin {
             CommandManager.get().register((AbstractCommand)new DeityLandProtectionLangCommand(this, this.langPreferenceManager));
         }
         catch (Exception e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to register commands");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to register commands");
         }
         this.getLogger().at(Level.INFO).log("DeityLandProtectionPlugin start");
     }
@@ -986,10 +964,10 @@ extends JavaPlugin {
                     Files.createDirectories(cfgDir, new FileAttribute[0]);
                 }
                 String content = "{\"" + CONFIG_DEITY_ITEM_ID_KEY + "\":\"" + DEFAULT_DeityLandProtection_ITEM_ID + "\",\"" + CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY + "\":\"" + OUTLANDER_DEITY_ITEM_ID + "\",\"claimRadius\":16,\"maxClaimsPerPlayer\":1,\"allowCrafting\":true,\"mapClaimVisualEnabled\":true,\"upkeepEnabled\":true,\"upkeepGraceMinutes\":30,\"upkeepEssenceCostPerHour\":1,\"" + CONFIG_SLUMBERING_RECIPE_COBBLE_COST_KEY + "\":" + DEFAULT_SLUMBERING_RECIPE_COBBLE_COST + ",\"" + CONFIG_SLUMBERING_RECIPE_ESSENCE_COST_KEY + "\":" + DEFAULT_SLUMBERING_RECIPE_ESSENCE_COST + ",\"" + CONFIG_OUTLANDER_RECIPE_COBBLE_COST_KEY + "\":" + DEFAULT_OUTLANDER_RECIPE_COBBLE_COST + ",\"" + CONFIG_OUTLANDER_RECIPE_ESSENCE_COST_KEY + "\":" + DEFAULT_OUTLANDER_RECIPE_ESSENCE_COST + ",\"" + CONFIG_UPGRADE_TIER_2_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_2_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_2_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_2_ITEM_QUANTITY + ",\"" + CONFIG_UPGRADE_TIER_3_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_3_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_3_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_3_ITEM_QUANTITY + ",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_QUANTITY + ",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_ID_KEY + "\":\"" + DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID + "\",\"" + CONFIG_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY_KEY + "\":" + DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY + "}";
-                Files.writeString(cfg, (CharSequence)content, StandardCharsets.UTF_8, new OpenOption[0]);
+                Files.writeString(cfg, content, StandardCharsets.UTF_8, new OpenOption[0]);
             }
             catch (IOException e) {
-                ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to write config.json");
+                ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write config.json");
             }
             return DEFAULT_DeityLandProtection_ITEM_ID;
         }
@@ -1009,7 +987,7 @@ extends JavaPlugin {
             return trimmed;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return DEFAULT_DeityLandProtection_ITEM_ID;
         }
     }
@@ -1029,38 +1007,27 @@ extends JavaPlugin {
             return trimmed.isEmpty() ? OUTLANDER_DEITY_ITEM_ID : trimmed;
         }
         catch (IOException e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to read config.json");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to read config.json");
             return OUTLANDER_DEITY_ITEM_ID;
         }
     }
 
-    /*
-     * Enabled aggressive block sorting
-     * Enabled unnecessary exception pruning
-     * Enabled aggressive exception aggregation
-     */
     public boolean isOpBypass(UUID playerUuid) {
         PermissionsModule perms = PermissionsModule.get();
         if (perms == null) {
             return false;
         }
         try {
-            Iterator iterator = perms.getGroupsForUser(playerUuid).iterator();
-            while (true) {
-                String gl;
-                if (!iterator.hasNext()) {
-                    return false;
+            for (Object raw : perms.getGroupsForUser(playerUuid)) {
+                if (!(raw instanceof String)) continue;
+                String group = ((String) raw).trim().toLowerCase(Locale.ROOT);
+                if (group.equals("op") || group.equals("admin") || group.equals("operator")) {
+                    return true;
                 }
-                String g = (String)iterator.next();
-                if (g == null || (gl = g.trim().toLowerCase()).isEmpty()) continue;
-                if (gl.equals("op")) return true;
-                if (gl.equals("admin")) return true;
-                if (gl.equals("operator")) break;
             }
-            return true;
         }
-        catch (Exception exception) {
-            // empty catch block
+        catch (Exception ignored) {
+            // Permissions API unavailable; fall through and deny bypass.
         }
         return false;
     }
@@ -1214,7 +1181,7 @@ extends JavaPlugin {
         }
         this.lastPlayerMessageMs.put(uuid, now);
         try {
-            player.sendMessage(Message.raw((String)text));
+            player.sendMessage(Message.raw(text));
         }
         catch (Exception exception) {
             // empty catch block
@@ -1226,7 +1193,7 @@ extends JavaPlugin {
             return;
         }
         try {
-            player.sendMessage(Message.raw((String)text));
+            player.sendMessage(Message.raw(text));
         }
         catch (Exception exception) {
             // empty catch block
@@ -1302,8 +1269,7 @@ extends JavaPlugin {
             }
         }
         if (nowCenterKey != null) {
-            String u;
-            String string = u = username == null ? null : username.trim();
+            String u = username == null ? null : username.trim();
             if (u == null || u.isEmpty()) {
                 u = this.knownUsernameByUuid.get(playerUuid);
             }
@@ -1367,7 +1333,7 @@ extends JavaPlugin {
                     // empty catch block
                 }
             }
-            Files.writeString(manifest, (CharSequence)desired, StandardCharsets.UTF_8, new OpenOption[0]);
+            Files.writeString(manifest, desired, StandardCharsets.UTF_8, new OpenOption[0]);
         }
         catch (Exception exception) {
             // empty catch block
@@ -1405,7 +1371,7 @@ extends JavaPlugin {
             }
         }
         catch (Exception e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to strip duplicate UI from data pack");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to strip duplicate UI from data pack");
         }
     }
 
@@ -1433,7 +1399,7 @@ extends JavaPlugin {
                     // Fall through and overwrite if the file cannot be read cleanly.
                 }
             }
-            Files.writeString(dest, (CharSequence)content, StandardCharsets.UTF_8, new OpenOption[0]);
+            Files.writeString(dest, content, StandardCharsets.UTF_8, new OpenOption[0]);
         }
     }
 
@@ -1463,7 +1429,7 @@ extends JavaPlugin {
                     // Fall through and overwrite if the file cannot be read cleanly.
                 }
             }
-            Files.writeString(dest, (CharSequence)overridden, StandardCharsets.UTF_8, new OpenOption[0]);
+            Files.writeString(dest, overridden, StandardCharsets.UTF_8, new OpenOption[0]);
         }
     }
 
@@ -1573,7 +1539,7 @@ extends JavaPlugin {
             this.writeCustomDeityItemResource(dataDir.resolve("Assets/Server/Item/Items/DeityLandProtection/OutlanderDeity_Block.json"), "Assets/Server/Item/Items/DeityLandProtection/OutlanderDeity_Block.json");
         }
         catch (Exception e) {
-            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause((Throwable)e)).log("DeityLandProtection failed to write custom item asset");
+            ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to write custom item asset");
         }
     }
 
