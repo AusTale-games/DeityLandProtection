@@ -209,7 +209,7 @@ extends JavaPlugin {
     }
 
     public int getDefaultRadius() {
-        return this.config.claimRadius > 0 ? this.config.claimRadius : DeityLandProtectionConfig.DEFAULT_RADIUS;
+        return this.config.resolvedClaimRadius();
     }
 
     public int getClaimRadius() {
@@ -227,7 +227,7 @@ extends JavaPlugin {
     }
 
     public int getMaxClaimsPerPlayer() {
-        return DeityLandProtectionConfig.clampMaxClaimsPerPlayer(this.config.maxClaimsPerPlayer <= 0 ? 1 : this.config.maxClaimsPerPlayer);
+        return this.config.resolvedMaxClaimsPerPlayer();
     }
 
     public boolean setMaxClaimsPerPlayer(int maxClaimsPerPlayer) {
@@ -261,15 +261,11 @@ extends JavaPlugin {
     }
 
     public boolean isClaimItemId(String itemId) {
-        return DeityLandProtectionConfig.itemIdMatches(itemId, this.config.deityItemId)
-                || DeityLandProtectionConfig.itemIdMatches(itemId, DeityLandProtectionConfig.DEFAULT_DEITY_ITEM_ID)
-                || this.isOutlanderClaimItemId(itemId);
+        return this.config.isClaimItemId(itemId);
     }
 
     public boolean isOutlanderClaimItemId(String itemId) {
-        return DeityLandProtectionConfig.itemIdMatches(itemId, this.config.outlanderDeityItemId)
-                || DeityLandProtectionConfig.itemIdMatches(itemId, DeityLandProtectionConfig.OUTLANDER_DEITY_ITEM_ID)
-                || DeityLandProtectionConfig.itemIdMatches(itemId, DeityLandProtectionConfig.OUTLANDER_DEITY_BLOCK_ITEM_ID);
+        return this.config.isOutlanderClaimItemId(itemId);
     }
 
     public String getUpkeepEssenceItemIdForClaim(Claim claim) {
@@ -320,7 +316,7 @@ extends JavaPlugin {
     }
 
     public String getUpgradeTier2ItemId() {
-        return resolvedItemId(this.config.upgradeTier2ItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_2_ITEM_ID);
+        return this.config.resolvedUpgradeTier2ItemId();
     }
 
     public int getUpgradeTier2ItemQuantity() {
@@ -328,7 +324,7 @@ extends JavaPlugin {
     }
 
     public String getUpgradeTier3ItemId() {
-        return resolvedItemId(this.config.upgradeTier3ItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_3_ITEM_ID);
+        return this.config.resolvedUpgradeTier3ItemId();
     }
 
     public int getUpgradeTier3ItemQuantity() {
@@ -336,7 +332,7 @@ extends JavaPlugin {
     }
 
     public String getUpgradeTier4PrimaryItemId() {
-        return resolvedItemId(this.config.upgradeTier4PrimaryItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID);
+        return this.config.resolvedUpgradeTier4PrimaryItemId();
     }
 
     public int getUpgradeTier4PrimaryItemQuantity() {
@@ -344,39 +340,31 @@ extends JavaPlugin {
     }
 
     public String getUpgradeTier4SecondaryItemId() {
-        return resolvedItemId(this.config.upgradeTier4SecondaryItemId, DeityLandProtectionConfig.DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID);
+        return this.config.resolvedUpgradeTier4SecondaryItemId();
     }
 
     public int getUpgradeTier4SecondaryItemQuantity() {
         return Math.max(0, this.config.upgradeTier4SecondaryItemQuantity);
     }
 
-    private static String resolvedItemId(String value, String defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? defaultValue : trimmed;
-    }
-
     public boolean isTier2UpgradeItemId(String itemId) {
-        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier2ItemId());
+        return this.config.isTier2UpgradeItemId(itemId);
     }
 
     public boolean isTier3UpgradeItemId(String itemId) {
-        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier3ItemId());
+        return this.config.isTier3UpgradeItemId(itemId);
     }
 
     public boolean isTier4PrimaryUpgradeItemId(String itemId) {
-        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier4PrimaryItemId());
+        return this.config.isTier4PrimaryUpgradeItemId(itemId);
     }
 
     public boolean isTier4SecondaryUpgradeItemId(String itemId) {
-        return DeityLandProtectionConfig.itemIdEqualsConfigured(itemId, this.getUpgradeTier4SecondaryItemId());
+        return this.config.isTier4SecondaryUpgradeItemId(itemId);
     }
 
     public boolean areTier4UpgradeItemsSameItem() {
-        return DeityLandProtectionConfig.itemIdEqualsConfigured(this.getUpgradeTier4PrimaryItemId(), this.getUpgradeTier4SecondaryItemId());
+        return this.config.areTier4UpgradeItemsSameItem();
     }
 
     public String getUpkeepEssenceTitleForClaim(Claim claim, DeityLandProtectionLangPreferenceManager.Language lang) {
@@ -447,7 +435,7 @@ extends JavaPlugin {
     }
 
     public int getUpkeepGraceMinutes() {
-        return Math.max(0, this.config.upkeepGraceMinutes);
+        return this.config.resolvedUpkeepGraceMinutes();
     }
 
     public void setUpkeepGraceMinutes(int minutes) {
@@ -460,7 +448,7 @@ extends JavaPlugin {
     }
 
     public int getUpkeepEssenceCostPerHour() {
-        return Math.max(1, this.config.upkeepEssenceCostPerHour);
+        return this.config.resolvedUpkeepEssenceCostPerHour();
     }
 
     public void setUpkeepEssenceCostPerHour(int cost) {

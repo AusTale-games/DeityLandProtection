@@ -270,6 +270,78 @@ final class DeityLandProtectionConfig {
         return itemLower.contains(configLower);
     }
 
+    int resolvedClaimRadius() {
+        return this.claimRadius > 0 ? this.claimRadius : DEFAULT_RADIUS;
+    }
+
+    int resolvedMaxClaimsPerPlayer() {
+        return clampMaxClaimsPerPlayer(this.maxClaimsPerPlayer <= 0 ? DEFAULT_MAX_CLAIMS_PER_PLAYER : this.maxClaimsPerPlayer);
+    }
+
+    int resolvedUpkeepGraceMinutes() {
+        return Math.max(0, this.upkeepGraceMinutes);
+    }
+
+    int resolvedUpkeepEssenceCostPerHour() {
+        return Math.max(1, this.upkeepEssenceCostPerHour);
+    }
+
+    String resolvedUpgradeTier2ItemId() {
+        return resolvedItemId(this.upgradeTier2ItemId, DEFAULT_UPGRADE_TIER_2_ITEM_ID);
+    }
+
+    String resolvedUpgradeTier3ItemId() {
+        return resolvedItemId(this.upgradeTier3ItemId, DEFAULT_UPGRADE_TIER_3_ITEM_ID);
+    }
+
+    String resolvedUpgradeTier4PrimaryItemId() {
+        return resolvedItemId(this.upgradeTier4PrimaryItemId, DEFAULT_UPGRADE_TIER_4_PRIMARY_ITEM_ID);
+    }
+
+    String resolvedUpgradeTier4SecondaryItemId() {
+        return resolvedItemId(this.upgradeTier4SecondaryItemId, DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID);
+    }
+
+    private static String resolvedItemId(String value, String defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? defaultValue : trimmed;
+    }
+
+    boolean isClaimItemId(String itemId) {
+        return itemIdMatches(itemId, this.deityItemId)
+                || itemIdMatches(itemId, DEFAULT_DEITY_ITEM_ID)
+                || isOutlanderClaimItemId(itemId);
+    }
+
+    boolean isOutlanderClaimItemId(String itemId) {
+        return itemIdMatches(itemId, this.outlanderDeityItemId)
+                || itemIdMatches(itemId, OUTLANDER_DEITY_ITEM_ID)
+                || itemIdMatches(itemId, OUTLANDER_DEITY_BLOCK_ITEM_ID);
+    }
+
+    boolean isTier2UpgradeItemId(String itemId) {
+        return itemIdEqualsConfigured(itemId, resolvedUpgradeTier2ItemId());
+    }
+
+    boolean isTier3UpgradeItemId(String itemId) {
+        return itemIdEqualsConfigured(itemId, resolvedUpgradeTier3ItemId());
+    }
+
+    boolean isTier4PrimaryUpgradeItemId(String itemId) {
+        return itemIdEqualsConfigured(itemId, resolvedUpgradeTier4PrimaryItemId());
+    }
+
+    boolean isTier4SecondaryUpgradeItemId(String itemId) {
+        return itemIdEqualsConfigured(itemId, resolvedUpgradeTier4SecondaryItemId());
+    }
+
+    boolean areTier4UpgradeItemsSameItem() {
+        return itemIdEqualsConfigured(resolvedUpgradeTier4PrimaryItemId(), resolvedUpgradeTier4SecondaryItemId());
+    }
+
     /** Strict item-id matching: equal or {@code "namespace:configured"}, no substring fallback. */
     static boolean itemIdEqualsConfigured(String itemId, String configuredItemId) {
         if (itemId == null || configuredItemId == null) {
