@@ -19,7 +19,6 @@ import group.austale.deitylandprotection.DeityLandProtectionWorldMapProvider;
 import group.austale.deitylandprotection.DeityLandProtectionWorldMapUpdateTickingSystem;
 import com.hypixel.hytale.component.system.ISystem;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandManager;
@@ -30,7 +29,6 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.worldmap.provider.IWorldMapProvider;
 import com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.WorldGenWorldMapProvider;
-import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.io.IOException;
@@ -139,7 +137,7 @@ extends JavaPlugin {
     private final ConcurrentHashMap<UUID, String> knownUsernameByUuid = new ConcurrentHashMap();
     private final ConcurrentHashMap<String, UUID> knownUuidByUsername = new ConcurrentHashMap();
     private final ConcurrentHashMap<Long, ConcurrentHashMap<UUID, String>> playersInClaim = new ConcurrentHashMap();
-    private final ConcurrentHashMap<String, LongSet> mapUpdateQueueByWorld = new ConcurrentHashMap();
+    private DeityLandProtectionMapUpdateQueue mapUpdateQueue;
 
     public DeityLandProtectionPlugin(JavaPluginInit init) {
         super(init);
@@ -435,6 +433,7 @@ extends JavaPlugin {
         this.claimStore.load();
         this.upkeepStore = new DeityLandProtectionUpkeepStore(this.absDataDir.resolve("upkeep.json"), this.getLogger());
         this.upkeepStore.load();
+        this.mapUpdateQueue = new DeityLandProtectionMapUpdateQueue(this.claimStore);
         this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionPlaceSystem(this));
         this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionBreakSystem(this));
         this.getEntityStoreRegistry().registerSystem((ISystem)new DeityLandProtectionUseBlockSystem(this));
@@ -510,7 +509,9 @@ extends JavaPlugin {
         if (this.upkeepStore != null) {
             this.upkeepStore.flushIfDirty();
         }
-        this.mapUpdateQueueByWorld.clear();
+        if (this.mapUpdateQueue != null) {
+            this.mapUpdateQueue.clear();
+        }
         if (instance == this) {
             instance = null;
         }
@@ -518,70 +519,19 @@ extends JavaPlugin {
     }
 
     public void queueMapUpdateForClaim(String worldName, Claim claim) {
-        if (worldName == null || worldName.isEmpty() || claim == null) {
-            return;
+        if (this.mapUpdateQueue != null) {
+            this.mapUpdateQueue.queueForClaim(worldName, claim);
         }
-        int minX;
-        int maxX;
-        int minZ;
-        int maxZ;
-        int[] bounds = this.claimStore == null ? null : this.claimStore.getClaimCellBounds(claim.getCenterX(), claim.getCenterZ());
-        if (bounds != null && bounds.length >= 4) {
-            minX = bounds[0];
-            maxX = bounds[1];
-            minZ = bounds[2];
-            maxZ = bounds[3];
-        } else {
-            int centerX = claim.getCenterX();
-            int centerZ = claim.getCenterZ();
-            int r = claim.getRadius();
-            minX = centerX - r;
-            maxX = centerX + r;
-            minZ = centerZ - r;
-            maxZ = centerZ + r;
-        }
-        int minChunkX = ChunkUtil.chunkCoordinate((int)minX);
-        int maxChunkX = ChunkUtil.chunkCoordinate((int)maxX);
-        int minChunkZ = ChunkUtil.chunkCoordinate((int)minZ);
-        int maxChunkZ = ChunkUtil.chunkCoordinate((int)maxZ);
-        LongOpenHashSet toAdd = new LongOpenHashSet();
-        int cx = minChunkX;
-        while (cx <= maxChunkX) {
-            int cz = minChunkZ;
-            while (cz <= maxChunkZ) {
-                toAdd.add(ChunkUtil.indexChunk((int)cx, (int)cz));
-                ++cz;
-            }
-            ++cx;
-        }
-        this.mapUpdateQueueByWorld.compute(worldName, (k, existing) -> {
-            LongSet set = existing;
-            if (set == null) {
-                set = new LongOpenHashSet();
-            }
-            LongIterator it = toAdd.iterator();
-            while (it.hasNext()) {
-                set.add(it.nextLong());
-            }
-            return set;
-        });
     }
 
     public void queueMapUpdateForAllClaims(String worldName) {
-        if (worldName == null || worldName.isEmpty() || this.claimStore == null) {
-            return;
-        }
-        List<Claim> claims = this.claimStore.getClaims();
-        for (Claim claim : claims) {
-            this.queueMapUpdateForClaim(worldName, claim);
+        if (this.mapUpdateQueue != null) {
+            this.mapUpdateQueue.queueForAllClaims(worldName);
         }
     }
 
     public LongSet pollMapUpdateChunks(String worldName) {
-        if (worldName == null || worldName.isEmpty()) {
-            return null;
-        }
-        return this.mapUpdateQueueByWorld.remove(worldName);
+        return this.mapUpdateQueue == null ? null : this.mapUpdateQueue.poll(worldName);
     }
 
     public ClaimStore getClaimStore() {
