@@ -21,13 +21,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nonnull;
 
-public final class DeityLandProtectionChunkWorldMap
+public final class ClaimChunkWorldMap
 implements IWorldMap {
-    public static final DeityLandProtectionChunkWorldMap INSTANCE = new DeityLandProtectionChunkWorldMap();
+    public static final ClaimChunkWorldMap INSTANCE = new ClaimChunkWorldMap();
     private static final int BORDER_BLOCKS = 2;
     private static final int OUTLANDER_PURPLE = 0xA020F0;
 
-    private DeityLandProtectionChunkWorldMap() {
+    private ClaimChunkWorldMap() {
     }
 
     public WorldMapSettings getWorldMapSettings() {
@@ -62,7 +62,7 @@ implements IWorldMap {
                 int pixelCount = w * h;
                 int[] buf = new int[pixelCount];
                 for (int px = 0; px < pixelCount; ++px) {
-                    buf[px] = DeityLandProtectionChunkWorldMap.readPackedArgbFromMapImage(image, px);
+                    buf[px] = ClaimChunkWorldMap.readPackedArgbFromMapImage(image, px);
                 }
                 for (int y = 0; y < h; ++y) {
                     int sampleZ = Math.min((int)((float)y * imageToSampleRatioHeight), sampleHeight - 1);
@@ -75,11 +75,11 @@ implements IWorldMap {
                         int worldX = minBlockX + xInChunk;
                         Claim found = claimStore.findClaimAt(worldX, worldZ);
                         if (found == null || (owner = found.getOwner()) == null) continue;
-                        int overlayColor = DeityLandProtectionChunkWorldMap.colorForClaim(plugin, found, owner);
+                        int overlayColor = ClaimChunkWorldMap.colorForClaim(plugin, found, owner);
                         int overlayR = overlayColor >> 16 & 0xFF;
                         int overlayG = overlayColor >> 8 & 0xFF;
                         int overlayB = overlayColor & 0xFF;
-                        boolean border = DeityLandProtectionChunkWorldMap.isBorderCell(claimStore, found, worldX, worldZ);
+                        boolean border = ClaimChunkWorldMap.isBorderCell(claimStore, found, worldX, worldZ);
                         float alpha = border ? 0.75f : 0.4f;
                         int px = y * w + x;
                         int packed = buf[px];
@@ -92,7 +92,7 @@ implements IWorldMap {
                         buf[px] = (outR & 0xFF) << 24 | (outG & 0xFF) << 16 | (outB & 0xFF) << 8 | 0xFF;
                     }
                 }
-                worldMap.getChunks().put(index, DeityLandProtectionChunkWorldMap.rebuildMapImageFromPackedPixels(w, h, buf));
+                worldMap.getChunks().put(index, ClaimChunkWorldMap.rebuildMapImageFromPackedPixels(w, h, buf));
             }
             return worldMap;
         }, (Executor)world);
@@ -127,7 +127,7 @@ implements IWorldMap {
     }
 
     private static int readPackedArgbFromMapImage(MapImage image, int pixelIndex) {
-        int idx = DeityLandProtectionChunkWorldMap.readPaletteIndex(image, pixelIndex);
+        int idx = ClaimChunkWorldMap.readPaletteIndex(image, pixelIndex);
         if (image.palette == null || idx < 0 || idx >= image.palette.length) {
             return 0;
         }
@@ -151,7 +151,7 @@ implements IWorldMap {
         }
         if (uniq.size() > 256) {
             for (int i = 0; i < pixels.length; ++i) {
-                pixels[i] = DeityLandProtectionChunkWorldMap.quantizePackedPixel(pixels[i]);
+                pixels[i] = ClaimChunkWorldMap.quantizePackedPixel(pixels[i]);
             }
             uniq.clear();
             for (int c : pixels) {
@@ -197,7 +197,7 @@ implements IWorldMap {
         if (claimStore == null || claim == null) {
             return false;
         }
-        return !DeityLandProtectionChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX - 1, worldZ), claim) || !DeityLandProtectionChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX + 1, worldZ), claim) || !DeityLandProtectionChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX, worldZ - 1), claim) || !DeityLandProtectionChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX, worldZ + 1), claim);
+        return !ClaimChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX - 1, worldZ), claim) || !ClaimChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX + 1, worldZ), claim) || !ClaimChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX, worldZ - 1), claim) || !ClaimChunkWorldMap.isSameClaim(claimStore.findClaimAt(worldX, worldZ + 1), claim);
     }
 
     private static boolean isSameClaim(Claim a, Claim b) {
@@ -208,7 +208,7 @@ implements IWorldMap {
         if (plugin != null && claim != null && plugin.isOutlanderClaimItemId(claim.getDeityItemId())) {
             return OUTLANDER_PURPLE;
         }
-        return DeityLandProtectionChunkWorldMap.colorForOwner(owner);
+        return ClaimChunkWorldMap.colorForOwner(owner);
     }
 
     private static int colorForOwner(UUID owner) {
@@ -216,7 +216,7 @@ implements IWorldMap {
         float hue = (float)(h & 0xFFFF) / 65535.0f;
         float saturation = 0.7f;
         float value = 0.95f;
-        return DeityLandProtectionChunkWorldMap.hsvToRgb(hue, saturation, value);
+        return ClaimChunkWorldMap.hsvToRgb(hue, saturation, value);
     }
 
     private static int hsvToRgb(float h, float s, float v) {

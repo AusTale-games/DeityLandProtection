@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionBorderSurfaceCache;
+import group.austale.deitylandprotection.BorderSurfaceCache;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -104,7 +104,7 @@ extends EntityTickingSystem<EntityStore> {
             return;
         }
         long claimKey = DeityLandProtectionPlugin.centerKey(centerX, centerZ);
-        DeityLandProtectionBorderSurfaceCache surfaceCache = this.plugin.getBorderSurfaceCache();
+        BorderSurfaceCache surfaceCache = this.plugin.getBorderSurfaceCache();
         int minX;
         int maxX;
         int minZ;
@@ -125,10 +125,10 @@ extends EntityTickingSystem<EntityStore> {
         for (int z = minZ; z <= maxZ; z += STEP) {
             for (int x = minX; x <= maxX; x += STEP) {
                 Claim at = claimStore.findClaimAt(x, z);
-                if (!DeityLandProtectionBorderGeometry.isSameClaim(at, centerX, centerZ)) {
+                if (!BorderGeometry.isSameClaim(at, centerX, centerZ)) {
                     continue;
                 }
-                if (!DeityLandProtectionBorderGeometry.isBorderCell(claimStore, centerX, centerZ, x, z)) {
+                if (!BorderGeometry.isBorderCell(claimStore, centerX, centerZ, x, z)) {
                     continue;
                 }
                 Integer cachedY = surfaceCache.getSurfaceYSampledOrNull(worldName, claimKey, x, z);
@@ -140,7 +140,7 @@ extends EntityTickingSystem<EntityStore> {
                     if (world.getChunkIfInMemory(chunkIndex) == null) {
                         continue;
                     }
-                    surfaceY = DeityLandProtectionBorderSurfaceUtil.resolveSurfaceY(world, x, baseY, z);
+                    surfaceY = BorderSurfaceUtil.resolveSurfaceY(world, x, baseY, z);
                 }
                 BorderTickSystem.spawnPoint(store, borderViewers, particleSystemId, x, (double)surfaceY + 0.15, z);
             }

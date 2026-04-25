@@ -19,13 +19,13 @@ import java.util.stream.Stream;
  * - strips legacy duplicate Custom UI from the data folder,
  * - writes the per-server custom Deity item resources (with recipe cost overrides applied).
  */
-final class DeityLandProtectionAssetInstaller {
+final class AssetInstaller {
     private static final String MANIFEST_CONTENT = "{\"Group\":\"games.Austale\",\"Name\":\"DeityLandProtectionData\",\"Version\":\"1.2.1\",\"ServerVersion\":\"2026.03.26-89796e57b\"}";
 
     private final HytaleLogger logger;
-    private final DeityLandProtectionRecipeOverrider recipeOverrider;
+    private final RecipeOverrider recipeOverrider;
 
-    DeityLandProtectionAssetInstaller(HytaleLogger logger, DeityLandProtectionRecipeOverrider recipeOverrider) {
+    AssetInstaller(HytaleLogger logger, RecipeOverrider recipeOverrider) {
         this.logger = logger;
         this.recipeOverrider = recipeOverrider;
     }
@@ -102,7 +102,7 @@ final class DeityLandProtectionAssetInstaller {
             return;
         }
         Files.createDirectories(dest.getParent(), new FileAttribute[0]);
-        ClassLoader classLoader = DeityLandProtectionAssetInstaller.class.getClassLoader();
+        ClassLoader classLoader = AssetInstaller.class.getClassLoader();
         if (classLoader == null) {
             return;
         }

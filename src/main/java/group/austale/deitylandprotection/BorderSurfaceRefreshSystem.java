@@ -78,18 +78,18 @@ extends DelayedSystem<ChunkStore> {
                 for (int zz = minZ; zz <= maxZ; zz += STEP) {
                     for (int xx = minX; xx <= maxX; xx += STEP) {
                         Claim at = claimStore.findClaimAt(xx, zz);
-                        if (!DeityLandProtectionBorderGeometry.isSameClaim(at, centerX, centerZ)) {
+                        if (!BorderGeometry.isSameClaim(at, centerX, centerZ)) {
                             continue;
                         }
-                        if (!DeityLandProtectionBorderGeometry.isBorderCell(claimStore, centerX, centerZ, xx, zz)) {
+                        if (!BorderGeometry.isBorderCell(claimStore, centerX, centerZ, xx, zz)) {
                             continue;
                         }
                         long chunkIndex = ChunkUtil.indexChunkFromBlock(xx, zz);
                         if (world.getChunkIfInMemory(chunkIndex) == null) {
                             continue;
                         }
-                        int sy = DeityLandProtectionBorderSurfaceUtil.resolveSurfaceY(world, xx, scanBaseY, zz);
-                        surface.put(DeityLandProtectionBorderSurfaceCache.packXz(xx, zz), sy);
+                        int sy = BorderSurfaceUtil.resolveSurfaceY(world, xx, scanBaseY, zz);
+                        surface.put(BorderSurfaceCache.packXz(xx, zz), sy);
                     }
                 }
                 this.plugin.getBorderSurfaceCache().putReplace(worldName, centerKey, surface);

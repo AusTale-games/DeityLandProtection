@@ -18,7 +18,7 @@ import java.util.logging.Level;
  *
  * <p>The on-disk JSON keys are kept stable for backwards compatibility.</p>
  */
-final class DeityLandProtectionConfig {
+final class PluginConfig {
     static final int DEFAULT_RADIUS = 16;
     static final String DEFAULT_DEITY_ITEM_ID = "SlumberingDeity_Block";
     static final String CONFIG_DEITY_ITEM_ID_KEY = "DeityLandProtectionItemId";
@@ -83,7 +83,7 @@ final class DeityLandProtectionConfig {
     String upgradeTier4SecondaryItemId = DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_ID;
     int upgradeTier4SecondaryItemQuantity = DEFAULT_UPGRADE_TIER_4_SECONDARY_ITEM_QUANTITY;
 
-    DeityLandProtectionConfig(HytaleLogger logger) {
+    PluginConfig(HytaleLogger logger) {
         this.logger = logger;
     }
 

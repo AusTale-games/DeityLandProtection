@@ -3,25 +3,25 @@ package group.austale.deitylandprotection;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
 
-public final class DeityLandProtectionBorderSurfaceUtil {
+public final class BorderSurfaceUtil {
     private static final int SURFACE_SCAN_RANGE = 10;
     private static final int SURFACE_SCAN_FALLBACK_RANGE = 64;
     private static final String AIR_TYPE_ID = "Air";
 
-    private DeityLandProtectionBorderSurfaceUtil() {
+    private BorderSurfaceUtil() {
     }
 
     public static int resolveSurfaceY(World world, int x, int baseY, int z) {
         int surfaceY = baseY;
-        BlockType baseType = DeityLandProtectionBorderSurfaceUtil.safeGetBlockType(world, x, baseY, z);
+        BlockType baseType = BorderSurfaceUtil.safeGetBlockType(world, x, baseY, z);
         if (baseType == null) {
             return surfaceY;
         }
-        if (DeityLandProtectionBorderSurfaceUtil.isAirType(baseType)) {
+        if (BorderSurfaceUtil.isAirType(baseType)) {
             for (int dy = 1; dy <= SURFACE_SCAN_FALLBACK_RANGE; dy++) {
                 int y = baseY - dy;
-                BlockType type = DeityLandProtectionBorderSurfaceUtil.safeGetBlockType(world, x, y, z);
-                if (DeityLandProtectionBorderSurfaceUtil.isAirType(type)) {
+                BlockType type = BorderSurfaceUtil.safeGetBlockType(world, x, y, z);
+                if (BorderSurfaceUtil.isAirType(type)) {
                     continue;
                 }
                 if (type != null) {
@@ -34,16 +34,16 @@ public final class DeityLandProtectionBorderSurfaceUtil {
         int lastSolidY = baseY;
         for (int dy = 1; dy <= SURFACE_SCAN_RANGE; dy++) {
             int y = baseY + dy;
-            BlockType type = DeityLandProtectionBorderSurfaceUtil.safeGetBlockType(world, x, y, z);
-            if (type == null || DeityLandProtectionBorderSurfaceUtil.isAirType(type)) {
+            BlockType type = BorderSurfaceUtil.safeGetBlockType(world, x, y, z);
+            if (type == null || BorderSurfaceUtil.isAirType(type)) {
                 return lastSolidY;
             }
             lastSolidY = y;
         }
         for (int dy = SURFACE_SCAN_RANGE + 1; dy <= SURFACE_SCAN_FALLBACK_RANGE; dy++) {
             int y = baseY + dy;
-            BlockType type = DeityLandProtectionBorderSurfaceUtil.safeGetBlockType(world, x, y, z);
-            if (type == null || DeityLandProtectionBorderSurfaceUtil.isAirType(type)) {
+            BlockType type = BorderSurfaceUtil.safeGetBlockType(world, x, y, z);
+            if (type == null || BorderSurfaceUtil.isAirType(type)) {
                 return lastSolidY;
             }
             lastSolidY = y;
@@ -67,7 +67,7 @@ public final class DeityLandProtectionBorderSurfaceUtil {
         if (type == BlockType.EMPTY) {
             return true;
         }
-        String id = DeityLandProtectionBorderSurfaceUtil.blockTypeId(type);
+        String id = BorderSurfaceUtil.blockTypeId(type);
         if (id == null || id.isEmpty()) {
             return false;
         }

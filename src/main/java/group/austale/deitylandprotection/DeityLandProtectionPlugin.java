@@ -15,7 +15,7 @@ import group.austale.deitylandprotection.PlaceSystem;
 import group.austale.deitylandprotection.UpkeepStore;
 import group.austale.deitylandprotection.UseBlockSystem;
 import group.austale.deitylandprotection.BorderSurfaceRefreshSystem;
-import group.austale.deitylandprotection.DeityLandProtectionWorldMapProvider;
+import group.austale.deitylandprotection.WorldMapProvider;
 import group.austale.deitylandprotection.WorldMapUpdateTickingSystem;
 import com.hypixel.hytale.component.system.ISystem;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -48,26 +48,26 @@ extends JavaPlugin {
     private static final long PLAYER_MESSAGE_COOLDOWN_MS = 1200L;
     private static volatile DeityLandProtectionPlugin instance;
     private ClaimStore claimStore;
-    private DeityLandProtectionConfig config;
+    private PluginConfig config;
     private ScheduledExecutorService flushExecutor;
     private UpkeepStore upkeepStore;
     private Path absDataDir;
     private LangPreferenceManager langPreferenceManager;
     private Localizer localizer;
-    private final DeityLandProtectionPlayerStateRegistry playerState = new DeityLandProtectionPlayerStateRegistry();
-    private final DeityLandProtectionBorderSurfaceCache borderSurfaceCache = new DeityLandProtectionBorderSurfaceCache();
+    private final PlayerStateRegistry playerState = new PlayerStateRegistry();
+    private final BorderSurfaceCache borderSurfaceCache = new BorderSurfaceCache();
     private final ConcurrentHashMap<String, Integer> borderSurfaceScanBaseYByWorldCenter = new ConcurrentHashMap();
-    private DeityLandProtectionMapUpdateQueue mapUpdateQueue;
-    private final DeityLandProtectionRecipeOverrider recipeOverrider = new DeityLandProtectionRecipeOverrider(this);
-    private DeityLandProtectionAssetInstaller assetInstaller;
+    private MapUpdateQueue mapUpdateQueue;
+    private final RecipeOverrider recipeOverrider = new RecipeOverrider(this);
+    private AssetInstaller assetInstaller;
 
     public DeityLandProtectionPlugin(JavaPluginInit init) {
         super(init);
         try {
             Path dataDir = this.getDataDirectory();
             this.absDataDir = dataDir.toAbsolutePath().normalize();
-            this.config = new DeityLandProtectionConfig(this.getLogger());
-            this.assetInstaller = new DeityLandProtectionAssetInstaller(this.getLogger(), this.recipeOverrider);
+            this.config = new PluginConfig(this.getLogger());
+            this.assetInstaller = new AssetInstaller(this.getLogger(), this.recipeOverrider);
             this.assetInstaller.ensureAssetPackManifest(this.absDataDir);
             this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
             this.config.load(this.absDataDir);
@@ -87,10 +87,10 @@ extends JavaPlugin {
         Path dataDir = this.getDataDirectory();
         this.absDataDir = dataDir.toAbsolutePath().normalize();
         if (this.config == null) {
-            this.config = new DeityLandProtectionConfig(this.getLogger());
+            this.config = new PluginConfig(this.getLogger());
         }
         if (this.assetInstaller == null) {
-            this.assetInstaller = new DeityLandProtectionAssetInstaller(this.getLogger(), this.recipeOverrider);
+            this.assetInstaller = new AssetInstaller(this.getLogger(), this.recipeOverrider);
         }
         this.assetInstaller.ensureAssetPackManifest(this.absDataDir);
         this.assetInstaller.removeDuplicateCustomUiFromDataPack(this.absDataDir);
@@ -103,7 +103,7 @@ extends JavaPlugin {
         this.claimStore.load();
         this.upkeepStore = new UpkeepStore(this.absDataDir.resolve("upkeep.json"), this.getLogger());
         this.upkeepStore.load();
-        this.mapUpdateQueue = new DeityLandProtectionMapUpdateQueue(this.claimStore);
+        this.mapUpdateQueue = new MapUpdateQueue(this.claimStore);
         this.getEntityStoreRegistry().registerSystem((ISystem)new PlaceSystem(this));
         this.getEntityStoreRegistry().registerSystem((ISystem)new BreakSystem(this));
         this.getEntityStoreRegistry().registerSystem((ISystem)new UseBlockSystem(this));
@@ -113,13 +113,13 @@ extends JavaPlugin {
         this.getChunkStoreRegistry().registerSystem((ISystem)new UpkeepTickingSystem(this));
         this.getChunkStoreRegistry().registerSystem((ISystem)new BorderSurfaceRefreshSystem(this));
         this.getChunkStoreRegistry().registerSystem((ISystem)new WorldMapUpdateTickingSystem(this));
-        IWorldMapProvider.CODEC.register("DeityLandProtection", DeityLandProtectionWorldMapProvider.class, DeityLandProtectionWorldMapProvider.CODEC);
+        IWorldMapProvider.CODEC.register("DeityLandProtection", WorldMapProvider.class, WorldMapProvider.CODEC);
         this.getEventRegistry().registerGlobal(AddWorldEvent.class, event -> {
             if (event.getWorld().getWorldConfig().isDeleteOnRemove()) {
                 event.getWorld().getWorldConfig().setWorldMapProvider((IWorldMapProvider)new WorldGenWorldMapProvider());
                 return;
             }
-            event.getWorld().getWorldConfig().setWorldMapProvider((IWorldMapProvider)new DeityLandProtectionWorldMapProvider());
+            event.getWorld().getWorldConfig().setWorldMapProvider((IWorldMapProvider)new WorldMapProvider());
         });
         this.flushExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r, "DeityLandProtection-DataFlush");
@@ -217,7 +217,7 @@ extends JavaPlugin {
     }
 
     public boolean setClaimRadius(int radius) {
-        int normalized = DeityLandProtectionConfig.normalizeRadius(radius);
+        int normalized = PluginConfig.normalizeRadius(radius);
         if (normalized <= 0) {
             return false;
         }
@@ -231,7 +231,7 @@ extends JavaPlugin {
     }
 
     public boolean setMaxClaimsPerPlayer(int maxClaimsPerPlayer) {
-        this.config.maxClaimsPerPlayer = DeityLandProtectionConfig.clampMaxClaimsPerPlayer(maxClaimsPerPlayer);
+        this.config.maxClaimsPerPlayer = PluginConfig.clampMaxClaimsPerPlayer(maxClaimsPerPlayer);
         this.config.save(this.absDataDir);
         return true;
     }
@@ -270,9 +270,9 @@ extends JavaPlugin {
 
     public String getUpkeepEssenceItemIdForClaim(Claim claim) {
         if (claim != null && this.isOutlanderClaimItemId(claim.getDeityItemId())) {
-            return DeityLandProtectionConfig.ESSENCE_OF_VOID_ITEM_ID;
+            return PluginConfig.ESSENCE_OF_VOID_ITEM_ID;
         }
-        return DeityLandProtectionConfig.ESSENCE_OF_LIFE_ITEM_ID;
+        return PluginConfig.ESSENCE_OF_LIFE_ITEM_ID;
     }
 
     public int getUpkeepTierForClaim(Claim claim) {
@@ -544,7 +544,7 @@ extends JavaPlugin {
         return v != null ? v : fallbackSeed;
     }
 
-    public DeityLandProtectionBorderSurfaceCache getBorderSurfaceCache() {
+    public BorderSurfaceCache getBorderSurfaceCache() {
         return this.borderSurfaceCache;
     }
 

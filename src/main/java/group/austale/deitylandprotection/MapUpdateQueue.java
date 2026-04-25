@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>{@link WorldMapUpdateTickingSystem} drains the queue
  * one world at a time on its own schedule.</p>
  */
-final class DeityLandProtectionMapUpdateQueue {
+final class MapUpdateQueue {
 
     private final ConcurrentHashMap<String, LongSet> queueByWorld = new ConcurrentHashMap<>();
     private final ClaimStore claimStore;
 
-    DeityLandProtectionMapUpdateQueue(ClaimStore claimStore) {
+    MapUpdateQueue(ClaimStore claimStore) {
         this.claimStore = claimStore;
     }
 

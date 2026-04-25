@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * concurrency model explicit: every map is concurrent, written from any
  * system thread, and cleared only on plugin shutdown.</p>
  */
-final class DeityLandProtectionPlayerStateRegistry {
+final class PlayerStateRegistry {
 
     /** centerKey(x,z) -> wall-clock millis when the deity block was placed. */
     private final ConcurrentHashMap<Long, Long> recentClaimPlacements = new ConcurrentHashMap<>();

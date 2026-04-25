@@ -4,10 +4,10 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class DeityLandProtectionBorderSurfaceCache {
+public final class BorderSurfaceCache {
     private final ConcurrentHashMap<String, ConcurrentHashMap<Long, Long2IntOpenHashMap>> byWorldThenClaim = new ConcurrentHashMap<>();
 
-    public DeityLandProtectionBorderSurfaceCache() {
+    public BorderSurfaceCache() {
     }
 
     public static long packXz(int x, int z) {
@@ -29,7 +29,7 @@ public final class DeityLandProtectionBorderSurfaceCache {
         if (m == null) {
             return null;
         }
-        long k = DeityLandProtectionBorderSurfaceCache.packXz(x, z);
+        long k = BorderSurfaceCache.packXz(x, z);
         if (!m.containsKey(k)) {
             return null;
         }

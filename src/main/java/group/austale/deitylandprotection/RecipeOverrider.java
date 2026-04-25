@@ -7,12 +7,12 @@ import java.util.regex.Pattern;
  * Rewrites bundled recipe JSON in-memory so that the runtime materials and
  * tier-upgrade requirements reflect the live config. The original resource
  * files on disk are never modified; we only transform the content right
- * before {@link DeityLandProtectionAssetInstaller} writes the per-server copy.
+ * before {@link AssetInstaller} writes the per-server copy.
  */
-final class DeityLandProtectionRecipeOverrider {
+final class RecipeOverrider {
     private final DeityLandProtectionPlugin plugin;
 
-    DeityLandProtectionRecipeOverrider(DeityLandProtectionPlugin plugin) {
+    RecipeOverrider(DeityLandProtectionPlugin plugin) {
         this.plugin = plugin;
     }
 
