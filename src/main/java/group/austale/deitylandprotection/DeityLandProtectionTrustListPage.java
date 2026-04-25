@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.DeityLandProtectionBorderToggleElement;
 import group.austale.deitylandprotection.DeityLandProtectionHeaderElement;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionOpenUpkeepElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlayerCandidateElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
@@ -35,15 +35,15 @@ extends ChoiceBasePage {
         this.centerZ = centerZ;
     }
 
-    private static DeityLandProtectionLangPreferenceManager.Language resolveLang(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
-        return plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
+    private static LangPreferenceManager.Language resolveLang(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
+        return plugin == null ? LangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
     }
 
-    private static String resolveLayout(DeityLandProtectionLangPreferenceManager.Language lang) {
-        return lang == DeityLandProtectionLangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
+    private static String resolveLayout(LangPreferenceManager.Language lang) {
+        return lang == LangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
     }
 
-    private static ChoiceElement[] buildElements(DeityLandProtectionPlugin plugin, int centerX, int centerZ, DeityLandProtectionLangPreferenceManager.Language lang) {
+    private static ChoiceElement[] buildElements(DeityLandProtectionPlugin plugin, int centerX, int centerZ, LangPreferenceManager.Language lang) {
         if (plugin == null) {
             return new ChoiceElement[0];
         }

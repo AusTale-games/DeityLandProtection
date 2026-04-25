@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
@@ -30,13 +30,13 @@ extends ChoiceElement {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         commands.set(selector + " #Name.TextSpans", Message.raw(this.buildTitle(lang)));
         commands.set(selector + " #Durability.Text", this.buildValue());
     }
 
-    private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
-        if (lang == DeityLandProtectionLangPreferenceManager.Language.ES) {
+    private String buildTitle(LangPreferenceManager.Language lang) {
+        if (lang == LangPreferenceManager.Language.ES) {
             return "Gracia";
         }
         return "Grace";

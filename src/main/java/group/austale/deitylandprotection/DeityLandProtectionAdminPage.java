@@ -4,7 +4,7 @@ import group.austale.deitylandprotection.DeityLandProtectionAdminActionElement;
 import group.austale.deitylandprotection.DeityLandProtectionAdminActionInteraction;
 import group.austale.deitylandprotection.DeityLandProtectionAdminLangToggleInteraction;
 import group.austale.deitylandprotection.DeityLandProtectionHeaderElement;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceBasePage;
@@ -23,19 +23,19 @@ extends ChoiceBasePage {
         this.plugin = plugin;
     }
 
-    private static DeityLandProtectionLangPreferenceManager.Language resolveLang(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
-        return plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
+    private static LangPreferenceManager.Language resolveLang(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
+        return plugin == null ? LangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
     }
 
-    private static String resolveLayout(DeityLandProtectionLangPreferenceManager.Language lang) {
-        return lang == DeityLandProtectionLangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
+    private static String resolveLayout(LangPreferenceManager.Language lang) {
+        return lang == LangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
     }
 
     private static ChoiceElement[] buildElements(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
         if (plugin == null) {
             return new ChoiceElement[0];
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = DeityLandProtectionAdminPage.resolveLang(plugin, playerRef);
+        LangPreferenceManager.Language lang = DeityLandProtectionAdminPage.resolveLang(plugin, playerRef);
         ArrayList<ChoiceElement> els = new ArrayList<ChoiceElement>();
         els.add(new DeityLandProtectionHeaderElement(DeityLandProtectionText.uiAdminTitle(lang), DeityLandProtectionText.uiAdminSubtitle(lang)));
         els.add(new DeityLandProtectionAdminActionElement(plugin, DeityLandProtectionText.uiAdminLanguage(lang), lang.getCode().toUpperCase(), new DeityLandProtectionAdminLangToggleInteraction(plugin)));

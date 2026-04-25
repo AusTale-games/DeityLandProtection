@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
@@ -32,19 +32,19 @@ extends ChoiceElement {
             return;
         }
         commands.append("#ElementList", ELEMENT_LAYOUT);
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         commands.set(selector + " #Name.TextSpans", Message.raw(this.buildTitle(lang)));
         commands.set(selector + " #Durability.Text", this.buildValue(lang));
     }
 
-    private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
-        if (lang == DeityLandProtectionLangPreferenceManager.Language.ES) {
+    private String buildTitle(LangPreferenceManager.Language lang) {
+        if (lang == LangPreferenceManager.Language.ES) {
             return "Tiempo restante:";
         }
         return "Time Remaining:";
     }
 
-    private String buildValue(DeityLandProtectionLangPreferenceManager.Language lang) {
+    private String buildValue(LangPreferenceManager.Language lang) {
         if (this.plugin == null) {
             return "0d 0h 0m";
         }

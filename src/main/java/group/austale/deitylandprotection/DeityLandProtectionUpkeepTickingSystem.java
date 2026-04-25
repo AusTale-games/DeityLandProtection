@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
@@ -256,7 +256,7 @@ extends DelayedSystem<ChunkStore> {
                     changed = true;
                     PlayerRef ownerRef = DeityLandProtectionUpkeepTickingSystem.findPlayer(world, liveClaim.getOwner());
                     if (ownerRef != null) {
-                        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(ownerRef);
+                        LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(ownerRef);
                         EventTitleUtil.showEventTitleToPlayer((PlayerRef)ownerRef, Message.raw(DeityLandProtectionText.DeityLandProtectionDestroyTitlePrimary(lang, (int)secondsRemaining)), Message.raw(DeityLandProtectionText.DeityLandProtectionDestroyTitleSecondary(lang)), true, null, 1.1f, 0.0f, 0.2f);
                     }
                 }

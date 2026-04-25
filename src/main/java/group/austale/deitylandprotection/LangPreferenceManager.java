@@ -15,14 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class DeityLandProtectionLangPreferenceManager {
+public final class LangPreferenceManager {
     private static final String FILE_NAME = "DeityLandProtectionlang.properties";
     private static final String KEY_DEFAULT = "default";
     private final ConcurrentHashMap<UUID, Language> overrideByPlayer = new ConcurrentHashMap();
     private volatile Language defaultLanguage = Language.EN;
     private final Path filePath;
 
-    public DeityLandProtectionLangPreferenceManager(Path dataDirectory) {
+    public LangPreferenceManager(Path dataDirectory) {
         if (dataDirectory == null) {
             dataDirectory = Path.of(".");
         }

@@ -66,7 +66,7 @@ public final class DeityLandProtectionTierSystem {
         state.setUpgradeTier(nextTier);
         PlayerRef ownerRef = findPlayer(world, claim.getOwner());
         if (ownerRef != null) {
-            DeityLandProtectionLangPreferenceManager.Language lang = plugin.getEffectiveLanguage(ownerRef);
+            LangPreferenceManager.Language lang = plugin.getEffectiveLanguage(ownerRef);
             int upkeepCost = getUpkeepEssenceCostPerHourForTier(plugin.getUpkeepEssenceCostPerHour(), nextTier);
             String msg = DeityLandProtectionText.tierUpgraded(lang, nextTier, nextRadius, upkeepCost);
             plugin.sendPlayerMessageImmediate(ownerRef, msg);
@@ -185,7 +185,7 @@ public final class DeityLandProtectionTierSystem {
         if (ownerRef == null) {
             return;
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = plugin.getEffectiveLanguage(ownerRef);
+        LangPreferenceManager.Language lang = plugin.getEffectiveLanguage(ownerRef);
         String msg = DeityLandProtectionText.tierNoUnclaimedTerritory(lang);
         plugin.sendPlayerMessageImmediate(ownerRef, msg);
     }

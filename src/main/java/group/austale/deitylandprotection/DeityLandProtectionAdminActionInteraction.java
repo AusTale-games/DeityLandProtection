@@ -3,7 +3,7 @@ package group.austale.deitylandprotection;
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.DeityLandProtectionAdminPage;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepStore;
@@ -39,7 +39,7 @@ extends ChoiceInteraction {
         if (this.plugin == null || store == null || ref == null || playerRef == null || this.action == null) {
             return;
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(playerRef);
         UUID actor = playerRef.getUuid();
         if (actor == null || !this.plugin.isOpBypass(actor)) {
             this.plugin.sendPlayerMessageImmediate(playerRef, DeityLandProtectionText.noPermission(lang));

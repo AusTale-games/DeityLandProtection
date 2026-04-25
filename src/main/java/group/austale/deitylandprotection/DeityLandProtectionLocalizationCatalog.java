@@ -91,8 +91,8 @@ public final class DeityLandProtectionLocalizationCatalog {
         ES.put(key, es);
     }
 
-    public static Map<String, String> getBundle(DeityLandProtectionLangPreferenceManager.Language language) {
-        if (language == DeityLandProtectionLangPreferenceManager.Language.ES) {
+    public static Map<String, String> getBundle(LangPreferenceManager.Language language) {
+        if (language == LangPreferenceManager.Language.ES) {
             return ES;
         }
         return EN;

@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlayerClaimOpenInteraction;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionUpkeepState;
@@ -34,14 +34,14 @@ extends ChoiceElement {
         if (this.plugin != null && (iconId = this.plugin.getDeityLandProtectionItemId()) != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         String title = this.buildTitle(lang);
         String subtitle = this.buildSubtitle(lang);
         commands.set(selector + " #Name.TextSpans", Message.raw(title));
         commands.set(selector + " #Durability.Text", subtitle);
     }
 
-    private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
+    private String buildTitle(LangPreferenceManager.Language lang) {
         if (this.claim == null) {
             return "";
         }
@@ -50,7 +50,7 @@ extends ChoiceElement {
         return "X:" + this.claim.getCenterX() + " Y:" + yStr + " Z:" + this.claim.getCenterZ();
     }
 
-    private String buildSubtitle(DeityLandProtectionLangPreferenceManager.Language lang) {
+    private String buildSubtitle(LangPreferenceManager.Language lang) {
         if (this.plugin == null || this.claim == null) {
             return "";
         }
@@ -73,7 +73,7 @@ extends ChoiceElement {
         String grace = graceUntil > now ? DeityLandProtectionPlayerClaimElement.formatDuration(graceUntil - now) : null;
         String feed = DeityLandProtectionPlayerClaimElement.formatFeedDuration(totalFeedMs);
         StringBuilder sb = new StringBuilder();
-        if (lang == DeityLandProtectionLangPreferenceManager.Language.ES) {
+        if (lang == LangPreferenceManager.Language.ES) {
             sb.append("Radio: ").append(radius);
             sb.append(" | Esencia: ").append(time);
             sb.append("\n");

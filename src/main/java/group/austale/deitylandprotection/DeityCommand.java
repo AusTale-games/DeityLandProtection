@@ -2,8 +2,8 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.DeityLandProtectionAdminCommand;
-import group.austale.deitylandprotection.DeityLandProtectionMyClaimsCommand;
+import group.austale.deitylandprotection.AdminCommand;
+import group.austale.deitylandprotection.MyClaimsCommand;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.Message;
@@ -17,15 +17,15 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 
-public final class DeityLandProtectionCommand
+public final class DeityCommand
 extends AbstractAsyncCommand {
     private final DeityLandProtectionPlugin plugin;
 
-    public DeityLandProtectionCommand(DeityLandProtectionPlugin plugin) {
+    public DeityCommand(DeityLandProtectionPlugin plugin) {
         super("deity", "DeityLandProtection admin commands");
         this.plugin = plugin;
-        this.addSubCommand((AbstractCommand)new DeityLandProtectionAdminCommand(plugin));
-        this.addSubCommand((AbstractCommand)new DeityLandProtectionMyClaimsCommand(plugin));
+        this.addSubCommand((AbstractCommand)new AdminCommand(plugin));
+        this.addSubCommand((AbstractCommand)new MyClaimsCommand(plugin));
         this.setAllowsExtraArguments(true);
     }
 
@@ -285,7 +285,7 @@ extends AbstractAsyncCommand {
                 ctx.sendMessage(Message.raw(("Unknown player: " + parts[actionIndex + 1] + " (they must have joined at least once)")));
                 return CompletableFuture.completedFuture(null);
             }
-            int perms = parts.length > actionIndex + 2 ? DeityLandProtectionCommand.parsePerms(parts[actionIndex + 2]) : 7;
+            int perms = parts.length > actionIndex + 2 ? DeityCommand.parsePerms(parts[actionIndex + 2]) : 7;
             claim.setTrusted(target, perms);
             store.markDirty();
             ctx.sendMessage(Message.raw(("Trust updated for " + String.valueOf(target) + " perms=" + claim.getPermissionsFor(target))));

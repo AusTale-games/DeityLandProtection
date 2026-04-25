@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -155,7 +155,7 @@ extends DamageEventSystem {
             // best-effort: swallowing a non-fatal failure
         }
         if (attackerRefComponent != null) {
-            DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(attackerRefComponent);
+            LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(attackerRefComponent);
             this.plugin.sendPlayerMessage(attackerRefComponent, DeityLandProtectionText.pvpDisabledInArea(lang));
         }
     }

@@ -4,8 +4,8 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 public final class DeityLandProtectionLocalizer {
-    public String tr(DeityLandProtectionLangPreferenceManager.Language language, String key, Object... args) {
-        DeityLandProtectionLangPreferenceManager.Language safeLanguage = language == null ? DeityLandProtectionLangPreferenceManager.Language.EN : language;
+    public String tr(LangPreferenceManager.Language language, String key, Object... args) {
+        LangPreferenceManager.Language safeLanguage = language == null ? LangPreferenceManager.Language.EN : language;
         Map<String, String> bundle = DeityLandProtectionLocalizationCatalog.getBundle(safeLanguage);
         String template = bundle.get(key);
         if (template == null) {

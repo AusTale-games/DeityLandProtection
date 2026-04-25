@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -63,7 +63,7 @@ extends EntityEventSystem<EntityStore, DamageBlockEvent> {
         long last = lastObj == null ? 0L : lastObj;
         if (lastObj == null || now - last >= 1500L) {
             LAST_MSG_MS.put(uuid, now);
-            DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);
+            LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);
             this.plugin.sendPlayerMessage(player, DeityLandProtectionText.cannotDamageCrops(lang));
         }
     }

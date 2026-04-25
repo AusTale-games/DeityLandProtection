@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.server.core.Message;
@@ -32,12 +32,12 @@ extends ChoiceElement {
         if (iconId != null && !iconId.isEmpty()) {
             commands.set(selector + " #Icon.ItemId", iconId);
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         commands.set(selector + " #Name.TextSpans", Message.raw(this.buildTitle(lang)));
         commands.set(selector + " #Durability.Text", this.buildSubtitle(lang));
     }
 
-    private String buildTitle(DeityLandProtectionLangPreferenceManager.Language lang) {
+    private String buildTitle(LangPreferenceManager.Language lang) {
         String baseTitle = this.plugin == null ? DeityLandProtectionText.uiSlot0Title(lang) : this.plugin.getUpkeepEssenceTitleForClaim(this.claim, lang);
         if (baseTitle.isEmpty()) {
             return "";
@@ -46,7 +46,7 @@ extends ChoiceElement {
         return cost + " x " + baseTitle;
     }
 
-    private String buildSubtitle(DeityLandProtectionLangPreferenceManager.Language lang) {
+    private String buildSubtitle(LangPreferenceManager.Language lang) {
         return DeityLandProtectionText.uiSlot0Subtitle(lang);
     }
 }

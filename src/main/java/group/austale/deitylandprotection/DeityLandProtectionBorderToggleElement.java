@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.DeityLandProtectionBorderToggleInteraction;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.server.core.Message;
@@ -39,7 +39,7 @@ extends ChoiceElement {
             long key = DeityLandProtectionPlugin.centerKey(this.centerX, this.centerZ);
             on = this.plugin.isBorderEnabled(playerRef.getUuid(), key);
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         commands.set(selector + " #Name.TextSpans", Message.raw(DeityLandProtectionText.uiShowBorder(lang)));
         commands.set(selector + " #Durability.Text", on ? DeityLandProtectionText.borderOnShort(lang) : DeityLandProtectionText.borderOffShort(lang));
     }

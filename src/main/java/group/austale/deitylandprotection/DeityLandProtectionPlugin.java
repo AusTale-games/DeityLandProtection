@@ -4,11 +4,11 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.DeityLandProtectionBorderTickSystem;
 import group.austale.deitylandprotection.DeityLandProtectionBreakSystem;
-import group.austale.deitylandprotection.DeityLandProtectionCommand;
+import group.austale.deitylandprotection.DeityCommand;
 import group.austale.deitylandprotection.DeityLandProtectionCraftSystem;
 import group.austale.deitylandprotection.DeityLandProtectionEnterExitTickSystem;
-import group.austale.deitylandprotection.DeityLandProtectionLangCommand;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangCommand;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionLocalizationCatalog;
 import group.austale.deitylandprotection.DeityLandProtectionLocalizer;
 import group.austale.deitylandprotection.DeityLandProtectionPlaceSystem;
@@ -52,7 +52,7 @@ extends JavaPlugin {
     private ScheduledExecutorService flushExecutor;
     private DeityLandProtectionUpkeepStore upkeepStore;
     private Path absDataDir;
-    private DeityLandProtectionLangPreferenceManager langPreferenceManager;
+    private LangPreferenceManager langPreferenceManager;
     private DeityLandProtectionLocalizer localizer;
     private final DeityLandProtectionPlayerStateRegistry playerState = new DeityLandProtectionPlayerStateRegistry();
     private final DeityLandProtectionBorderSurfaceCache borderSurfaceCache = new DeityLandProtectionBorderSurfaceCache();
@@ -97,7 +97,7 @@ extends JavaPlugin {
         this.config.load(this.absDataDir);
         this.assetInstaller.ensureCustomDeityItem(this.absDataDir);
         DeityLandProtectionLocalizationCatalog.writeGeneratedLanguageFiles(this.absDataDir);
-        this.langPreferenceManager = new DeityLandProtectionLangPreferenceManager(this.getDataDirectory());
+        this.langPreferenceManager = new LangPreferenceManager(this.getDataDirectory());
         this.localizer = new DeityLandProtectionLocalizer();
         this.claimStore = new ClaimStore(this.absDataDir.resolve("claims.json"), this.getLogger());
         this.claimStore.load();
@@ -150,8 +150,8 @@ extends JavaPlugin {
 
     protected void start() {
         try {
-            CommandManager.get().register((AbstractCommand)new DeityLandProtectionCommand(this));
-            CommandManager.get().register((AbstractCommand)new DeityLandProtectionLangCommand(this, this.langPreferenceManager));
+            CommandManager.get().register((AbstractCommand)new DeityCommand(this));
+            CommandManager.get().register((AbstractCommand)new LangCommand(this, this.langPreferenceManager));
         }
         catch (Exception e) {
             ((HytaleLogger.Api)this.getLogger().at(Level.WARNING).withCause(e)).log("DeityLandProtection failed to register commands");
@@ -367,7 +367,7 @@ extends JavaPlugin {
         return this.config.areTier4UpgradeItemsSameItem();
     }
 
-    public String getUpkeepEssenceTitleForClaim(Claim claim, DeityLandProtectionLangPreferenceManager.Language lang) {
+    public String getUpkeepEssenceTitleForClaim(Claim claim, LangPreferenceManager.Language lang) {
         if (claim != null && this.isOutlanderClaimItemId(claim.getDeityItemId())) {
             return DeityLandProtectionText.uiSlot0VoidTitle(lang);
         }
@@ -378,25 +378,25 @@ extends JavaPlugin {
         return this.absDataDir;
     }
 
-    public DeityLandProtectionLangPreferenceManager getLangPreferenceManager() {
+    public LangPreferenceManager getLangPreferenceManager() {
         return this.langPreferenceManager;
     }
 
-    public DeityLandProtectionLangPreferenceManager.Language getEffectiveLanguage(UUID playerUuid) {
+    public LangPreferenceManager.Language getEffectiveLanguage(UUID playerUuid) {
         if (this.langPreferenceManager == null) {
-            return DeityLandProtectionLangPreferenceManager.Language.EN;
+            return LangPreferenceManager.Language.EN;
         }
         return this.langPreferenceManager.getEffectiveLanguage(playerUuid);
     }
 
-    public DeityLandProtectionLangPreferenceManager.Language getEffectiveLanguage(PlayerRef playerRef) {
+    public LangPreferenceManager.Language getEffectiveLanguage(PlayerRef playerRef) {
         if (playerRef == null) {
-            return DeityLandProtectionLangPreferenceManager.Language.EN;
+            return LangPreferenceManager.Language.EN;
         }
         return this.getEffectiveLanguage(playerRef.getUuid());
     }
 
-    public String tr(DeityLandProtectionLangPreferenceManager.Language language, String key, Object ... args) {
+    public String tr(LangPreferenceManager.Language language, String key, Object ... args) {
         DeityLandProtectionLocalizer l = this.localizer;
         if (l == null) {
             l = new DeityLandProtectionLocalizer();

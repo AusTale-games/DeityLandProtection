@@ -2,7 +2,7 @@ package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import group.austale.deitylandprotection.DeityLandProtectionTrustListPage;
@@ -52,7 +52,7 @@ extends EntityEventSystem<EntityStore, UseBlockEvent.Pre> {
         if (event == null) {
             return;
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);
+        LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);
         UUID uuid = player.getUuid();
         boolean bypass = this.plugin.isOpBypass(uuid);
         int x = event.getTargetBlock().x;

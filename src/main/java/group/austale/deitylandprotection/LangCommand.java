@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.server.core.Message;
@@ -11,12 +11,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 
-public final class DeityLandProtectionLangCommand
+public final class LangCommand
 extends AbstractAsyncCommand {
     private final DeityLandProtectionPlugin plugin;
-    private final DeityLandProtectionLangPreferenceManager langPreferenceManager;
+    private final LangPreferenceManager langPreferenceManager;
 
-    public DeityLandProtectionLangCommand(@Nonnull DeityLandProtectionPlugin plugin, @Nonnull DeityLandProtectionLangPreferenceManager langPreferenceManager) {
+    public LangCommand(@Nonnull DeityLandProtectionPlugin plugin, @Nonnull LangPreferenceManager langPreferenceManager) {
         super("deitylang", "Set DeityLandProtection language (default + per-player override)");
         this.plugin = plugin;
         this.langPreferenceManager = langPreferenceManager;
@@ -33,9 +33,9 @@ extends AbstractAsyncCommand {
         String sub = parts.length >= 2 ? parts[1].trim().toLowerCase() : "status";
         CommandSender sender = ctx.sender();
         UUID senderId = sender.getUuid();
-        DeityLandProtectionLangPreferenceManager.Language defaultLang = this.langPreferenceManager.getDefaultLanguage();
-        DeityLandProtectionLangPreferenceManager.Language override = ctx.isPlayer() ? this.langPreferenceManager.getOverride(senderId) : null;
-        DeityLandProtectionLangPreferenceManager.Language effective = ctx.isPlayer()
+        LangPreferenceManager.Language defaultLang = this.langPreferenceManager.getDefaultLanguage();
+        LangPreferenceManager.Language override = ctx.isPlayer() ? this.langPreferenceManager.getOverride(senderId) : null;
+        LangPreferenceManager.Language effective = ctx.isPlayer()
                 ? this.langPreferenceManager.getEffectiveLanguage(senderId)
                 : defaultLang;
         if (sub.equals("help") || sub.equals("ayuda")) {
@@ -64,7 +64,7 @@ extends AbstractAsyncCommand {
                 ctx.sendMessage(Message.raw(DeityLandProtectionText.noPermission(effective)));
                 return CompletableFuture.completedFuture(null);
             }
-            DeityLandProtectionLangPreferenceManager.Language newLang = DeityLandProtectionLangPreferenceManager.Language.fromCode(parts[2]);
+            LangPreferenceManager.Language newLang = LangPreferenceManager.Language.fromCode(parts[2]);
             this.langPreferenceManager.setDefaultLanguage(newLang);
             ctx.sendMessage(Message.raw(DeityLandProtectionText.langDefaultUpdated(effective, newLang)));
             return CompletableFuture.completedFuture(null);
@@ -74,7 +74,7 @@ extends AbstractAsyncCommand {
                 ctx.sendMessage(Message.raw(DeityLandProtectionText.helpLang(effective)));
                 return CompletableFuture.completedFuture(null);
             }
-            DeityLandProtectionLangPreferenceManager.Language newLang = DeityLandProtectionLangPreferenceManager.Language.fromCode(sub);
+            LangPreferenceManager.Language newLang = LangPreferenceManager.Language.fromCode(sub);
             this.langPreferenceManager.setOverride(senderId, newLang);
             ctx.sendMessage(Message.raw(DeityLandProtectionText.langUpdated(newLang, newLang)));
             return CompletableFuture.completedFuture(null);

@@ -4,7 +4,7 @@ import group.austale.deitylandprotection.Claim;
 import group.austale.deitylandprotection.ClaimStore;
 import group.austale.deitylandprotection.DeityLandProtectionAdminActionElement;
 import group.austale.deitylandprotection.DeityLandProtectionHeaderElement;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlayerClaimElement;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
@@ -27,12 +27,12 @@ extends ChoiceBasePage {
         this.plugin = plugin;
     }
 
-    private static DeityLandProtectionLangPreferenceManager.Language resolveLang(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
-        return plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
+    private static LangPreferenceManager.Language resolveLang(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
+        return plugin == null ? LangPreferenceManager.Language.EN : plugin.getEffectiveLanguage(playerRef);
     }
 
-    private static String resolveLayout(DeityLandProtectionLangPreferenceManager.Language lang) {
-        return lang == DeityLandProtectionLangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
+    private static String resolveLayout(LangPreferenceManager.Language lang) {
+        return lang == LangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
     }
 
     private static ChoiceElement[] buildElements(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
@@ -43,7 +43,7 @@ extends ChoiceBasePage {
         if (playerId == null) {
             return new ChoiceElement[0];
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = DeityLandProtectionPlayerOverviewPage.resolveLang(plugin, playerRef);
+        LangPreferenceManager.Language lang = DeityLandProtectionPlayerOverviewPage.resolveLang(plugin, playerRef);
         ArrayList<ChoiceElement> els = new ArrayList<ChoiceElement>();
         els.add(new DeityLandProtectionHeaderElement(DeityLandProtectionText.uiMyClaimsTitle(lang), DeityLandProtectionText.uiMyClaimsSubtitle(lang)));
         ClaimStore store = plugin.getClaimStore();

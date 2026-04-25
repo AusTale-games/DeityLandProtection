@@ -1,6 +1,6 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import group.austale.deitylandprotection.DeityLandProtectionTrustAddInteraction;
@@ -47,7 +47,7 @@ extends ChoiceElement {
         if ((who = this.username) == null || who.isEmpty()) {
             who = this.target == null ? "<unknown>" : this.target.toString();
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin == null ? DeityLandProtectionLangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
+        LangPreferenceManager.Language lang = this.plugin == null ? LangPreferenceManager.Language.EN : this.plugin.getEffectiveLanguage(playerRef);
         commands.set(selector + " #Name.TextSpans", Message.raw(who));
         commands.set(selector + " #Durability.Text", DeityLandProtectionText.uiClickAddAll(lang));
     }

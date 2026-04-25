@@ -1,7 +1,7 @@
 package group.austale.deitylandprotection;
 
 import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionLangPreferenceManager;
+import group.austale.deitylandprotection.LangPreferenceManager;
 import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import group.austale.deitylandprotection.DeityLandProtectionText;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -39,7 +39,7 @@ extends EntityTickingSystem<EntityStore> {
         if (player == null) {
             return;
         }
-        DeityLandProtectionLangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);
+        LangPreferenceManager.Language lang = this.plugin.getEffectiveLanguage(player);
         UUID uuid = player.getUuid();
         if (uuid == null) {
             return;
