@@ -1,6 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.UpkeepState;
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

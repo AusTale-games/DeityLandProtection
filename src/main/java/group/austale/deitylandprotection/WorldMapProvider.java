@@ -1,6 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.ClaimChunkWorldMap;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.worldmap.IWorldMap;

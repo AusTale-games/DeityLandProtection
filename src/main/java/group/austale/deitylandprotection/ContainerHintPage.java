@@ -1,7 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.BasicCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;

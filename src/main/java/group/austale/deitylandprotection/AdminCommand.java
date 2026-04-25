@@ -1,7 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.AdminPage;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;

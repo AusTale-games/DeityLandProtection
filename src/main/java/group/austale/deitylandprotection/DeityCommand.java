@@ -1,10 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.AdminCommand;
-import group.austale.deitylandprotection.MyClaimsCommand;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;

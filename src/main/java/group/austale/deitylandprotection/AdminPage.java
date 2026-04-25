@@ -1,12 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.AdminActionElement;
-import group.austale.deitylandprotection.AdminActionInteraction;
-import group.austale.deitylandprotection.AdminLangToggleInteraction;
-import group.austale.deitylandprotection.HeaderElement;
-import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.Text;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceBasePage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.universe.PlayerRef;

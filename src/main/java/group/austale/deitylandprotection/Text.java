@@ -1,6 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.LangPreferenceManager;
 import javax.annotation.Nonnull;
 
 public final class Text {

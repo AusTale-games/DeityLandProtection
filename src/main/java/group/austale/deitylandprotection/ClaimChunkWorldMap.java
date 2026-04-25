@@ -1,7 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.protocol.packets.worldmap.MapImage;
 import com.hypixel.hytale.protocol.packets.worldmap.MapMarker;

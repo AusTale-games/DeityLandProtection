@@ -1,16 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.BorderToggleElement;
-import group.austale.deitylandprotection.HeaderElement;
-import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.OpenUpkeepElement;
-import group.austale.deitylandprotection.PlayerCandidateElement;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.Text;
-import group.austale.deitylandprotection.TrustElement;
-import group.austale.deitylandprotection.UpkeepSlotHintElement;
-import group.austale.deitylandprotection.UpkeepStatusElement;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceBasePage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.choices.ChoiceElement;
 import com.hypixel.hytale.server.core.universe.PlayerRef;

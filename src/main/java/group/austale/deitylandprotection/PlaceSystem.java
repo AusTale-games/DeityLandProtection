@@ -1,11 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.ClaimStore;
-import group.austale.deitylandprotection.LangPreferenceManager;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
-import group.austale.deitylandprotection.Text;
-import group.austale.deitylandprotection.UpkeepStore;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;

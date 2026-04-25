@@ -1,8 +1,5 @@
 package group.austale.deitylandprotection;
 
-import group.austale.deitylandprotection.Claim;
-import group.austale.deitylandprotection.BorderSurfaceCache;
-import group.austale.deitylandprotection.DeityLandProtectionPlugin;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
