@@ -35,6 +35,9 @@ extends ChoiceElement {
         if (lang == LangPreferenceManager.Language.ES) {
             return "Tiempo restante:";
         }
+        if (lang == LangPreferenceManager.Language.FR) {
+            return "Temps restant :";
+        }
         return "Time Remaining:";
     }
 

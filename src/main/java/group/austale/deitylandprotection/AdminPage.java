@@ -9,6 +9,7 @@ public final class AdminPage
 extends ChoiceBasePage {
     private static final String PAGE_LAYOUT_ES = "Pages/AdminPage.ui";
     private static final String PAGE_LAYOUT_EN = "Pages/DeityLandProtectionAdminPage_en.ui";
+    private static final String PAGE_LAYOUT_FR = "Pages/DeityLandProtectionAdminPage_fr.ui";
     private final DeityLandProtectionPlugin plugin;
 
     public AdminPage(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {
@@ -21,7 +22,13 @@ extends ChoiceBasePage {
     }
 
     private static String resolveLayout(LangPreferenceManager.Language lang) {
-        return lang == LangPreferenceManager.Language.ES ? PAGE_LAYOUT_ES : PAGE_LAYOUT_EN;
+        if (lang == LangPreferenceManager.Language.ES) {
+            return PAGE_LAYOUT_ES;
+        }
+        if (lang == LangPreferenceManager.Language.FR) {
+            return PAGE_LAYOUT_FR;
+        }
+        return PAGE_LAYOUT_EN;
     }
 
     private static ChoiceElement[] buildElements(DeityLandProtectionPlugin plugin, PlayerRef playerRef) {

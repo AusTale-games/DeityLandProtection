@@ -132,7 +132,8 @@ public final class LangPreferenceManager {
 
     public static enum Language {
         EN("en"),
-        ES("es");
+        ES("es"),
+        FR("fr");
 
         private final String code;
 
@@ -152,6 +153,9 @@ public final class LangPreferenceManager {
             String s = code.trim().toLowerCase();
             if (s.equals("es") || s.equals("spa") || s.equals("spanish")) {
                 return ES;
+            }
+            if (s.equals("fr") || s.equals("fra") || s.equals("french") || s.startsWith("fr-")) {
+                return FR;
             }
             return EN;
         }

@@ -66,7 +66,7 @@ extends AbstractAsyncCommand {
             ctx.sendMessage(Message.raw(Text.langDefaultUpdated(effective, newLang)));
             return CompletableFuture.completedFuture(null);
         }
-        if (sub.equals("en") || sub.equals("es")) {
+        if (sub.equals("en") || sub.equals("es") || sub.equals("fr")) {
             if (!ctx.isPlayer()) {
                 ctx.sendMessage(Message.raw(Text.helpLang(effective)));
                 return CompletableFuture.completedFuture(null);

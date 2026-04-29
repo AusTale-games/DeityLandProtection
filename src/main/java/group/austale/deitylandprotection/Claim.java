@@ -13,7 +13,6 @@ public final class Claim {
     public static final int UNKNOWN_Y = Integer.MIN_VALUE;
 
     private static final String DEFAULT_DEITY_ITEM_ID = "SlumberingDeity_Block";
-    private static final String LEGACY_DEITY_ITEM_ID = "DeityLandProtection_Block";
 
     private final UUID owner;
     private final String ownerName;
@@ -49,7 +48,7 @@ public final class Claim {
             return DEFAULT_DEITY_ITEM_ID;
         }
         String trimmed = deityItemId.trim();
-        if (trimmed.isEmpty() || trimmed.equalsIgnoreCase(LEGACY_DEITY_ITEM_ID)) {
+        if (trimmed.isEmpty()) {
             return DEFAULT_DEITY_ITEM_ID;
         }
         return trimmed;

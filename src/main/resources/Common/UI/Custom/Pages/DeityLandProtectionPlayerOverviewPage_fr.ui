@@ -1,0 +1,25 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+$C.@PageOverlay {
+  $C.@DecoratedContainer {
+    Anchor: (Width: 920, Height: 460);
+
+    #Title {
+      Group {
+        $C.@Title {
+          @Text = "Mes revendications";
+        }
+      }
+    }
+
+    #Content {
+      Group #ElementList {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      }
+    }
+  }
+
+  $C.@BackButton {}
+}

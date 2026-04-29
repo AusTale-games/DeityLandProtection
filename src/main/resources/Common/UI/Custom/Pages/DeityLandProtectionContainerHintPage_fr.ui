@@ -1,0 +1,57 @@
+$C = "../DeityLandProtectionCommon.ui";
+
+$C.@PageOverlay {
+  $C.@DecoratedContainer {
+    Anchor: (Width: 560, Height: 340);
+
+    #Title {
+      Group {
+        $C.@Title {
+          @Text = "Faire une offrande";
+        }
+      }
+    }
+
+    #Content {
+      Group {
+        LayoutMode: Top;
+        Padding: (Horizontal: 16, Vertical: 12);
+
+        Label {
+          Text: "Ouvrez les emplacements pour y déposer de l’essence";
+          Style: (...$C.@DefaultLabelStyle, Wrap: true);
+        }
+
+        Group {
+          LayoutMode: Left;
+          Padding: (Top: 16);
+          ItemIcon #CopperIcon {
+            Anchor: (Width: 48, Height: 48);
+          }
+          Label {
+            Padding: (Left: 12);
+            Text: "Essence de vie pour les offrandes";
+            Style: (...$C.@DefaultLabelStyle, Wrap: true);
+            FlexWeight: 1;
+          }
+        }
+
+        Group {
+          LayoutMode: Left;
+          Padding: (Top: 12);
+          ItemIcon #SilverIcon {
+            Anchor: (Width: 48, Height: 48);
+          }
+          Label {
+            Padding: (Left: 12);
+            Text: "Améliorations de zone (le cas échéant)";
+            Style: (...$C.@DefaultLabelStyle, Wrap: true);
+            FlexWeight: 1;
+          }
+        }
+      }
+    }
+  }
+
+  $C.@BackButton {}
+}

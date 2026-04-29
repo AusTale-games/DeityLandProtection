@@ -35,6 +35,9 @@ extends ChoiceElement {
         if (lang == LangPreferenceManager.Language.ES) {
             return "Gracia";
         }
+        if (lang == LangPreferenceManager.Language.FR) {
+            return "Grâce";
+        }
         return "Grace";
     }
 

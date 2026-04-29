@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  * - writes the per-server custom Deity item resources (with recipe cost overrides applied).
  */
 final class AssetInstaller {
-    private static final String MANIFEST_CONTENT = "{\"Group\":\"games.Austale\",\"Name\":\"DeityLandProtectionData\",\"Version\":\"1.2.1\",\"ServerVersion\":\"2026.03.26-89796e57b\"}";
+    private static final String MANIFEST_CONTENT = "{\"Group\":\"games.Austale\",\"Name\":\"DeityLandProtectionData\",\"Version\":\"1.2.2\",\"ServerVersion\":\"2026.03.26-89796e57b\"}";
 
     private final HytaleLogger logger;
     private final RecipeOverrider recipeOverrider;

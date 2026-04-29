@@ -32,7 +32,21 @@ extends ChoiceInteraction {
             return;
         }
         LangPreferenceManager.Language current = mgr.getEffectiveLanguage(actor);
-        LangPreferenceManager.Language next = current == LangPreferenceManager.Language.ES ? LangPreferenceManager.Language.EN : LangPreferenceManager.Language.ES;
+        LangPreferenceManager.Language next = LangPreferenceManager.Language.EN;
+        switch (current) {
+            case EN: {
+                next = LangPreferenceManager.Language.ES;
+                break;
+            }
+            case ES: {
+                next = LangPreferenceManager.Language.FR;
+                break;
+            }
+            case FR: {
+                next = LangPreferenceManager.Language.EN;
+                break;
+            }
+        }
         mgr.setOverride(actor, next);
         this.plugin.sendPlayerMessageImmediate(playerRef, Text.langUpdated(next, next));
         Player playerEntity = (Player)store.getComponent(ref, Player.getComponentType());

@@ -134,10 +134,6 @@ final class PluginConfig {
         try {
             String json = Files.readString(cfg, StandardCharsets.UTF_8);
             this.deityItemId = readItemIdOrDefault(json, CONFIG_DEITY_ITEM_ID_KEY, DEFAULT_DEITY_ITEM_ID);
-            // Legacy "DeityLandProtection_Block" id should be normalized away.
-            if (itemIdMatches(this.deityItemId, "DeityLandProtection_Block")) {
-                this.deityItemId = DEFAULT_DEITY_ITEM_ID;
-            }
             this.outlanderDeityItemId = readItemIdOrDefault(json, CONFIG_OUTLANDER_DEITY_ITEM_ID_KEY, OUTLANDER_DEITY_ITEM_ID);
             Integer rawRadius = JsonReader.readInt(json, "claimRadius");
             int radius = normalizeRadius(rawRadius == null ? DEFAULT_RADIUS : rawRadius);

@@ -9,7 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 public final class PlayerClaimElement
 extends ChoiceElement {
-    private static final String ELEMENT_LAYOUT = "Pages/ItemRepairElement.ui";
+    private static final String ELEMENT_LAYOUT = "Pages/DeityLandProtectionPlayerClaimRow.ui";
     private final DeityLandProtectionPlugin plugin;
     private final Claim claim;
 
@@ -76,6 +76,18 @@ extends ChoiceElement {
             sb.append(" | Miembros: ").append(members);
             if (grace != null) {
                 sb.append(" | Gracia: ").append(grace);
+            }
+            return sb.toString();
+        }
+        if (lang == LangPreferenceManager.Language.FR) {
+            sb.append("Rayon: ").append(radius);
+            sb.append(" | Essence: ").append(time);
+            sb.append("\n");
+            sb.append("PvP: ").append(pvp);
+            sb.append(" | Entretien: ").append(feed);
+            sb.append(" | Membres: ").append(members);
+            if (grace != null) {
+                sb.append(" | Grâce: ").append(grace);
             }
             return sb.toString();
         }
